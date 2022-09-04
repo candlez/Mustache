@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
-            "url": "file:///C:/Users/Thomas/Desktop/Notepad++%20Files/io%20game.html",
+            "url": "file:///C:/Users/Thomas/Documents/GitHub/Mustache/Mustach.html",
             "webRoot": "${workspaceFolder}"
         }
     ]
