@@ -6,7 +6,7 @@ and calling its play game method
 var agarGame;
 
 function startGame() {
-	agarGame = new Game(document.getElementById("playSpace"));
+	agarGame = new Game(document.getElementById("playSpace"), 2000, 2000);
 	agarGame.playGame();
 }
 

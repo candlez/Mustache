@@ -1,13 +1,8 @@
-class Agar {
-
-	constructor(name, x, y, mass, color, game, canvas) {
-		this.name = name;
-		this.x = x;
-		this.y = y;
+class Agar extends Map {
+	constructor(name, x, y, mass, color, canvas) {
+		super(name, x, y, 2000, 2000, 0, "white", canvas);
 		this.mass = mass;
 		this.color = color;
-		game.agars.push(this);
-		this.psctx = canvas;
 	}
 
 	/*
@@ -15,17 +10,9 @@ class Agar {
 	*/
 	drawAgar() {
 		// console.log(this.psctx);
-		this.psctx.beginPath();
-		this.psctx.arc(this.x, this.y, this.mass, 0, Math.PI * 2);
-		this.psctx.fillStyle = this.color;
-		this.psctx.fill();
-	}
-
-	/*
-	not sure what this is for
-	*/
-	moveAgar(direction) {
-		a = [[0, 1], [1, 0], [0, -1], [-1, 0]]
-
+		this.ctx.beginPath();
+		this.ctx.arc(this.x, this.y, this.mass, 0, Math.PI * 2);
+		this.ctx.fillStyle = this.color;
+		this.ctx.fill();
 	}
 }

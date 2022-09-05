@@ -1,20 +1,40 @@
 class Game {
-    constructor(canvas) {
+    constructor(canvas, width, height) {
+        // setting up attributes
         this.gameState = true;
         this.maps = [];
         this.agars = [];
         this.renderedAgars = [];
+
+        // setting up canvas
         this.canvas = canvas;
-        this.psctx = this.canvas.getContext("2d");
-        this.canvas.width = 2000;
-        this.canvas.height = 2000;
+        console.log(this.canvas);
+        this.ctx = this.canvas.getContext("2d");
+        this.canvas.width = width;
+        this.canvas.height = height;
     }
+
+
+    /*
+    creates a canvas element to draw on
+    */
+    createCanvas(element) {
+ 
+    }
+
 
     /*
     adds a new agar to the data
     */
-    addAgar(agarName, x, y, mass, color, game, canvas){
-        new Agar(agarName, x, y, mass, color, game, canvas);
+    addAgar(agarName, x, y, mass, color, canvas){
+        this.agars.push(new Agar(
+            agarName,
+            x,
+            y,
+            mass,
+            color,
+            canvas
+        ));
         // console.log(game);
     }
 
@@ -25,26 +45,41 @@ class Game {
     is this necessary??
     */
     addMap(mapName, x, y, width, height, scale) {
-        this.maps.push(new Map(mapName, x, y, width, height, scale, document.getElementById("map")));
+        var newMap = document.createElement("canvas");
+        newMap.id = "map";
+        document.body.append(newMap)
+        this.maps.push(new Map(
+            mapName,
+            x,
+            y,
+            width,
+            height,
+            scale,
+            "white",
+            newMap
+        ));
     }
 
     /*
     changes cordinates of agars based on which
     keys are being pressed
     */
-    updateCords() { //needs to be made general and possibly moved
+    updateCords() {
         if (keysDown.up) {
-            // console.log(this.agars[0].y);
-            this.agars[0].y = this.agars[0].y - 10;
+            //this.agars[0].y = this.agars[0].y - 10;
+            this.maps[0].y = this.maps[0].y + 10;
         }
         if (keysDown.right) { 
-            this.agars[0].x = this.agars[0].x + 10;
+            //this.agars[0].x = this.agars[0].x + 10;
+            this.maps[0].x = this.maps[0].x - 10;
         }
         if (keysDown.down) {
-            this.agars[0].y = this.agars[0].y + 10;
+            //this.agars[0].y = this.agars[0].y + 10;
+            this.maps[0].y = this.maps[0].y - 10;
         }
         if (keysDown.left) {
-            this.agars[0].x = this.agars[0].x - 10;
+            //this.agars[0].x = this.agars[0].x - 10;
+            this.maps[0].x = this.maps[0].x + 10;
         }
     }
 
@@ -67,14 +102,15 @@ class Game {
 	
         agarGame.updateCords();
 
+        console.log(agarGame.maps[0])
         agarGame.maps[0].drawMap();
     
         for (var i in agarGame.agars) {
             agarGame.agars[i].drawAgar();
         }
-        if (agarGame.gameState) {
-            window.requestAnimationFrame(agarGame.animateFrame);
-        }
+        // if (agarGame.gameState) {
+           // window.requestAnimationFrame(agarGame.animateFrame);
+       // }
     }
 
     /*
@@ -100,8 +136,7 @@ class Game {
             playSpace.height / 2,
             40,
             "blue",
-            this,
-            this.psctx
+            document.getElementById("playSpace")
         );
         // console.log(this.agars)
 
