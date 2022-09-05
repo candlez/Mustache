@@ -1,7 +1,7 @@
 body {
 	overflow: hidden;
 }
-#playSpace {
+canvas {
 	position: absolute;
 	width: 2000px;
 	height: 2000px;
@@ -11,15 +11,6 @@ body {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	
-}
-#map {
-	position: absolute;
-	width: 2000px;
-	height: 2000px;
-	background-color: transparent;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
 }
 #paragraph {
 	color: blue;
