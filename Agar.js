@@ -1,8 +1,9 @@
 class Agar extends Map {
-	constructor(name, x, y, mass, color, canvas) {
+	constructor(name, x, y, mass, color, canvas, isPlayer) {
 		super(name, x, y, 2000, 2000, 0, "white", canvas);
 		this.mass = mass;
 		this.color = color;
+		this.isPlayer = isPlayer
 	}
 
 	/*

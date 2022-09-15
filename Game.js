@@ -22,18 +22,21 @@ class Game {
  
     }
 
-
+    clearPlaySpace() {
+        this.ctx.clearRect(0, 0, agarGame.canvas.width, agarGame.canvas.height);
+    }
     /*
     adds a new agar to the data
     */
-    addAgar(agarName, x, y, mass, color, canvas){
+    addAgar(agarName, x, y, mass, color, canvas, isPlayer){
         this.agars.push(new Agar(
             agarName,
             x,
             y,
             mass,
             color,
-            canvas
+            canvas,
+            isPlayer
         ));
         // console.log(game);
     }
@@ -67,19 +70,35 @@ class Game {
     */
     updateCords() {
         if (keysDown.up) {
-            //this.agars[0].y = this.agars[0].y - 10;
+            for (var i in this.agars) {
+                if (!this.agars[i].isPlayer) {
+                    this.agars[i].y = this.agars[i].y + 5
+                }
+            }
             this.maps[0].y = this.maps[0].y + 5;
         }
         if (keysDown.right) { 
-            //this.agars[0].x = this.agars[0].x + 10;
+            for (var i in this.agars) {
+                if (!this.agars[i].isPlayer) {
+                    this.agars[i].x = this.agars[i].x - 5
+                }
+            }
             this.maps[0].x = this.maps[0].x - 5;
         }
         if (keysDown.down) {
-            //this.agars[0].y = this.agars[0].y + 10;
+            for (var i in this.agars) {
+                if (!this.agars[i].isPlayer) {
+                    this.agars[i].y = this.agars[i].y - 5
+                }
+            }
             this.maps[0].y = this.maps[0].y - 5;
         }
         if (keysDown.left) {
-            //this.agars[0].x = this.agars[0].x - 10;
+            for (var i in this.agars) {
+                if (!this.agars[i].isPlayer) {
+                    this.agars[i].x = this.agars[i].x + 5
+                }
+            }
             this.maps[0].x = this.maps[0].x + 5;
         }
     }
@@ -100,8 +119,9 @@ class Game {
     way that the player's agar is.
     */
     animateFrame() {
-        // erases old map
+        // erases old canvas
         agarGame.maps[0].eraseMap();
+        agarGame.clearPlaySpace();
 
         // updates all of the coordinates
         agarGame.updateCords();
@@ -143,20 +163,20 @@ class Game {
             playSpace.height / 2,
             40,
             "blue",
-            document.getElementById("playSpace")
+            document.getElementById("playSpace"),
+            true
         );
-        // console.log(this.agars)
-
-        /*
-        player = new Agar(playSpace.width / 2, playSpace.height / 2, 40, "blue");
-        this.agars.push(player);
-        */
-
+        
         // makes enemy agar
-        /*
-        random = new Agar((playSpace.width / 2) + 400, playSpace.height / 2, 40, "red");
-        this.agars.push(random);
-        */
+        this.addAgar(
+            "enemy",
+            (playSpace.width / 2) + 100,
+            (playSpace.height / 2) - 100,
+            20,
+            "red",
+            document.getElementById("playSpace"),
+            false
+        )
 
         // starts animation loop
         window.requestAnimationFrame(this.animateFrame);

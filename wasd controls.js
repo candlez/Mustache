@@ -8,7 +8,7 @@ var keysDown = {up: false, right: false, down: false, left: false};
 function wListener(state) {
     if (state) {
         keysDown.up = true;
-        console.log(keysDown);
+        // console.log(keysDown);
         document.addEventListener("keyup", function(event) {
             if (event.key == "w") {
                 this.removeEventListener("keyup", arguments.callee);
@@ -17,7 +17,7 @@ function wListener(state) {
         });
     } else {
         keysDown.up = false;
-        console.log(keysDown);
+        // console.log(keysDown);
         document.addEventListener("keydown", function(event) {
             if (event.key == "w") {
                 this.removeEventListener("keydown", arguments.callee);
@@ -29,7 +29,7 @@ function wListener(state) {
 function aListener(state) {
     if (state) {
         keysDown.left = true;
-        console.log(keysDown);
+        // console.log(keysDown);
         document.addEventListener("keyup", function(event) {
             if (event.key == "a") {
                 this.removeEventListener("keyup", arguments.callee);
@@ -38,7 +38,7 @@ function aListener(state) {
         });
     } else {
         keysDown.left = false;
-        console.log(keysDown);
+        // console.log(keysDown);
         document.addEventListener("keydown", function(event) {
             if (event.key == "a") {
                 this.removeEventListener("keydown", arguments.callee);
@@ -50,7 +50,7 @@ function aListener(state) {
 function dListener(state) {
     if (state) {
         keysDown.right = true;
-        console.log(keysDown);
+        // console.log(keysDown);
         document.addEventListener("keyup", function(event) {
             if (event.key == "d") {
                 this.removeEventListener("keyup", arguments.callee);
@@ -59,7 +59,7 @@ function dListener(state) {
         });
     } else {
         keysDown.right = false;
-        console.log(keysDown);
+        // console.log(keysDown);
         document.addEventListener("keydown", function(event) {
             if (event.key == "d") {
                 this.removeEventListener("keydown", arguments.callee);
@@ -71,7 +71,7 @@ function dListener(state) {
 function sListener(state) {
     if (state) {
         keysDown.down = true;
-        console.log(keysDown);
+        // console.log(keysDown);
         document.addEventListener("keyup", function(event) {
             if (event.key == "s") {
                 this.removeEventListener("keyup", arguments.callee);
@@ -80,7 +80,7 @@ function sListener(state) {
         });
     } else {
         keysDown.down = false;
-        console.log(keysDown);
+        // console.log(keysDown);
         document.addEventListener("keydown", function(event) {
             if (event.key == "s") {
                 this.removeEventListener("keydown", arguments.callee);
