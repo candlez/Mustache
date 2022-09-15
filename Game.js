@@ -47,6 +47,7 @@ class Game {
     addMap(mapName, x, y, width, height, scale) {
         var newMap = document.createElement("canvas");
         newMap.id = "map";
+        newMap.style.zIndex = -1;
         document.body.append(newMap)
         this.maps.push(new Map(
             mapName,
@@ -67,19 +68,19 @@ class Game {
     updateCords() {
         if (keysDown.up) {
             //this.agars[0].y = this.agars[0].y - 10;
-            this.maps[0].y = this.maps[0].y + 10;
+            this.maps[0].y = this.maps[0].y + 5;
         }
         if (keysDown.right) { 
             //this.agars[0].x = this.agars[0].x + 10;
-            this.maps[0].x = this.maps[0].x - 10;
+            this.maps[0].x = this.maps[0].x - 5;
         }
         if (keysDown.down) {
             //this.agars[0].y = this.agars[0].y + 10;
-            this.maps[0].y = this.maps[0].y - 10;
+            this.maps[0].y = this.maps[0].y - 5;
         }
         if (keysDown.left) {
             //this.agars[0].x = this.agars[0].x - 10;
-            this.maps[0].x = this.maps[0].x + 10;
+            this.maps[0].x = this.maps[0].x + 5;
         }
     }
 
@@ -99,18 +100,24 @@ class Game {
     way that the player's agar is.
     */
     animateFrame() {
-	
+        // erases old map
+        agarGame.maps[0].eraseMap();
+
+        // updates all of the coordinates
         agarGame.updateCords();
 
-        console.log(agarGame.maps[0])
+        // draws the map
         agarGame.maps[0].drawMap();
-    
+        
+        // draws all of the agars in the game
         for (var i in agarGame.agars) {
             agarGame.agars[i].drawAgar();
         }
-        // if (agarGame.gameState) {
-           // window.requestAnimationFrame(agarGame.animateFrame);
-       // }
+        
+        // starts new frame if game is still running
+        if (agarGame.gameState) {
+            window.requestAnimationFrame(agarGame.animateFrame);
+        }
     }
 
     /*

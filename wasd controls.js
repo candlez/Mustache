@@ -1,6 +1,10 @@
 var keysDown = {up: false, right: false, down: false, left: false};
 
-
+/**
+ * ahhhhh
+ * 
+ * @param {*} state 
+ */
 function wListener(state) {
     if (state) {
         keysDown.up = true;

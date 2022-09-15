@@ -15,7 +15,7 @@ class Map extends Game {
     */
 	drawMap() {
 		this.ctx.beginPath();
-		console.log(0, 0, this.width * this.scale, this.height * this.scale)
+		this.ctx.strokeStyle = "silver";
         // intended to allow zooming in and out
 		var diffx = (this.width / 2) * this.scale
 		var diffy = (this.height / 2) * this.scale
@@ -39,6 +39,8 @@ class Map extends Game {
 	}
 
 	eraseMap() {
-
+		this.ctx.beginPath();
+		this.ctx.clearRect(0, 0, this.width, this.height);
+		this.ctx.stroke();
 	}
 }
