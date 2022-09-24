@@ -1,0 +1,30 @@
+{
+  "scripts": {
+    "test": "jest --config=jest.config.cjs"
+  },
+  "name": "mustache",
+  "version": "1.0.0",
+  "description": "browser game",
+  "main": "Mustache/Modules/AgarGame.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/candlez/Mustache.git"
+  },
+  "author": "Thomas McNamara",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/candlez/Mustache/issues"
+  },
+  "homepage": "https://github.com/candlez/Mustache#readme",
+  "jest": {
+    "setupFiles": [
+      "jest-canvas-mock"
+    ]
+  },
+  "devDependencies": {
+    "jest-canvas-mock": "^2.4.0"
+  },
+  "dependencies": {
+    "jest-environment-jsdom": "^29.0.3"
+  }
+}
