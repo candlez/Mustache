@@ -70,19 +70,23 @@ export default class Game {
      */
     sortAgarsByMass() {
         this.agars.sort(function(a, b) {
-            return a.mass - b.mass;
+            return b.mass - a.mass;
         })
     }
 
     /**
      * checks if two agars are overlapping enough for 
      * one to eat the other
+     * 
+     * @param
+     * 
+     * @param
      */
     checkIfEaten(bigAgar, smallAgar) {
-        var xDiff = abs(bigAgar.xCoord - smallAgar.xCoord);
-        var yDiff = abs(bigAgar.yCoord - smallAgar.yCoord);
+        var xDiff = Math.abs(bigAgar.xCoord - smallAgar.xCoord);
+        var yDiff = Math.abs(bigAgar.yCoord - smallAgar.yCoord);
         var combinedRadii = bigAgar.mass + smallAgar.mass;
-        if (combinedRadii > xDiff + yDiff) {
+        if (Math.ceil(combinedRadii / 2) > xDiff + yDiff) {
             console.log('whats up')
             return true;
         } else {
@@ -166,9 +170,9 @@ export default class Game {
      */
     drawObjects() {
         this.map.drawMap();
-        this.agars.forEach(function(agar) {
-            agar.drawAgar();
-        });
+        for (var i = this.agars.length; i > 0; i--) {
+            this.agars[i - 1].drawAgar();
+        }
     }
 
     /**
@@ -202,11 +206,11 @@ export default class Game {
         // this.map.drawMap();
 
         // add player agar
-        var player = new Agar("player", this,1000, 1000, 100, "blue", this.ctx)
+        var player = new Agar("player", this, 1000, 1000, 100, "blue", this.ctx)
         this.addAgar(player);
 
         // add enemy agar
-        var enemy = new Agar("enemy", this, 1250, 750, 200, "green", this.ctx)
+        var enemy = new Agar("enemy", this, 1250, 750, 50, "green", this.ctx)
         this.addAgar(enemy);
 
         // start the animation cycle
