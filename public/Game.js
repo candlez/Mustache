@@ -91,10 +91,20 @@ export default class Game {
     }
 
     /**
-     * 
+     * runs through all of the agars and checks if any of them are close enough to
+     * for the bigger one to eat the smaller on
      */
     eatCheck() {
-        
+        this.agars.forEach(function (agar, index, agars) {
+            for (var i = index; i < agars.length - 1; i++) {
+                if (agar.mass == agars[i + 1].mass) {
+                    // intentionally blank
+                } else if (agar.game.checkIfEaten(agar, agars[i + 1])) {
+                    agar.eatAgar(agars[i + 1]);
+                    break;
+                }
+            }
+        });
     }
 
     /**
