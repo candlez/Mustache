@@ -22,6 +22,8 @@ export default class Game {
         this.gameState = false;
         this.map = null;
         this.agars = [];
+        this.playerAgar = null;
+        this.scale = 1;
     }
 
     /**
@@ -43,6 +45,9 @@ export default class Game {
     addAgar(agar) {
         if (agar instanceof Agar) {
             this.agars.push(agar);
+        }
+        if (agar.isPlayerAgar) {
+            this.playerAgar = agar;
         }
     }
 
@@ -87,7 +92,6 @@ export default class Game {
         var yDiff = Math.abs(bigAgar.yCoord - smallAgar.yCoord);
         var combinedRadii = bigAgar.mass + smallAgar.mass;
         if (Math.ceil(combinedRadii / 2) > xDiff + yDiff) {
-            console.log('whats up')
             return true;
         } else {
             return false;
@@ -109,6 +113,27 @@ export default class Game {
                 }
             }
         });
+    }
+    
+    /**
+     * need a universal scale
+     * a player agar should always have canvas radius 100
+     * radius = mass * scale
+     * 100 = player mass * scale
+     * scale = 100 / player mass
+     */
+    adjustScale() {
+        if (this.playerAgar.mass * this.scale > 100) {
+            var targetScale = Math.round((100 / this.playerAgar.mass) * 1000) / 1000;
+            var diff = this.scale - targetScale;
+            this.scale -= diff * .01;
+            this.scale = Math.round(this.scale * 1000) / 1000
+        } else if (this.playerAgar.mass * this.scale < 100) {
+            var targetScale = Math.round((100 / this.playerAgar.mass) * 1000) / 1000;
+            var diff = targetScale - this.scale;
+            this.scale += diff * .01;
+            this.scale = Math.round(this.scale * 1000) / 1000;
+        }
     }
 
     /**
@@ -134,25 +159,21 @@ export default class Game {
 
     /**
      * updates posiiton data so the objects can be drawn
+     * 
+     * also updates scale data
      */
-    updateData() {
+    updatePositionData() {
         var change = this.findChange();
         
         // the minus in these represents the fact that it should
         // go the opposite way
 
         // update the map
-        this.map.xCoord -= change.x;
-        this.map.yCoord -= change.y;
-
-        // update agars
-        this.agars.forEach(function(agar, index) {
-            if (agar.id != "player") {
-                agar.xCoord -= change.x;
-                agar.yCoord -= change.y;
-            }
-        })
+        // this.map.xCoord -= change.x;
+        // this.map.yCoord -= change.y;
         
+        // update playerAgar
+        this.playerAgar.moveAgar(change.x, change.y)
     }
 
     /**
@@ -169,9 +190,9 @@ export default class Game {
      * draws all objects on the play space
      */
     drawObjects() {
-        this.map.drawMap();
+        this.map.drawMap(this.scale);
         for (var i = this.agars.length; i > 0; i--) {
-            this.agars[i - 1].drawAgar();
+            this.agars[i - 1].drawAgar(this.scale);
         }
     }
 
@@ -179,11 +200,25 @@ export default class Game {
      * draws a frame based on currently available data
      */
     animateFrame() {
+        // erase everything from the previous frame
         this.clearPlaySpace();
-        this.updateData();
+
+        // update the positions of objects
+        this.updatePositionData();
+
+        // sort the agars by mass in descending order
         this.sortAgarsByMass();
+
+        // check if any agars are eating each other
         this.eatCheck();
+
+        // set the scale at which the objects will be drawn
+        this.adjustScale();
+
+        // draw the objects
         this.drawObjects();
+
+        // start over
         if (this.gameState) {
             requestAnimationFrame(animationLoop);
         }
@@ -200,18 +235,15 @@ export default class Game {
         // start game in data
         this.gameState = true;
 
-        // create map
-        var map = new GameMap(0, 0, 2000, 2000, this.ctx)
-        this.setMap(map);
-        // this.map.drawMap();
-
         // add player agar
-        var player = new Agar("player", this, 1000, 1000, 100, "blue", this.ctx)
-        this.addAgar(player);
+        this.addAgar(new Agar("player", this, true, 2500, 2500, 100, "blue", this.ctx));
 
-        // add enemy agar
-        var enemy = new Agar("enemy", this, 1250, 750, 50, "green", this.ctx)
-        this.addAgar(enemy);
+        // create map
+        this.setMap(new GameMap(this, 2500, 2500, 5000, 5000, this.ctx));
+
+        // add enemy agars
+        this.addAgar(new Agar("enemy", this, false, 2250, 2250, 50, "green", this.ctx));
+        this.addAgar(new Agar("enemy2", this, false, 5000, 5000, 50, "red", this.ctx));
 
         // start the animation cycle
         requestAnimationFrame(animationLoop);
