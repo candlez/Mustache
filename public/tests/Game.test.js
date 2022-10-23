@@ -1,9 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import Game from './Game.js';
-import GameMap from './GameMap.js';
-import Agar from './Agar.js';
+import Game from '../Game.js';
+import GameMap from '../GameMap.js';
+import Agar from '../Agar.js';
 
 describe('unit testing for the Game class', () => {
     var game;
@@ -27,7 +27,7 @@ describe('unit testing for the Game class', () => {
         });
     
         test('testing setMap with a map as the argument', () => {
-            const gameMap = new GameMap(game, 0, 0, 2000, 2000, game.ctx);
+            const gameMap = new GameMap(game, 0, 0, 2000, 2000);
             game.setMap(gameMap);
             expect(game.map.xCoord).toBe(0);
             expect(game.map.yCoord).toBe(0);
@@ -44,13 +44,13 @@ describe('unit testing for the Game class', () => {
         })
 
         test('on an agar', () => {
-            game.addAgar(new Agar("tester", game, false, 0, 0, 50, "blue", game.ctx));
+            game.addAgar(new Agar("tester", game, false, 0, 0, 50, "blue"));
             expect(game.agars.length).toBe(1);
             expect(game.agars[0].id).toBe('tester');
         })
 
         test('on an agar with isPlayerAgar = true', () => {
-            game.addAgar(new Agar('player', game, true, 0, 0, 50, "blue", game.ctx));
+            game.addAgar(new Agar('player', game, true, 0, 0, 50, "blue"));
             expect(game.agars.length).toBe(1)
             expect(game.agars[0].id).toBe('player');
             expect(game.playerAgar.id).toBe('player')
@@ -61,11 +61,11 @@ describe('unit testing for the Game class', () => {
     describe('testing removeAgar', () => {
         beforeEach(() => {
             game = new Game(2000, 2000);
-            game.addAgar(new Agar("tester", game, false, 0, 0, 50, "blue", game.ctx))
-            game.addAgar(new Agar("player", game, false, 0, 0, 50, "blue", game.ctx))
-            game.addAgar(new Agar("player", game, false, 0, 0, 50, "blue", game.ctx))
-            game.addAgar(new Agar("gamer", game, false, 0, 0, 50, "blue", game.ctx))
-            game.addAgar(new Agar("tester", game, false, 0, 0, 50, "blue", game.ctx))
+            game.addAgar(new Agar("tester", game, false, 0, 0, 50, "blue"))
+            game.addAgar(new Agar("player", game, false, 0, 0, 50, "blue"))
+            game.addAgar(new Agar("player", game, false, 0, 0, 50, "blue"))
+            game.addAgar(new Agar("gamer", game, false, 0, 0, 50, "blue"))
+            game.addAgar(new Agar("tester", game, false, 0, 0, 50, "blue"))
         });
 
         test('on an id that doesnt exist', () => {
@@ -96,11 +96,11 @@ describe('unit testing for the Game class', () => {
     //-------------------------------------------------------------------------------
     describe('testing sortAgarsByMass', () => {
         test('on a regular list', () => {
-            game.addAgar(new Agar("2", game, false, 0, 0, 10, "blue", game.ctx));
-            game.addAgar(new Agar("3", game, false, 0, 0, 50, "blue", game.ctx));
-            game.addAgar(new Agar("5", game, false, 0, 0, 150, "blue", game.ctx));
-            game.addAgar(new Agar("1", game, false, 0, 0, 0, "blue", game.ctx));
-            game.addAgar(new Agar("4", game, false, 0, 0, 60, "blue", game.ctx));
+            game.addAgar(new Agar("2", game, false, 0, 0, 10, "blue"));
+            game.addAgar(new Agar("3", game, false, 0, 0, 50, "blue"));
+            game.addAgar(new Agar("5", game, false, 0, 0, 150, "blue"));
+            game.addAgar(new Agar("1", game, false, 0, 0, 0, "blue"));
+            game.addAgar(new Agar("4", game, false, 0, 0, 60, "blue"));
 
             game.sortAgarsByMass();
             expect(game.agars[0].id).toBe('5');
@@ -111,11 +111,11 @@ describe('unit testing for the Game class', () => {
         });
 
         test('on a list with agars of equal mass', () => {
-            game.addAgar(new Agar("2", game, false, 0, 0, 10, "blue", game.ctx));
-            game.addAgar(new Agar("3", game, false, 0, 0, 10, "blue", game.ctx));
-            game.addAgar(new Agar("5", game, false, 0, 0, 150, "blue", game.ctx));
-            game.addAgar(new Agar("1", game, false, 0, 0, 0, "blue", game.ctx));
-            game.addAgar(new Agar("4", game, false, 0, 0, 60, "blue", game.ctx));
+            game.addAgar(new Agar("2", game, false, 0, 0, 10, "blue"));
+            game.addAgar(new Agar("3", game, false, 0, 0, 10, "blue"));
+            game.addAgar(new Agar("5", game, false, 0, 0, 150, "blue"));
+            game.addAgar(new Agar("1", game, false, 0, 0, 0, "blue"));
+            game.addAgar(new Agar("4", game, false, 0, 0, 60, "blue"));
 
             game.sortAgarsByMass();
             expect(game.agars[0].id).toBe('5');
@@ -129,8 +129,8 @@ describe('unit testing for the Game class', () => {
     //-------------------------------------------------------------------------------
     describe('testing checkIfEaten', () => {
         beforeEach(() => {
-            game.addAgar(new Agar("1", game, false, 0, 0, 20, "blue", game.ctx));
-            game.addAgar(new Agar("2", game, false, 0, 0, 10, "blue", game.ctx));
+            game.addAgar(new Agar("1", game, false, 0, 0, 20, "blue"));
+            game.addAgar(new Agar("2", game, false, 0, 0, 10, "blue"));
         });
 
         test('when agars are have exact same coordinates', () => {
@@ -165,9 +165,9 @@ describe('unit testing for the Game class', () => {
     //-------------------------------------------------------------------------------
     describe('testing eatCheck', () => {
         beforeEach(() => {
-            game.addAgar(new Agar("big", game, false, 0, 0, 30, "blue", game.ctx));
-            game.addAgar(new Agar("medium", game, false, 0, 0, 20, "blue", game.ctx));
-            game.addAgar(new Agar("small", game, false, 0, 0, 10, "blue", game.ctx));
+            game.addAgar(new Agar("big", game, false, 0, 0, 30, "blue"));
+            game.addAgar(new Agar("medium", game, false, 0, 0, 20, "blue"));
+            game.addAgar(new Agar("small", game, false, 0, 0, 10, "blue"));
         });
 
         test('when an agar can eat multiple agars', () => {
@@ -206,7 +206,7 @@ describe('unit testing for the Game class', () => {
     //-------------------------------------------------------------------------------
     describe('testing adjustScale', () => {
         beforeEach(() => {
-            game.addAgar(new Agar("player", game, true, 0, 0, 100, "blue", game.ctx))
+            game.addAgar(new Agar("player", game, true, 0, 0, 100, "blue"))
         });
 
         test('when the scale is just right', () => {
@@ -217,14 +217,14 @@ describe('unit testing for the Game class', () => {
         test('when the scale is too small', () => {
             game.playerAgar.mass = 90;
             game.adjustScale();
-            expect(game.scale).toBe(1.001)
+            expect(game.scale).toBe(1.006)
         })
 
         test('when the scale is too big', () => {
             game.scale = 1;
             game.playerAgar.mass = 110;
             game.adjustScale();
-            expect(game.scale).toBe(.999)
+            expect(game.scale).toBe(.995)
         })
     });
 });

@@ -1,6 +1,7 @@
 export default class GameMap {
-    constructor(game, xCoord, yCoord, width, height, ctx) {
+    constructor(game, xCoord, yCoord, width, height) {
 		this.game = game;
+		this.ctx = game.ctx;
 
 		// these are the absolute coordinates
 		// x and y coords should represent the center
@@ -16,16 +17,12 @@ export default class GameMap {
 		this.width = width;
 		this.height = height;
 
-		this.ctx = ctx;
-
 		// canvas coordinates for drawing
 		this.canvasCoords = {x: null, y: null};
 		this.canvasBounds = {top: null, bottom: null, left: null, right: null};
 
 		this.numOfSquares = width / 100
         this.backgroundColor = "white";
-
-		this.counter = 0;
     }
 
 	/**

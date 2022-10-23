@@ -1,7 +1,8 @@
 export default class Agar{
-    constructor(id, game, isPlayerAgar, xCoord, yCoord, mass, color, ctx) {        
+    constructor(id, game, isPlayerAgar, xCoord, yCoord, mass, color) {        
         this.id = id;
         this.game = game;
+        this.ctx = game.ctx;
 
         // these coordinates are absolute
         this.xCoord = xCoord;
@@ -9,7 +10,7 @@ export default class Agar{
 
         this.mass = mass;
         this.color = color;
-        this.ctx = ctx;
+
 
         this.isPlayerAgar = isPlayerAgar;
 
@@ -24,7 +25,6 @@ export default class Agar{
     setCanvasCoords(scale) {
         this.canvasCoords.x = 1000 + (scale * (this.xCoord - this.game.playerAgar.xCoord));
         this.canvasCoords.y = 1000 + (scale * (this.yCoord - this.game.playerAgar.yCoord));
-        // console.log(this.canvasCoords.x, this.canvasCoords.y)
     }
 
     /**
@@ -55,7 +55,7 @@ export default class Agar{
     }
 
     /**
-     * 
+     * changes the absolute coordinates of the Agar
      * 
      * @param {Number} xChange 
      * @param {Number} yChange 

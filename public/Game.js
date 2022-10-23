@@ -1,6 +1,7 @@
 import GameMap from './GameMap.js'
 import Agar from './Agar.js'
 import {animationLoop} from './AgarGame.js'
+import MapPack from './MapPack.js'
 
 export default class Game {
     constructor(width, height) {
@@ -29,7 +30,7 @@ export default class Game {
     /**
      * sets the map to a map object
      * 
-     * @param 
+     * @param {GameMap} map - GameMap object on which the game is being played
      */
     setMap(map) {
         if (map instanceof GameMap) {
@@ -61,6 +62,10 @@ export default class Game {
         this.agars.forEach(function(agar, index) {
             if (agar.id == id) {
                 indices.push(index);
+                if (agar.isPlayerAgar) {
+                    console.log('hello')
+                    agar.game.playerAgar = null;
+                }
             }
         })
         for (var i = indices.length - 1; i > -1; i--) {
@@ -123,15 +128,16 @@ export default class Game {
      * scale = 100 / player mass
      */
     adjustScale() {
+        var rate = .05
         if (this.playerAgar.mass * this.scale > 100) {
             var targetScale = Math.round((100 / this.playerAgar.mass) * 1000) / 1000;
             var diff = this.scale - targetScale;
-            this.scale -= diff * .01;
+            this.scale -= diff * rate;
             this.scale = Math.round(this.scale * 1000) / 1000
         } else if (this.playerAgar.mass * this.scale < 100) {
             var targetScale = Math.round((100 / this.playerAgar.mass) * 1000) / 1000;
             var diff = targetScale - this.scale;
-            this.scale += diff * .01;
+            this.scale += diff * rate;
             this.scale = Math.round(this.scale * 1000) / 1000;
         }
     }
@@ -158,19 +164,12 @@ export default class Game {
     }
 
     /**
-     * updates posiiton data so the objects can be drawn
+     \ssb\hzsktran.P_DispTranCredit* updates posiiton data so the objects can be drawn
      * 
      * also updates scale data
      */
     updatePositionData() {
         var change = this.findChange();
-        
-        // the minus in these represents the fact that it should
-        // go the opposite way
-
-        // update the map
-        // this.map.xCoord -= change.x;
-        // this.map.yCoord -= change.y;
         
         // update playerAgar
         this.playerAgar.moveAgar(change.x, change.y)
@@ -236,14 +235,14 @@ export default class Game {
         this.gameState = true;
 
         // add player agar
-        this.addAgar(new Agar("player", this, true, 2500, 2500, 100, "blue", this.ctx));
+        this.addAgar(new Agar("player", this, true, 5000, 5000, 100, "blue"));
 
         // create map
-        this.setMap(new GameMap(this, 2500, 2500, 5000, 5000, this.ctx));
+        this.setMap(new MapPack(this, 5000, 5000, 10000, 10000));
 
         // add enemy agars
-        this.addAgar(new Agar("enemy", this, false, 2250, 2250, 50, "green", this.ctx));
-        this.addAgar(new Agar("enemy2", this, false, 5000, 5000, 50, "red", this.ctx));
+        this.addAgar(new Agar("enemy", this, false, 4500, 4500, 50, "green"));
+        this.addAgar(new Agar("enemy2", this, false, 5500, 5500, 50, "red"));
 
         // start the animation cycle
         requestAnimationFrame(animationLoop);
