@@ -22,6 +22,12 @@ describe('unit testing for the MapPack class', () => {
     test('testing the set up', () => {
         expect(mapPack.width).toBe(10000);
         expect(mapPack.height).toBe(10000);
+        expect(mapPack.xCoord).toBe(5000);
+        expect(mapPack.yCoord).toBe(5000);
+        expect(mapPack.bounds.left).toBe(0);
+        expect(mapPack.bounds.top).toBe(0);
+        expect(mapPack.bounds.right).toBe(10000);
+        expect(mapPack.bounds.bottom).toBe(10000);
         expect(mapPack.game).toBe(game);
         mapPack.maps.forEach(function(column) {
             column.forEach(function(map) {

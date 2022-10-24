@@ -9,19 +9,22 @@ import Agar from '../Agar.js';
  describe('unit testing for the Agar class', () => {
     var player;
     var game;
+    var map;
 
     beforeEach(() => {
         game = new Game(2000, 2000);
-        player = new Agar("player", game, true, 0, 0, 100, "blue");
+        player = new Agar("player", game, true, 1000, 1000, 100, "blue");
         game.addAgar(player);
+        map = new GameMap(game, 1000, 1000, 2000, 2000);
+        game.setMap(map);
     });
     
     test('test set up', () => {
         expect(player.id).toBe('player');
         expect(player.game).toBe(game);
         expect(player.isPlayerAgar).toBe(true);
-        expect(player.xCoord).toBe(0);
-        expect(player.yCoord).toBe(0);
+        expect(player.xCoord).toBe(1000);
+        expect(player.yCoord).toBe(1000);
         expect(player.mass).toBe(100);
         expect(player.color).toBe('blue');
         expect(player.ctx).toBe(game.ctx);
@@ -29,16 +32,28 @@ import Agar from '../Agar.js';
 
     //-------------------------------------------------------------------------------
     describe('tesing moveAgar', () => {
-        test('on positive values', () => {
+        test('with positive values', () => {
             player.moveAgar(100, 100);
+            expect(player.xCoord).toBe(1100);
+            expect(player.yCoord).toBe(1100);
+        });
+
+        test('with negative values', () => {
+            player.moveAgar(-100, -100);
+            expect(player.xCoord).toBe(900);
+            expect(player.yCoord).toBe(900);
+        });
+
+        test('while trying to move out of the upper and left bounds', () => {
+            player.moveAgar(-901, -901);
             expect(player.xCoord).toBe(100);
             expect(player.yCoord).toBe(100);
         });
 
-        test('on negative values', () => {
-            player.moveAgar(-100, -100);
-            expect(player.xCoord).toBe(-100);
-            expect(player.yCoord).toBe(-100);
+        test('while trying to move out of the lower and right bounds', () => {
+            player.moveAgar(901, 901);
+            expect(player.xCoord).toBe(1900);
+            expect(player.yCoord).toBe(1900);
         });
     });
 
@@ -46,7 +61,7 @@ import Agar from '../Agar.js';
     describe('testing setCanvasCoords', () => {
         var enemy;
         beforeEach(() => {
-            enemy = new Agar("enemy", game, false, 1000, 1000, 50, "red");
+            enemy = new Agar("enemy", game, false, 1500, 1500, 50, "red");
         });
 
         describe('with playerAgar', () => {
@@ -72,20 +87,20 @@ import Agar from '../Agar.js';
         describe('with an enemy Agar', () => {
             test('with scale 1', () => {
                 enemy.setCanvasCoords(1);
-                expect(enemy.canvasCoords.x).toBe(2000);
-                expect(enemy.canvasCoords.y).toBe(2000);
-            });
-
-            test('with scale .5', () => {
-                enemy.setCanvasCoords(.5);
                 expect(enemy.canvasCoords.x).toBe(1500);
                 expect(enemy.canvasCoords.y).toBe(1500);
             });
 
+            test('with scale .5', () => {
+                enemy.setCanvasCoords(.5);
+                expect(enemy.canvasCoords.x).toBe(1250);
+                expect(enemy.canvasCoords.y).toBe(1250);
+            });
+
             test('with scale 2', () => {
                 enemy.setCanvasCoords(2);
-                expect(enemy.canvasCoords.x).toBe(3000);
-                expect(enemy.canvasCoords.y).toBe(3000);
+                expect(enemy.canvasCoords.x).toBe(2000);
+                expect(enemy.canvasCoords.y).toBe(2000);
             });
         });
     });

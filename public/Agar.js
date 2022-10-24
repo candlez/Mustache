@@ -61,7 +61,25 @@ export default class Agar{
      * @param {Number} yChange 
      */
     moveAgar(xChange, yChange) {
-        this.xCoord += xChange;
-        this.yCoord += yChange;
+        var newX = this.xCoord + xChange;
+        if (newX - this.mass >= this.game.map.bounds.left) {
+            if (newX + this.mass <= this.game.map.bounds.right) {
+                this.xCoord = newX;
+            } else {
+                this.xCoord = this.game.map.bounds.right - this.mass;
+            }
+        } else {
+            this.xCoord = this.game.map.bounds.left + this.mass;
+        }
+        var newY = this.yCoord + yChange;
+        if (newY - this.mass >= this.game.map.bounds.top) {
+            if (newY + this.mass <= this.game.map.bounds.right) {
+                this.yCoord = newY;
+            } else {
+                this.yCoord = this.game.map.bounds.right - this.mass;
+            }
+        } else {
+            this.yCoord = this.game.map.bounds.top + this.mass;
+        }
     }
 }
