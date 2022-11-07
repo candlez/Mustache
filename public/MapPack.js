@@ -2,21 +2,22 @@ import GameMap from './GameMap.js'
 
 export default class MapPack extends GameMap {
     /**
+     * constructor for the MapPack class
      * 
-     * @param {Game} game -
-     * @param {xCoord} xCoord -
-     * @param {yCoord} yCoord -
+     * @param {Game} game - Game object to which the MapPack belongs
+     * @param {xCoord} xCoord - absolute position of the map in x
+     * @param {yCoord} yCoord - absolute position of the map in y
      * @param {Number} width - width in absolute pixels (needs to be divisible by 1000)
      * @param {Number} height - height in absolute pixels (needs to be divisible by 1000)
      */
-    constructor(game, xCoord, yCoord, width, height) {
-        super(game, xCoord, yCoord, width, height);
+    constructor(game, xCoord, yCoord, width, height, squareSize) {
+        super(game, xCoord, yCoord, width, height, squareSize);
 
         this.maps = [];
         for (var x = 0; x < width; x += 1000) {
             var column = []
             for (var y = 0; y < height; y += 1000) {
-                column.push(new GameMap(game, x + 500, y + 500, 1000, 1000));
+                column.push(new GameMap(game, x + 500, y + 500, 1000, 1000, squareSize));
             }
             this.maps.push(column);
         }
@@ -38,7 +39,7 @@ export default class MapPack extends GameMap {
     }
 
     /**
-     * returns a list of maps in the vicinity that should be drawn
+     * returns a list of maps in the vicinity of the agar
      * 
      * @param {Agar} agar -
      * @param {Number} scale - 
@@ -76,8 +77,9 @@ export default class MapPack extends GameMap {
     }
 
     /**
+     * draws all of the maps in the vicinity of the player agar
      * 
-     * @param {Number} scale 
+     * @param {Number} scale - the scale at which the maps will be drawn
      */
     drawMap(scale) {
         var localMaps = this.getLocalMaps(this.game.playerAgar, scale);

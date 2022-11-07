@@ -1,5 +1,5 @@
 export default class GameMap {
-    constructor(game, xCoord, yCoord, width, height) {
+    constructor(game, xCoord, yCoord, width, height, squareSize) {
 		this.game = game;
 		this.ctx = game.ctx;
 
@@ -21,8 +21,10 @@ export default class GameMap {
 		this.canvasCoords = {x: null, y: null};
 		this.canvasBounds = {top: null, bottom: null, left: null, right: null};
 
-		this.numOfSquares = width / 100
+		this.squareSize = squareSize;
+		this.numOfSquares = width / squareSize;
         this.backgroundColor = "white";
+		this.lineColor = "silver"
     }
 
 	/**
@@ -55,6 +57,46 @@ export default class GameMap {
 		this.bounds.right = this.xCoord + (this.width / 2);
 	}
 
+	/**
+	 * 
+	 * @param {Number} squareSize number of pixels the squares should be
+	 */
+	setSquareSize(squareSize) {
+		this.squareSize = squareSize;
+		this.numOfSquares = this.width / squareSize;
+	}
+
+	drawGrid(scale, bounds, color) {
+		this.ctx.beginPath();
+		this.ctx.strokeStyle = color;
+
+		this.ctx.rect(
+			bounds.left,
+			bounds.top,
+			this.width * scale,
+			this.height * scale
+		);
+		this.ctx.stroke();
+
+		var diff = this.squareSize * scale;
+
+		// vertical lines
+		for (var a = 1; a < this.numOfSquares; a++) {
+			this.ctx.beginPath();
+			var b = a * diff;
+			this.ctx.moveTo(bounds.left + b, bounds.top);
+			this.ctx.lineTo(bounds.left + b, bounds.bottom);
+			this.ctx.stroke();
+		}
+		// horizontal lines
+		for (var a = 1; a < this.numOfSquares; a++) {
+			this.ctx.beginPath();
+			var b = a * diff;
+			this.ctx.moveTo(bounds.left, bounds.top + b);
+			this.ctx.lineTo(bounds.right, bounds.top + b);
+			this.ctx.stroke();
+		}
+	}
 
     /**
      * draws the map on the playspace
@@ -69,40 +111,14 @@ export default class GameMap {
 	 * scaling is done based on top left corner
 	 * 
 	 * needs to be based on center
+	 * 
+	 * @param {Number} scale - the scale at which the map is drawn
      */
     drawMap(scale) {
-        this.ctx.beginPath();
-		this.ctx.strokeStyle = "silver";
-
 		// update the corner and canvasCords fields
 		this.setCanvasCoords(scale)
-		
-        this.ctx.rect(
-			this.canvasBounds.left,
-			this.canvasBounds.top,
-			this.width * scale,
-			this.height * scale
-		);
-		this.ctx.stroke();
 
-		var diff = 100 * scale;
-
-		// vertical lines
-        for (var a = 1; a < this.numOfSquares; a++) {
-			this.ctx.beginPath();
-			var b = a * diff;
-			this.ctx.moveTo(this.canvasBounds.left + b, this.canvasBounds.top);
-			this.ctx.lineTo(this.canvasBounds.left + b, this.canvasBounds.bottom);
-			this.ctx.stroke();
-		} 
-		// horizontal lines
-		for (var a = 1; a < this.numOfSquares; a++) {
-			this.ctx.beginPath();
-			var b = a * diff;
-			this.ctx.moveTo(this.canvasBounds.left, this.canvasBounds.top + b);
-			this.ctx.lineTo(this.canvasBounds.right, this.canvasBounds.top + b);
-			this.ctx.stroke();
-		}
+        this.drawGrid(scale, this.canvasBounds, this.lineColor);
     }
 
 	/**

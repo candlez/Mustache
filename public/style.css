@@ -1,7 +1,7 @@
 body {
 	overflow: hidden;
 }
-canvas {
+#playSpace {
 	position: absolute;
 	/* background-color: transparent; */
 	border: 1px solid #000000; /* going to remove this later */
@@ -10,6 +10,27 @@ canvas {
 	transform: translate(-50%, -50%);
 	
 }
+
+.miniMapContainer {
+	position: absolute;
+	background-color: ghostwhite;
+	bottom: 1%;
+	/* border-radius: 15px; */
+	border-style: outset;
+	border-color:blue;
+	border-width: 3px;
+	display: none;
+
+}
+
+.miniMap {
+	display: inherit;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
 p {
 	color: blue;
 	position: absolute;

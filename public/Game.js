@@ -2,8 +2,14 @@ import GameMap from './GameMap.js'
 import Agar from './Agar.js'
 import {animationLoop} from './AgarGame.js'
 import MapPack from './MapPack.js'
+import MiniMap from './MiniMap.js';
 
 export default class Game {
+    /**
+     * 
+     * @param {Number} width 
+     * @param {Width} height 
+     */
     constructor(width, height) {
         // takes parameters
         this.width = width;
@@ -11,6 +17,7 @@ export default class Game {
 
         // creates a canvas with parameters, adds it to body
         this.canvas = document.createElement('canvas');
+        this.canvas.id = "playSpace";
         document.body.appendChild(this.canvas);
 
         this.canvas.width = width;
@@ -22,6 +29,7 @@ export default class Game {
         // fields
         this.gameState = false;
         this.map = null;
+        this.miniMap = null;
         this.agars = [];
         this.playerAgar = null;
         this.scale = 1;
@@ -164,7 +172,7 @@ export default class Game {
     }
 
     /**
-     \ssb\hzsktran.P_DispTranCredit* updates posiiton data so the objects can be drawn
+     * updates posiiton data so the objects can be drawn
      * 
      * also updates scale data
      */
@@ -189,10 +197,35 @@ export default class Game {
      * draws all objects on the play space
      */
     drawObjects() {
+        this.miniMap.clearCanvas();
+        this.miniMap.drawMap();
+        this.miniMap.drawAgar();
+
         this.map.drawMap(this.scale);
+
         for (var i = this.agars.length; i > 0; i--) {
             this.agars[i - 1].drawAgar(this.scale);
         }
+    }
+
+    /**
+     * gets the width and height of a page for elements that need
+     * to be scaled based on window size
+     * 
+     * @returns - an array of the page width and height
+     */
+    getPageDimensions() {
+        return [window.innerWidth, window.innerHieght];
+    }
+
+    /**
+     * creates a MiniMap object and sets the miniMap field
+     * 
+     * @param {Number} width - the width of the MiniMap
+     * @param {Number} height - the height of the MiniMap
+     */
+    createMiniMap(width, height) {
+        this.miniMap = new MiniMap(this, this.map, this.playerAgar, width, height);
     }
 
     /**
@@ -231,6 +264,8 @@ export default class Game {
         document.getElementById("paragraph").style.display = "none";
         document.getElementById("pressMeTesting").style.display = "none";
 
+        // console.log(this.pageWidth, this.pageHeight);
+
         // start game in data
         this.gameState = true;
 
@@ -238,7 +273,12 @@ export default class Game {
         this.addAgar(new Agar("player", this, true, 5000, 5000, 100, "blue"));
 
         // create map
-        this.setMap(new MapPack(this, 5000, 5000, 10000, 10000));
+        this.setMap(new MapPack(this, 5000, 5000, 10000, 10000, 100));
+
+        // create minimap
+        this.createMiniMap(300, 300);
+        this.miniMap.showContainer();
+        this.miniMap.drawMap();
 
         // add enemy agars
         this.addAgar(new Agar("enemy", this, false, 4500, 4500, 50, "green"));
