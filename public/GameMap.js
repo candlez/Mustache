@@ -1,4 +1,14 @@
 export default class GameMap {
+	/**
+	 * a map that the agars cannot go out of
+	 * 
+	 * @param {Game} game - game object that the GameMap belongs to
+	 * @param {Number} xCoord - absolute x coordinate of the map
+	 * @param {Number} yCoord - absolute y coordinate of the map
+	 * @param {Number} width - width of the map (absolute)
+	 * @param {Number} height - height of the map (absolute)
+	 * @param {Number} squareSize - size of the squares in the grid
+	 */
     constructor(game, xCoord, yCoord, width, height, squareSize) {
 		this.game = game;
 		this.ctx = game.ctx;
@@ -66,6 +76,13 @@ export default class GameMap {
 		this.numOfSquares = this.width / squareSize;
 	}
 
+	/**
+	 * 
+	 * 
+	 * @param {Number} scale 
+	 * @param {Bounds Object} bounds 
+	 * @param {String} color 
+	 */
 	drawGrid(scale, bounds, color) {
 		this.ctx.beginPath();
 		this.ctx.strokeStyle = color;
@@ -100,17 +117,6 @@ export default class GameMap {
 
     /**
      * draws the map on the playspace
-	 * 
-	 * n = w / 100
-	 * 100n = w
-	 * 
-	 * d = (w * scale) / n
-	 * d = scale * (100n / n)
-	 * d = scale * 100
-	 * 
-	 * scaling is done based on top left corner
-	 * 
-	 * needs to be based on center
 	 * 
 	 * @param {Number} scale - the scale at which the map is drawn
      */

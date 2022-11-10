@@ -3,6 +3,7 @@ import Agar from './Agar.js'
 import {animationLoop} from './AgarGame.js'
 import MapPack from './MapPack.js'
 import MiniMap from './MiniMap.js';
+import AssetContainer from './AssetContainer.js';
 
 export default class Game {
     /**
@@ -30,6 +31,7 @@ export default class Game {
         this.gameState = false;
         this.map = null;
         this.miniMap = null;
+        this.assetContainer = null;
         this.agars = [];
         this.playerAgar = null;
         this.scale = 1;
@@ -71,7 +73,6 @@ export default class Game {
             if (agar.id == id) {
                 indices.push(index);
                 if (agar.isPlayerAgar) {
-                    console.log('hello')
                     agar.game.playerAgar = null;
                 }
             }
@@ -224,8 +225,14 @@ export default class Game {
      * @param {Number} width - the width of the MiniMap
      * @param {Number} height - the height of the MiniMap
      */
-    createMiniMap(width, height) {
-        this.miniMap = new MiniMap(this, this.map, this.playerAgar, width, height);
+    createMiniMap(width, height, source) {
+        this.miniMap = new MiniMap(this, this.map, this.playerAgar, width, height, source);
+    }
+
+    setAssetContainer(newAssetContainer) {
+        if (newAssetContainer instanceof AssetContainer) {
+            this.assetContainer = newAssetContainer;
+        }
     }
 
     /**
@@ -249,6 +256,8 @@ export default class Game {
 
         // draw the objects
         this.drawObjects();
+        this.assetContainer.drawAsset(this.ctx, 'thanos', 750, 750, 200, 200);
+        this.assetContainer.drawAsset(this.ctx, 'thanos_armor', 1250, 1250, 200, 200);
 
         // start over
         if (this.gameState) {
@@ -276,13 +285,22 @@ export default class Game {
         this.setMap(new MapPack(this, 5000, 5000, 10000, 10000, 100));
 
         // create minimap
-        this.createMiniMap(300, 300);
+        this.createMiniMap(350, 350);
         this.miniMap.showContainer();
         this.miniMap.drawMap();
 
         // add enemy agars
         this.addAgar(new Agar("enemy", this, false, 4500, 4500, 50, "green"));
         this.addAgar(new Agar("enemy2", this, false, 5500, 5500, 50, "red"));
+        this.addAgar(new Agar("enemy3", this, false, 500, 4500, 150, "purple"));
+        this.addAgar(new Agar("enemy4", this, false, 7500, 7500, 200, "orange"));
+        this.addAgar(new Agar("enemy5", this, false, 5000, 2500, 250, "yellow"));
+        this.addAgar(new Agar("enemy6", this, false, 7500, 2000, 300, "black"));
+
+        // creates an AssetContainer
+        this.setAssetContainer(new AssetContainer());
+        this.assetContainer.addAsset('thanos', "./assets/thanos_background.jpg", 500, 500);
+        this.assetContainer.addAsset('thanos_armor', "./assets/thanos_armor.jpg", 500, 500);
 
         // start the animation cycle
         requestAnimationFrame(animationLoop);

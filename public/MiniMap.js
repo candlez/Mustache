@@ -1,4 +1,5 @@
 import GameMap from './GameMap.js'
+import Image from './Image.js'
 
 export default class MiniMap extends GameMap {
     /**
@@ -7,7 +8,7 @@ export default class MiniMap extends GameMap {
      * @param {GameMap} map - the map on which the MiniMap is based
      * @param {Agar} agar - the agar that will be displayed in the MiniMap
      */
-    constructor(game, map, agar, width, height) {
+    constructor(game, map, agar, width, height, imageSource) {
         super(game, width / 2, height / 2, width, height, width * 0.1);
         this.map = map;
         this.agar = agar
@@ -26,6 +27,13 @@ export default class MiniMap extends GameMap {
         this.container.appendChild(this.canvas);
 
         this.ctx = this.canvas.getContext('2d');
+
+        if (typeof imageSource == "string") {
+            this.image = new Image("miniMap", imageSource, this.container, width, height);
+            this.image.changeDisplay("none");
+        } else {
+            this.image = null;
+        }
     }
 
     /**
@@ -52,8 +60,12 @@ export default class MiniMap extends GameMap {
     }
 
     drawMap() {
-        console.log(this.bounds)
-        this.drawGrid(1, this.bounds, "black");
+        if (this.image == null) {
+            this.drawGrid(1, this.bounds, "grey");
+        } else {
+            this.image.drawImageOnCanvas(this.ctx, 0, 0, this.width, this.height);
+        }
+        
     }
 
     /**
