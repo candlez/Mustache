@@ -282,7 +282,7 @@ export default class Game {
         this.assetContainer.addAsset('thanos_armor', "./assets/thanos_armor.jpg", 500, 500);
 
         // add player agar
-        this.addAgar(new Agar("player", this, true, 5000, 5000, 100, "blue"));
+        this.addAgar(new Agar("player", this, true, 5000, 5000, 100, "blue", './assets/mustachio.png'));
 
         // create map
         this.setMap(new MapPack(this, 5000, 5000, 10000, 10000, 100,
@@ -306,7 +306,7 @@ export default class Game {
         this.miniMap.drawMap();
 
         // add enemy agars
-        this.addAgar(new Agar("enemy", this, false, 4500, 4500, 50, "green"));
+        this.addAgar(new Agar("enemy", this, false, 4500, 4500, 50, "green", './assets/thanos_armor.jpg'));
         this.addAgar(new Agar("enemy2", this, false, 5500, 5500, 50, "red"));
         this.addAgar(new Agar("enemy3", this, false, 500, 4500, 150, "purple"));
         this.addAgar(new Agar("enemy4", this, false, 7500, 7500, 200, "orange"));

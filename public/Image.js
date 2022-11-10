@@ -51,6 +51,14 @@ export default class Image {
         newParent.appendChild(this.element);
     }
 
+    /**
+     * 
+     * @param {Context} ctx 
+     * @param {Number} xCoord 
+     * @param {Number} yCoord 
+     * @param {Number} width 
+     * @param {Number} height 
+     */
     drawImageOnCanvas(ctx, xCoord, yCoord, width, height) {
         ctx.drawImage(this.element, xCoord, yCoord, width, height)
     }

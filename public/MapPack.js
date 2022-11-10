@@ -6,8 +6,8 @@ export default class MapPack extends GameMap {
      * constructor for the MapPack class
      * 
      * @param {Game} game - Game object to which the MapPack belongs
-     * @param {xCoord} xCoord - absolute position of the map in x
-     * @param {yCoord} yCoord - absolute position of the map in y
+     * @param {Number} xCoord - absolute position of the map in x
+     * @param {Number} yCoord - absolute position of the map in y
      * @param {Number} width - width in absolute pixels (needs to be divisible by 1000)
      * @param {Number} height - height in absolute pixels (needs to be divisible by 1000)
      */
@@ -69,7 +69,7 @@ export default class MapPack extends GameMap {
 
         var counter = 1;
         var numOfMaps = 3;
-        while ((2 / numOfMaps) > scale) {
+        while ((2.1 / numOfMaps) > scale) {
             numOfMaps += 2;
             counter++;
         }

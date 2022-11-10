@@ -18,7 +18,8 @@ export default class AssetContainer {
      * @param {Number} height - the height of the asset
      */
     addAsset(id, source, width, height) {
-        this.assets.push(new Image(id, source, this.container, width, height))
+        this.assets.push(new Image(id, source, this.container, width, height));
+        this.assets[this.assets.length - 1].setDisplay("none");
     }
 
     /**

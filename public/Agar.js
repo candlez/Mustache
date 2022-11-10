@@ -1,5 +1,7 @@
+import Image from './Image.js'
+
 export default class Agar{
-    constructor(id, game, isPlayerAgar, xCoord, yCoord, mass, color) {        
+    constructor(id, game, isPlayerAgar, xCoord, yCoord, mass, color, source) {        
         this.id = id;
         this.game = game;
         this.ctx = game.ctx;
@@ -16,6 +18,12 @@ export default class Agar{
 
         // these coordinates are relative to the canvas
         this.canvasCoords = {x: null, y: null}
+
+        this.image;
+        if (typeof source == "string") {
+            this.image = new Image(id, source, game.assetContainer.container, mass * 2, mass * 2);
+            this.image.setDisplay("none");
+        }
     }
 
     /**
@@ -38,10 +46,20 @@ export default class Agar{
      */
     drawAgar(scale) {
         this.setCanvasCoords(scale);
-        this.ctx.beginPath();
-		this.ctx.arc(this.canvasCoords.x, this.canvasCoords.y, this.mass * scale, 0, Math.PI * 2);
-		this.ctx.fillStyle = this.color;
-		this.ctx.fill();
+        if (typeof this.image == "object") {
+            this.image.drawImageOnCanvas(
+                this.ctx, 
+                this.canvasCoords.x - (this.mass * scale), 
+                this.canvasCoords.y - (this.mass * scale),
+                this.mass * 2 * scale,
+                this.mass * 2 * scale
+            );
+        } else {
+            this.ctx.beginPath();
+            this.ctx.arc(this.canvasCoords.x, this.canvasCoords.y, this.mass * scale, 0, Math.PI * 2);
+            this.ctx.fillStyle = this.color;
+            this.ctx.fill();
+        }
     }
 
     /**
