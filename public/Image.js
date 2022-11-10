@@ -26,7 +26,7 @@ export default class Image {
      * 
      * @param {String} newDisplay - new display type
      */
-    changeDisplay(newDisplay) {
+    setDisplay(newDisplay) {
         this.element.style.display = newDisplay;
     }
 
@@ -46,7 +46,7 @@ export default class Image {
      * 
      * @param {HTML Element} newParent - the new HTML element that will be the parent to this image
      */
-    changeParent(newParent) {
+    setParent(newParent) {
         this.element.remove();
         newParent.appendChild(this.element);
     }

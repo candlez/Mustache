@@ -256,8 +256,8 @@ export default class Game {
 
         // draw the objects
         this.drawObjects();
-        this.assetContainer.drawAsset(this.ctx, 'thanos', 750, 750, 200, 200);
-        this.assetContainer.drawAsset(this.ctx, 'thanos_armor', 1250, 1250, 200, 200);
+        // this.assetContainer.drawAsset(this.ctx, 'thanos', 750, 750, 200, 200);
+        // this.assetContainer.drawAsset(this.ctx, 'thanos_armor', 1250, 1250, 200, 200);
 
         // start over
         if (this.gameState) {
@@ -273,19 +273,35 @@ export default class Game {
         document.getElementById("paragraph").style.display = "none";
         document.getElementById("pressMeTesting").style.display = "none";
 
-        // console.log(this.pageWidth, this.pageHeight);
-
         // start game in data
         this.gameState = true;
+
+        // creates an AssetContainer
+        this.setAssetContainer(new AssetContainer());
+        this.assetContainer.addAsset('thanos', "./assets/thanos_background.jpg", 500, 500);
+        this.assetContainer.addAsset('thanos_armor', "./assets/thanos_armor.jpg", 500, 500);
 
         // add player agar
         this.addAgar(new Agar("player", this, true, 5000, 5000, 100, "blue"));
 
         // create map
-        this.setMap(new MapPack(this, 5000, 5000, 10000, 10000, 100));
+        this.setMap(new MapPack(this, 5000, 5000, 10000, 10000, 100,
+            [
+                ["", "", "", "", "", "", "", "", "", ""],
+                ["", "", "", "", "", "", "", "", "", ""],
+                ["", "", "", "", "", "", "", "", "", ""],
+                ["", "", "", "", "", "", "", "", "", ""],
+                ["", "", "", "./assets/thanos_armor.jpg", "", "", "", "", "", ""],
+                ["", "", "", "", "./assets/thanos_background.jpg", "", "", "", "", ""],
+                ["", "", "", "", "", "", "", "", "", ""],
+                ["", "", "", "", "", "", "", "", "", ""],
+                ["", "", "", "", "", "", "", "", "", ""],
+                ["", "", "", "", "", "", "", "", "", ""]
+            ]
+        ));
 
         // create minimap
-        this.createMiniMap(350, 350);
+        this.createMiniMap(350, 350, './assets/thanos_armor.jpg');
         this.miniMap.showContainer();
         this.miniMap.drawMap();
 
@@ -296,11 +312,6 @@ export default class Game {
         this.addAgar(new Agar("enemy4", this, false, 7500, 7500, 200, "orange"));
         this.addAgar(new Agar("enemy5", this, false, 5000, 2500, 250, "yellow"));
         this.addAgar(new Agar("enemy6", this, false, 7500, 2000, 300, "black"));
-
-        // creates an AssetContainer
-        this.setAssetContainer(new AssetContainer());
-        this.assetContainer.addAsset('thanos', "./assets/thanos_background.jpg", 500, 500);
-        this.assetContainer.addAsset('thanos_armor', "./assets/thanos_armor.jpg", 500, 500);
 
         // start the animation cycle
         requestAnimationFrame(animationLoop);

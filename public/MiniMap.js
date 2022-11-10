@@ -30,7 +30,7 @@ export default class MiniMap extends GameMap {
 
         if (typeof imageSource == "string") {
             this.image = new Image("miniMap", imageSource, this.container, width, height);
-            this.image.changeDisplay("none");
+            this.image.setDisplay("none");
         } else {
             this.image = null;
         }

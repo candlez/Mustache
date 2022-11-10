@@ -1,3 +1,5 @@
+import Image from './Image.js'
+
 export default class GameMap {
 	/**
 	 * a map that the agars cannot go out of
@@ -9,7 +11,7 @@ export default class GameMap {
 	 * @param {Number} height - height of the map (absolute)
 	 * @param {Number} squareSize - size of the squares in the grid
 	 */
-    constructor(game, xCoord, yCoord, width, height, squareSize) {
+    constructor(game, xCoord, yCoord, width, height, squareSize, source) {
 		this.game = game;
 		this.ctx = game.ctx;
 
@@ -35,6 +37,12 @@ export default class GameMap {
 		this.numOfSquares = width / squareSize;
         this.backgroundColor = "white";
 		this.lineColor = "silver"
+
+		this.image;
+		if (typeof source == "string") {
+			this.image = new Image(this.ctx, source, game.assetContainer.container, width, height);
+			this.image.setDisplay("none");
+		}
     }
 
 	/**
@@ -123,8 +131,17 @@ export default class GameMap {
     drawMap(scale) {
 		// update the corner and canvasCords fields
 		this.setCanvasCoords(scale)
-
-        this.drawGrid(scale, this.canvasBounds, this.lineColor);
+		if (typeof this.image == "object") {
+			this.image.drawImageOnCanvas(
+				this.ctx,
+				this.canvasBounds.left,
+				this.canvasBounds.top,
+				this.width * scale,
+				this.height * scale
+			);
+		} else {
+			this.drawGrid(scale, this.canvasBounds, this.lineColor);
+		}
     }
 
 	/**
