@@ -1,4 +1,5 @@
-import Game from './Game.js';
+import Game from '../agario/Agario.js';
+// import RazorRoyaleGame from './RazorRoyaleGame.js';
 
 var agarGame;
 

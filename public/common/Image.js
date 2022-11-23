@@ -1,12 +1,12 @@
 export default class Image {
     /**
+     * initializes an Image object
      * 
-     * 
-     * @param {String} id 
-     * @param {String} source 
-     * @param {HTML Element} parent 
-     * @param {Number} width 
-     * @param {Number} height 
+     * @param {String} id - the unique ID of this Image
+     * @param {String} source - the path to the image file
+     * @param {HTML Element} parent - the HTML Element that this image element exists under
+     * @param {Number} width - the width of the Image
+     * @param {Number} height - the height of the Image
      */
     constructor(id, source, parent, width, height) {
         this.id = id;
@@ -52,12 +52,13 @@ export default class Image {
     }
 
     /**
+     * draws the image on the the given canvas
      * 
-     * @param {Context} ctx 
-     * @param {Number} xCoord 
-     * @param {Number} yCoord 
-     * @param {Number} width 
-     * @param {Number} height 
+     * @param {Context} ctx - the context being used to draw the Image
+     * @param {Number} xCoord - the location on the canvas that Image is being drawn at
+     * @param {Number} yCoord - the location on the canvas that Image is being drawn at
+     * @param {Number} width - the width of the Image as it is being drawn
+     * @param {Number} height - the height of the Image is it is being drawn
      */
     drawImageOnCanvas(ctx, xCoord, yCoord, width, height) {
         ctx.drawImage(this.element, xCoord, yCoord, width, height)

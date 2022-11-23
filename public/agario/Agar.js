@@ -1,7 +1,19 @@
 import Image from './Image.js'
 
 export default class Agar{
-    constructor(id, game, isPlayerAgar, xCoord, yCoord, mass, color, source) {        
+    /**
+     * initializes an Agar object
+     * 
+     * @param {String} id - the unique ID of this Agar
+     * @param {Game} game - the Game object to which this Agar belongs
+     * @param {Boolean} isPlayer - whether or not this Agar is the player 
+     * @param {Number} xCoord - where the agar is relative to the map
+     * @param {Number} yCoord - where the agar is relative to the map
+     * @param {Number} mass - the radius of the Agar
+     * @param {String} color - the color of the Agar
+     * @param {String} source - path to the image file for this Agar (optional)
+     */
+    constructor(id, game, isPlayer, xCoord, yCoord, mass, color, source) {        
         this.id = id;
         this.game = game;
         this.ctx = game.ctx;
@@ -14,11 +26,12 @@ export default class Agar{
         this.color = color;
 
 
-        this.isPlayerAgar = isPlayerAgar;
+        this.isPlayer = isPlayer;
 
         // these coordinates are relative to the canvas
         this.canvasCoords = {x: null, y: null}
 
+        // this is the optional image source
         this.image;
         if (typeof source == "string") {
             this.image = new Image(id, source, game.assetContainer.container, mass * 2, mass * 2);
@@ -27,8 +40,9 @@ export default class Agar{
     }
 
     /**
+     * sets the coordinates of the Agar relative to the canvas
      * 
-     * @param {Number} scale - 
+     * @param {Number} scale - the scale at which the Game is currently being animated
      */
     setCanvasCoords(scale) {
         this.canvasCoords.x = 1000 + (scale * (this.xCoord - this.game.playerAgar.xCoord));
@@ -37,10 +51,6 @@ export default class Agar{
 
     /**
      * draws the agar
-     * 
-     * mass * scale = radius
-     * 
-     * when scale = 1, 1 mass = 1 radius pixel
      * 
      * @param {Number} scale - the scale at which the agar is being drawn
      */
@@ -63,9 +73,9 @@ export default class Agar{
     }
 
     /**
-     * eats an agar, adding its mass to ours
+     * eats an agar, adding its mass to its own
      * 
-     * @param {Agar} agar - the agar to be eaten
+     * @param {Agar} agar - the Agar to be eaten
      */
     eatAgar(agar) {
         this.mass += agar.mass;
@@ -75,8 +85,8 @@ export default class Agar{
     /**
      * changes the absolute coordinates of the Agar
      * 
-     * @param {Number} xChange 
-     * @param {Number} yChange 
+     * @param {Number} xChange - the change to the xCoords
+     * @param {Number} yChange - the change to the yCoords
      */
     moveAgar(xChange, yChange) {
         var newX = this.xCoord + xChange;

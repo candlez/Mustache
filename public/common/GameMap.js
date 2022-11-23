@@ -46,7 +46,7 @@ export default class GameMap {
     }
 
 	/**
-	 * 
+	 * sets the coordinates of the Map relative to the canvas
 	 * 
 	 * @param {Number} scale 
 	 */
@@ -76,6 +76,7 @@ export default class GameMap {
 	}
 
 	/**
+	 * sets the squareSize
 	 * 
 	 * @param {Number} squareSize number of pixels the squares should be
 	 */
@@ -85,7 +86,7 @@ export default class GameMap {
 	}
 
 	/**
-	 * 
+	 * draws a grid
 	 * 
 	 * @param {Number} scale 
 	 * @param {Bounds Object} bounds 

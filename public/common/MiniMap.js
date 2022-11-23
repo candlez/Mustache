@@ -3,7 +3,7 @@ import Image from './Image.js'
 
 export default class MiniMap extends GameMap {
     /**
-     * constructor for the MiniMap class
+     * initializes a new MiniMap object
      * 
      * @param {GameMap} map - the map on which the MiniMap is based
      * @param {Agar} agar - the agar that will be displayed in the MiniMap
@@ -52,6 +52,9 @@ export default class MiniMap extends GameMap {
         this.drawAgar();
     }
 
+    /**
+     * erases everything that is drawm on the canvas
+     */
     clearCanvas() {
         this.ctx.beginPath();
         this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
@@ -59,6 +62,9 @@ export default class MiniMap extends GameMap {
         this.ctx.fill();
     }
 
+    /**
+     * draws the map in the container
+     */
     drawMap() {
         if (this.image == null) {
             this.drawGrid(1, this.bounds, "grey");
@@ -69,7 +75,7 @@ export default class MiniMap extends GameMap {
     }
 
     /**
-     * draws the agar
+     * draws the agar on the map in the container
      */
     drawAgar() {
         this.ctx.beginPath();

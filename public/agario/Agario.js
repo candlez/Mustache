@@ -1,12 +1,13 @@
-import GameMap from './GameMap.js'
+import GameMap from '../GameMap.js'
 import Agar from './Agar.js'
-import {animationLoop} from './AgarGame.js'
-import MapPack from './MapPack.js'
-import MiniMap from './MiniMap.js';
-import AssetContainer from './AssetContainer.js';
+import {animationLoop} from '../scripts/start.js'
+import MapPack from '../common/MapPack.js'
+import MiniMap from '../common/MiniMap.js';
+import AssetContainer from '../AssetContainer.js';
 
 export default class Game {
     /**
+     * initializes a Game object
      * 
      * @param {Number} width 
      * @param {Width} height 
@@ -57,7 +58,7 @@ export default class Game {
         if (agar instanceof Agar) {
             this.agars.push(agar);
         }
-        if (agar.isPlayerAgar) {
+        if (agar.isPlayer) {
             this.playerAgar = agar;
         }
     }
@@ -72,7 +73,7 @@ export default class Game {
         this.agars.forEach(function(agar, index) {
             if (agar.id == id) {
                 indices.push(index);
-                if (agar.isPlayerAgar) {
+                if (agar.isPlayer) {
                     agar.game.playerAgar = null;
                 }
             }
@@ -234,6 +235,8 @@ export default class Game {
             this.assetContainer = newAssetContainer;
         }
     }
+
+    
 
     /**
      * draws a frame based on currently available data

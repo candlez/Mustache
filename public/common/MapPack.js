@@ -54,12 +54,12 @@ export default class MapPack extends GameMap {
     }
 
     /**
-     * returns a list of maps in the vicinity of the agar
+     * returns a list of maps in the vicinity of the Agar
      * 
      * @param {Agar} agar -
      * @param {Number} scale - 
      * 
-     * @return 
+     * @return - a list of maps within a certain range of the Agar
      */
     getLocalMaps(agar, scale) {
         var localMaps = [];
@@ -104,5 +104,9 @@ export default class MapPack extends GameMap {
                 map.drawMap(scale);
             });
         });
+    }
+
+    setLocalMapImage(x, y, source) {
+        
     }
 }
