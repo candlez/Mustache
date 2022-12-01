@@ -1,6 +1,6 @@
-import Game from './agario/Agario.js'
+import AnimatedGame from '../common/AnimatedGame.js'
 
-export default class RazorRoyaleGame extends Game {
+export default class RazorRoyaleGame extends AnimatedGame {
     /**
      * initializes a new RazorRoyaleGame object
      * 

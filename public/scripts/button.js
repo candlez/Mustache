@@ -1,4 +1,4 @@
-import {startGame} from './AgarGame.js'
+import {startGame} from './start.js'
 
 const button = document.getElementById('pressMeTesting');
 

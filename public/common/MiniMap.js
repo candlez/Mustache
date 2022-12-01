@@ -89,4 +89,13 @@ export default class MiniMap extends GameMap {
         this.ctx.fillStyle = this.agar.color;
         this.ctx.fill();
     }
+
+    /**
+     * animates one frame on the minimap
+     */
+    animate() {
+        this.clearCanvas();
+        this.drawMap();
+        this.drawAgar();
+    }
 }

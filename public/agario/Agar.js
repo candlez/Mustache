@@ -1,6 +1,6 @@
-import Image from './Image.js'
+import Agent from "../common/Agent.js";
 
-export default class Agar{
+export default class Agar extends Agent {
     /**
      * initializes an Agar object
      * 
@@ -13,23 +13,11 @@ export default class Agar{
      * @param {String} color - the color of the Agar
      * @param {String} source - path to the image file for this Agar (optional)
      */
-    constructor(id, game, isPlayer, xCoord, yCoord, mass, color, source) {        
-        this.id = id;
-        this.game = game;
-        this.ctx = game.ctx;
-
-        // these coordinates are absolute
-        this.xCoord = xCoord;
-        this.yCoord = yCoord;
+    constructor(id, game, isPlayer, xCoord, yCoord, mass, color, source) {
+        super(id, game, isPlayer, xCoord, yCoord, mass, mass);   
 
         this.mass = mass;
         this.color = color;
-
-
-        this.isPlayer = isPlayer;
-
-        // these coordinates are relative to the canvas
-        this.canvasCoords = {x: null, y: null}
 
         // this is the optional image source
         this.image;
@@ -40,21 +28,11 @@ export default class Agar{
     }
 
     /**
-     * sets the coordinates of the Agar relative to the canvas
-     * 
-     * @param {Number} scale - the scale at which the Game is currently being animated
-     */
-    setCanvasCoords(scale) {
-        this.canvasCoords.x = 1000 + (scale * (this.xCoord - this.game.playerAgar.xCoord));
-        this.canvasCoords.y = 1000 + (scale * (this.yCoord - this.game.playerAgar.yCoord));
-    }
-
-    /**
      * draws the agar
      * 
      * @param {Number} scale - the scale at which the agar is being drawn
      */
-    drawAgar(scale) {
+    draw(scale) {
         this.setCanvasCoords(scale);
         if (typeof this.image == "object") {
             this.image.drawImageOnCanvas(
@@ -80,34 +58,5 @@ export default class Agar{
     eatAgar(agar) {
         this.mass += agar.mass;
         this.game.removeAgar(agar.id);
-    }
-
-    /**
-     * changes the absolute coordinates of the Agar
-     * 
-     * @param {Number} xChange - the change to the xCoords
-     * @param {Number} yChange - the change to the yCoords
-     */
-    moveAgar(xChange, yChange) {
-        var newX = this.xCoord + xChange;
-        if (newX - this.mass >= this.game.map.bounds.left) {
-            if (newX + this.mass <= this.game.map.bounds.right) {
-                this.xCoord = newX;
-            } else {
-                this.xCoord = this.game.map.bounds.right - this.mass;
-            }
-        } else {
-            this.xCoord = this.game.map.bounds.left + this.mass;
-        }
-        var newY = this.yCoord + yChange;
-        if (newY - this.mass >= this.game.map.bounds.top) {
-            if (newY + this.mass <= this.game.map.bounds.right) {
-                this.yCoord = newY;
-            } else {
-                this.yCoord = this.game.map.bounds.right - this.mass;
-            }
-        } else {
-            this.yCoord = this.game.map.bounds.top + this.mass;
-        }
     }
 }

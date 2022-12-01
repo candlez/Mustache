@@ -1,11 +1,8 @@
-import Game from '../agario/Agario.js';
+import AgarioGame from '../agario/AgarioGame.js';
 // import RazorRoyaleGame from './RazorRoyaleGame.js';
 
-var agarGame;
-
 function startGame() {
-	agarGame = new Game(2000, 2000);
-	agarGame.playGame();
+	AgarioGame.playGame();
 }
 
 function animationLoop() {
