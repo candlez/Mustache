@@ -70,9 +70,9 @@ export default class AgarioGame extends AnimatedGame {
      */
     adjustScale() {
         var rate = .05
-        if (this.playerAgent.mass * this.scale > 100) {
-            var targetScale = Math.round((100 / this.playerAgent.mass) * 1000) / 1000;
-            var diff = this.scale - targetScale;
+        if (this.getPlayer().getMass() * this.getScale() > 100) {
+            var targetScale = Math.round((100 / this.getPlayer().getMass()) * 1000) / 1000;
+            var diff = this.getScale() - targetScale;
             this.setScale(Math.round((this.scale - (diff * rate)) * 1000) / 1000);
         } else if (this.playerAgent.mass * this.scale < 100) {
             var targetScale = Math.round((100 / this.playerAgent.mass) * 1000) / 1000;

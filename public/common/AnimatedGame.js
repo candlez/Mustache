@@ -50,64 +50,75 @@ export default class AnimatedGame {
         this.#scale = 1;
     }
 
-    /**
-     * setter method for the width field
-     * 
-     * @param {Number} newWidth - the new width
-     */
+    // standard getters and setters
     setWidth(newWidth) {
         this.#width = newWidth;
     }
-
-    /**
-     * getter method for the width field
-     * 
-     * @returns - the width of the game
-     */
     getWidth() {
         return this.#width;
     }
-
-    /**
-     * setter method for the height field
-     * also updates the height of the canvas
-     * 
-     * @param {Number} newHeight - the new height of the game
-     */
     setHeight(newHeight) {
         this.#height = newHeight;
         this.#canvas.height = newHeight;
     }
-
-    /**
-     * getter method for the height field
-     * 
-     * @returns - the height of the game
-     */
     getHeight() {
         return this.#height;
     }
-
-    /**
-     * setter method for the map field
-     * 
-     * @param {GameMap} newMap - GameMap object to which the field map is being set
-     */
     setMap(newMap) {
         if (newMap instanceof GameMap) {
-            this.map = newMap;
+            this.#map = newMap;
         }
     }
-
-    /**
-     * getter method for the map field
-     * 
-     * @returns - the map stored in the map field
-     */
     getMap() {
-        return this.map;
+        return this.#map;
+    }
+    getAgents() {
+        return this.#agents; 
+    }
+    setScale(scale) {
+        this.scale = scale;
+    }
+    getScale() {
+        return this.#scale;
+    }
+    setMiniMap(newMiniMap) {
+        this.#miniMap = newMiniMap;
+    }
+    getMiniMap() {
+        return this.#miniMap;
+    }
+    getCTX() {
+        return this.#ctx;
+    }
+    setCanvas(newCanvas) {
+        this.#canvas = newCanvas;
+        this.#ctx = newCanvas.getContext('2d');
+    }
+    getCanvas() {
+        return this.#canvas;
+    }
+    setAssetContainer(newAssetContainer) {
+        if (newAssetContainer instanceof AssetContainer) {
+            this.assetContainer = newAssetContainer;
+        }
+    }
+    getAssetContainer() {
+        return this.#assetContainer;
+    }
+    setGameState(newGameState) {
+        this.#gameState = newGameState;
+    }
+    getGameState() {
+        return this.#gameState;
+    }
+    setPlayer(newPlayer) {
+        this.#player = newPlayer;
+    }
+    getPlayer() {
+        return this.#player;
     }
 
+    // real methods
     /**
      * adds an Agent object to the list
      * 
@@ -115,20 +126,11 @@ export default class AnimatedGame {
      */
     addAgent(agent) {
         if (agent instanceof Agent) {
-            this.agents.push(agent);
+            this.#agents.push(agent);
         }
         if (agent.isPlayer) {
-            this.player = agent;
+            this.setPlayer(agent);
         }
-    }
-
-    /**
-     * getter method for the agents field
-     * 
-     * @returns - the list of agents in the game
-     */
-    getAgents() {
-       return this.agents; 
     }
 
     /**
@@ -141,8 +143,8 @@ export default class AnimatedGame {
         this.getAgents().forEach(function(agent, index) {
             if (agent.id == id) {
                 indices.push(index);
-                if (agent.isPlayer) {
-                    agent.game.playerAgent = null;
+                if (agent.getIsPlayer()) {
+                    agent.getGame().getPlayer() = null;
                 }
             }
         })
@@ -150,15 +152,6 @@ export default class AnimatedGame {
             this.getAgents().splice(indices[i], 1);
         }
         // needs testing
-    }
-
-    /**
-     * changes the scale of the game for animation purposes
-     * 
-     * @param {Number} scale - the new scale
-     */
-    setScale(scale) {
-        this.scale = scale;
     }
 
     /**
@@ -203,16 +196,6 @@ export default class AnimatedGame {
     }
 
     /**
-     * creates a MiniMap object and sets the miniMap field
-     * 
-     * @param {Number} width - the width of the MiniMap
-     * @param {Number} height - the height of the MiniMap
-     */
-    createMiniMap(width, height, source) {
-        this.miniMap = new MiniMap(this, this.map, this.playerAgar, width, height, source);
-    }
-
-    /**
      * draws all objects on the play space
      */
     drawObjects() {
@@ -223,17 +206,6 @@ export default class AnimatedGame {
             this.agents[i - 1].drawAgent(this.scale);
         }
         // work on this. agents are not assumed to be drawable
-    }
-
-    /**
-     * setter method for the assetContainer field
-     * 
-     * @param {AssetContainer} newAssetContainer 
-     */
-    setAssetContainer(newAssetContainer) {
-        if (newAssetContainer instanceof AssetContainer) {
-            this.assetContainer = newAssetContainer;
-        }
     }
 
     /**

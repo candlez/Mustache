@@ -1,6 +1,11 @@
 import Agent from "../common/Agent.js";
 
 export default class Agar extends Agent {
+    // fields
+    #mass;
+    #color;
+    #image;
+
     /**
      * initializes an Agar object
      * 
@@ -16,15 +21,26 @@ export default class Agar extends Agent {
     constructor(id, game, isPlayer, xCoord, yCoord, mass, color, source) {
         super(id, game, isPlayer, xCoord, yCoord, mass, mass);   
 
-        this.mass = mass;
-        this.color = color;
+        this.#mass = mass;
+        this.#color = color;
 
         // this is the optional image source
-        this.image;
+        this.#image;
         if (typeof source == "string") {
             this.image = new Image(id, source, game.assetContainer.container, mass * 2, mass * 2);
             this.image.setDisplay("none");
         }
+    }
+
+    // standard getters and setters
+    getMass() {
+        return this.#mass;
+    }
+    setColor(newColor) {
+        this.#color = newColor;
+    }
+    getColor() {
+        return this.#color;
     }
 
     /**
@@ -34,10 +50,10 @@ export default class Agar extends Agent {
      */
     draw(scale) {
         this.setCanvasCoords(scale);
-        if (typeof this.image == "object") {
-            this.image.drawImageOnCanvas(
-                this.ctx, 
-                this.canvasCoords.x - (this.mass * scale), 
+        if (typeof this.#image == "object") {
+            this.#image.drawImageOnCanvas(
+                this.getGame().getCTX(), 
+                this.getCanvasCoords().x - (this.#mass * scale), 
                 this.canvasCoords.y - (this.mass * scale),
                 this.mass * 2 * scale,
                 this.mass * 2 * scale
