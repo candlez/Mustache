@@ -2,11 +2,7 @@ import AgarioGame from '../agario/AgarioGame.js';
 // import RazorRoyaleGame from './RazorRoyaleGame.js';
 
 function startGame() {
-	AgarioGame.playGame();
+	AgarioGame.playGame(2000, 2000);
 }
 
-function animationLoop() {
-	agarGame.animateFrame();
-}
-
-export {startGame, animationLoop};
+export {startGame};

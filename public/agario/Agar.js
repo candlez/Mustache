@@ -1,4 +1,5 @@
 import Agent from "../common/Agent.js";
+import Image from "../common/Image.js";
 
 export default class Agar extends Agent {
     // fields
@@ -27,8 +28,8 @@ export default class Agar extends Agent {
         // this is the optional image source
         this.#image;
         if (typeof source == "string") {
-            this.image = new Image(id, source, game.assetContainer.container, mass * 2, mass * 2);
-            this.image.setDisplay("none");
+            this.#image = new Image(id, source, game.getAssetContainer().getContainer(), mass * 2, mass * 2);
+            this.#image.setDisplay("none");
         }
     }
 
@@ -42,7 +43,11 @@ export default class Agar extends Agent {
     getColor() {
         return this.#color;
     }
+    getImage() {
+        return this.#image;
+    }
 
+    // real methods
     /**
      * draws the agar
      * 
@@ -50,19 +55,20 @@ export default class Agar extends Agent {
      */
     draw(scale) {
         this.setCanvasCoords(scale);
-        if (typeof this.#image == "object") {
-            this.#image.drawImageOnCanvas(
+        if (this.getImage() instanceof Image) {
+            this.getImage().drawImageOnCanvas(
                 this.getGame().getCTX(), 
-                this.getCanvasCoords().x - (this.#mass * scale), 
-                this.canvasCoords.y - (this.mass * scale),
-                this.mass * 2 * scale,
-                this.mass * 2 * scale
+                this.getCanvasCoords().x - (this.getMass() * scale), 
+                this.getCanvasCoords().y - (this.getMass() * scale),
+                this.getMass() * 2 * scale,
+                this.getMass() * 2 * scale
             );
         } else {
-            this.ctx.beginPath();
-            this.ctx.arc(this.canvasCoords.x, this.canvasCoords.y, this.mass * scale, 0, Math.PI * 2);
-            this.ctx.fillStyle = this.color;
-            this.ctx.fill();
+            const ctx = this.getCTX();
+            ctx.beginPath();
+            ctx.arc(this.getCanvasCoords().x, this.getCanvasCoords().y, this.getMass() * scale, 0, Math.PI * 2);
+            ctx.fillStyle = this.getColor();
+            ctx.fill();
         }
     }
 
@@ -72,7 +78,9 @@ export default class Agar extends Agent {
      * @param {Agar} agar - the Agar to be eaten
      */
     eatAgar(agar) {
-        this.mass += agar.mass;
-        this.game.removeAgar(agar.id);
+        this.#mass += agar.getMass();
+        this.setWidth(this.getMass() * 2);
+        this.setHeight(this.getMass() * 2);
+        this.getGame().removeAgent(agar.getId());
     }
 }

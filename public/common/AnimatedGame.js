@@ -3,7 +3,6 @@ import GameMap from './GameMap.js'
 import MiniMap from './MiniMap.js';
 import MapPack from './MapPack.js'
 import AssetContainer from './AssetContainer.js';
-import {animationLoop} from '../scripts/start.js'
 
 export default class AnimatedGame {
     // fields
@@ -33,7 +32,7 @@ export default class AnimatedGame {
         // creates a canvas with parameters, adds it to body
         this.#canvas = document.createElement('canvas');
         this.#canvas.id = "playSpace";
-        document.body.appendChild(this.canvas);
+        document.body.appendChild(this.#canvas);
         this.#canvas.width = width;
         this.#canvas.height = height;
 
@@ -76,7 +75,7 @@ export default class AnimatedGame {
         return this.#agents; 
     }
     setScale(scale) {
-        this.scale = scale;
+        this.#scale = scale;
     }
     getScale() {
         return this.#scale;
@@ -99,7 +98,7 @@ export default class AnimatedGame {
     }
     setAssetContainer(newAssetContainer) {
         if (newAssetContainer instanceof AssetContainer) {
-            this.assetContainer = newAssetContainer;
+            this.#assetContainer = newAssetContainer;
         }
     }
     getAssetContainer() {
@@ -128,7 +127,7 @@ export default class AnimatedGame {
         if (agent instanceof Agent) {
             this.#agents.push(agent);
         }
-        if (agent.isPlayer) {
+        if (agent.getIsPlayer()) {
             this.setPlayer(agent);
         }
     }
@@ -141,7 +140,7 @@ export default class AnimatedGame {
     removeAgent(id) {
         var indices = [];
         this.getAgents().forEach(function(agent, index) {
-            if (agent.id == id) {
+            if (agent.getId() == id) {
                 indices.push(index);
                 if (agent.getIsPlayer()) {
                     agent.getGame().getPlayer() = null;
@@ -179,10 +178,11 @@ export default class AnimatedGame {
      * clears the whole play space of drawings
      */
     clearPlaySpace() {
-            this.ctx.beginPath();
-            this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = this.map.backgroundColor;
-            this.ctx.fill();
+        const ctx = this.getCTX();
+        ctx.beginPath();
+        ctx.rect(0, 0, this.getCanvas().width, this.getCanvas().height);
+        ctx.fillStyle = this.getMap().getBackgroundColor();
+        ctx.fill();
     }
 
     /**
@@ -199,13 +199,11 @@ export default class AnimatedGame {
      * draws all objects on the play space
      */
     drawObjects() {
-        this.miniMap.animate();
-        this.map.drawMap(this.scale);
-
-        for (var i = this.agents.length; i > 0; i--) {
-            this.agents[i - 1].drawAgent(this.scale);
+        this.getMiniMap().animate();
+        this.getMap().draw(this.getScale());
+        for (var i = this.getAgents().length; i > 0; i--) {
+            this.getAgents()[i - 1].draw(this.getScale());
         }
-        // work on this. agents are not assumed to be drawable
     }
 
     /**
@@ -214,12 +212,9 @@ export default class AnimatedGame {
     animateFrame() {
         this.clearPlaySpace(); // erase everything from the previous frame
         this.drawObjects(); // draw the objects
-        if (this.gameState) {
-            requestAnimationFrame(animationLoop); // start over
-        }
     }
 
-    static playGame() {
-
+    static playGame(width, height) {
+        const game = new AnimatedGame(width, height);
     }
 }

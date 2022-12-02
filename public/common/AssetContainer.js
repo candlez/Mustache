@@ -1,17 +1,27 @@
 import Image from './Image.js';
 
 export default class AssetContainer {
+    // fields
+    #container;
+    #assets;
+
     /**
      * initializes an AssetContainer object
      */
     constructor() {
-        this.container = document.createElement('div');
-        this.container.className = 'assetContainer';
-        document.body.appendChild(this.container);
+        this.#container = document.createElement('div');
+        this.#container.className = 'assetContainer';
+        document.body.appendChild(this.#container);
 
-        this.assets = [];
+        this.#assets = new Map();
     }
 
+    // standards getters and setters
+    getContainer() {
+        return this.#container;
+    }
+
+    // real methods
     /**
      * adds an asset to the AssetContainer
      * 
@@ -21,8 +31,8 @@ export default class AssetContainer {
      * @param {Number} height - the height of the asset
      */
     addAsset(id, source, width, height) {
-        this.assets.push(new Image(id, source, this.container, width, height));
-        this.assets[this.assets.length - 1].setDisplay("none");
+        this.#assets.set(id, new Image(id, source, this.#container, width, height));
+        this.#assets.get(id).setDisplay("none");
     }
 
     /**
@@ -32,12 +42,7 @@ export default class AssetContainer {
      * @returns - the asset with the id given
      */
     getAsset(id) {
-        for (var i = 0; i < this.assets.length; i++) {
-            if (this.assets[i].id == id) {
-                return this.assets[i];
-            }
-        }
-        return null;
+        return this.#assets.get(id);
     }
 
     /**

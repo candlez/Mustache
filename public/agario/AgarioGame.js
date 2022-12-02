@@ -2,7 +2,12 @@ import AnimatedGame from '../common/AnimatedGame.js';
 import Agar from './Agar.js'
 import AssetContainer from '../common/AssetContainer.js';
 import MapPack from '../common/MapPack.js';
+import MiniMap from '../common/MiniMap.js';
+import GameMap from '../common/GameMap.js';
 
+/**
+ * 
+ */
 export default class AgarioGame extends AnimatedGame {
     /**
      * initializes a Game object
@@ -20,9 +25,9 @@ export default class AgarioGame extends AnimatedGame {
      * need to consider the case when masses are equal
      */
     sortAgarsByMass() {
-        this.agents.sort(function(a, b) {
-            return b.mass - a.mass;
-        })
+        this.getAgents().sort(function(a, b) {
+            return b.getMass() - a.getMass();
+        });
     }
 
     /**
@@ -34,9 +39,9 @@ export default class AgarioGame extends AnimatedGame {
      * @param
      */
     checkIfEaten(bigAgar, smallAgar) {
-        var xDiff = Math.abs(bigAgar.xCoord - smallAgar.xCoord);
-        var yDiff = Math.abs(bigAgar.yCoord - smallAgar.yCoord);
-        var combinedRadii = bigAgar.mass + smallAgar.mass;
+        var xDiff = Math.abs(bigAgar.getXCoord() - smallAgar.getXCoord());
+        var yDiff = Math.abs(bigAgar.getYCoord() - smallAgar.getYCoord());
+        var combinedRadii = bigAgar.getMass() + smallAgar.getMass();
         if (Math.ceil(combinedRadii / 2) > xDiff + yDiff) {
             return true;
         } else {
@@ -49,13 +54,14 @@ export default class AgarioGame extends AnimatedGame {
      * for the bigger one to eat the smaller on
      */
     eatCheck() {
-        this.agents.forEach(function (agar, index, agars) {
+        this.getAgents().forEach(function (agar, index, agars) {
             for (var i = index; i < agars.length - 1; i++) {
-                if (agar.mass == agars[i + 1].mass) {
-                    // intentionally blank
-                } else if (agar.game.checkIfEaten(agar, agars[i + 1])) {
-                    agar.eatAgar(agars[i + 1]);
-                    break;
+                if (agar.getMass() != agars[i + 1].getMass()) {
+                    if (agar.getGame().checkIfEaten(agar, agars[i + 1])) {
+                        console.log("eaten!")
+                        agar.eatAgar(agars[i + 1]);
+                        break;
+                    }
                 }
             }
         });
@@ -73,11 +79,11 @@ export default class AgarioGame extends AnimatedGame {
         if (this.getPlayer().getMass() * this.getScale() > 100) {
             var targetScale = Math.round((100 / this.getPlayer().getMass()) * 1000) / 1000;
             var diff = this.getScale() - targetScale;
-            this.setScale(Math.round((this.scale - (diff * rate)) * 1000) / 1000);
-        } else if (this.playerAgent.mass * this.scale < 100) {
-            var targetScale = Math.round((100 / this.playerAgent.mass) * 1000) / 1000;
-            var diff = targetScale - this.scale;
-            this.setScale(Math.round((this.scale + (diff * rate)) * 1000) / 1000);
+            this.setScale(Math.round((this.getScale() - (diff * rate)) * 1000) / 1000);
+        } else if (this.getPlayer().getMass() * this.getScale() < 100) {
+            var targetScale = Math.round((100 / this.getPlayer().getMass()) * 1000) / 1000;
+            var diff = targetScale - this.getScale();
+            this.setScale(Math.round((this.getScale() + (diff * rate)) * 1000) / 1000);
         }
     }
 
@@ -88,7 +94,7 @@ export default class AgarioGame extends AnimatedGame {
      */
     updatePositionData() {
         var change = this.interpretKeys();
-        this.playerAgar.moveAgar(change.x, change.y)
+        this.getPlayer().move(change.x, change.y)
     }    
 
     /**
@@ -113,49 +119,55 @@ export default class AgarioGame extends AnimatedGame {
         var game = new AgarioGame(width, height);
 
         // start game in data
-        game.gameState = true;
+        game.setGameState(true);
 
         // creates an AssetContainer
         game.setAssetContainer(new AssetContainer());
-        game.assetContainer.addAsset('thanos', "./assets/thanos_background.jpg", 500, 500);
-        game.assetContainer.addAsset('thanos_armor', "./assets/thanos_armor.jpg", 500, 500);
+        game.getAssetContainer().addAsset('thanos', "../assets/thanos_background.jpg", 500, 500);
+        game.getAssetContainer().addAsset('thanos_armor', "../assets/thanos_armor.jpg", 500, 500);
 
         // add player agar
-        game.addAgar(new Agar("player", this, true, 5000, 5000, 100, "blue", './assets/mustachio.png'));
+        game.addAgent(new Agar("player", game, true, 5000, 5000, 100, "blue", '../assets/mustachio.png'));
 
         // create map
-        game.setMap(new MapPack(this, 5000, 5000, 10000, 10000, 100,
+        game.setMap(new MapPack(game, 5000, 5000, 10000, 10000, 100,
             [
                 ["", "", "", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", "", "", ""],
-                ["", "", "", "./assets/thanos_armor.jpg", "", "", "", "", "", ""],
-                ["", "", "", "", "./assets/thanos_background.jpg", "", "", "", "", ""],
+                ["", "", "", "../assets/thanos_armor.jpg", "", "", "", "", "", ""],
+                ["", "", "", "", "../assets/thanos_background.jpg", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", "", "", ""]
             ] // this NEEDS to be fixed
         ));
-
+        
         // create minimap
-        game.createMiniMap(350, 350, './assets/thanos_armor.jpg');
-        game.miniMap.showContainer();
-        game.miniMap.drawMap();
+        game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, 350, '../assets/thanos_armor.jpg'));
+        game.getMiniMap().showContainer();
 
         // add enemy agars
-        game.addAgar(new Agar("enemy", this, false, 4500, 4500, 50, "green", './assets/thanos_armor.jpg'));
-        game.addAgar(new Agar("enemy2", this, false, 5500, 5500, 50, "red"));
-        game.addAgar(new Agar("enemy3", this, false, 500, 4500, 150, "purple"));
-        game.addAgar(new Agar("enemy4", this, false, 7500, 7500, 200, "orange"));
-        game.addAgar(new Agar("enemy5", this, false, 5000, 2500, 250, "yellow"));
-        game.addAgar(new Agar("enemy6", this, false, 7500, 2000, 300, "black"));
-
-        // start the animation cycle
-        requestAnimationFrame(animationLoop);
+        game.addAgent(new Agar("enemy", game, false, 4500, 4500, 50, "green", '../assets/thanos_armor.jpg'));
+        game.addAgent(new Agar("enemy2", game, false, 5500, 5500, 50, "red"));
+        game.addAgent(new Agar("enemy3", game, false, 500, 4500, 150, "purple"));
+        game.addAgent(new Agar("enemy4", game, false, 7500, 7500, 200, "orange"));
+        game.addAgent(new Agar("enemy5", game, false, 5000, 2500, 250, "yellow"));
+        game.addAgent(new Agar("enemy6", game, false, 7500, 2000, 300, "black"));
 
         // start tracking wasd button presses
         startWASD();
+
+        // start the animation cycle
+        function animationLoop() {
+            game.animateFrame();
+            if (game.getGameState()) {
+                requestAnimationFrame(animationLoop);
+            }
+        }
+
+        requestAnimationFrame(animationLoop);
     }
 }

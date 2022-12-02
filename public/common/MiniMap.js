@@ -1,75 +1,107 @@
 import GameMap from './GameMap.js'
 import Image from './Image.js'
 
+/**
+ * 
+ */
 export default class MiniMap extends GameMap {
+    // fields
+    #map;
+    #agent;
+    #container;
+    #canvas;
+    #ctx;
+    #image;
+
     /**
      * initializes a new MiniMap object
      * 
      * @param {GameMap} map - the map on which the MiniMap is based
      * @param {Agar} agar - the agar that will be displayed in the MiniMap
      */
-    constructor(game, map, agar, width, height, imageSource) {
+    constructor(game, map, agent, width, height, imageSource) {
         super(game, width / 2, height / 2, width, height, width * 0.1);
-        this.map = map;
-        this.agar = agar
+        this.#map = map;
+        this.#agent = agent;
 
         // create div and canvas element
-        this.container = document.createElement('div');
-        this.container.className = 'miniMapContainer';
-        this.container.style.width = width + 10 + 'px';
-        this.container.style.height = height + 10 + 'px';
-        document.body.appendChild(this.container);
+        this.#container = document.createElement('div');
+        this.#container.className = 'miniMapContainer';
+        this.#container.style.width = width + 10 + 'px';
+        this.#container.style.height = height + 10 + 'px';
+        document.body.appendChild(this.#container);
 
-        this.canvas = document.createElement('canvas');
-        this.canvas.className = 'miniMap'
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.container.appendChild(this.canvas);
+        this.#canvas = document.createElement('canvas');
+        this.#canvas.className = 'miniMap'
+        this.#canvas.width = width;
+        this.#canvas.height = height;
+        this.#container.appendChild(this.#canvas);
 
-        this.ctx = this.canvas.getContext('2d');
+        this.#ctx = this.#canvas.getContext('2d');
 
         if (typeof imageSource == "string") {
-            this.image = new Image("miniMap", imageSource, this.container, width, height);
-            this.image.setDisplay("none");
+            this.#image = new Image("miniMap", imageSource, this.#container, width, height);
+            this.#image.setDisplay("none");
         } else {
-            this.image = null;
+            this.#image = null;
         }
     }
+    // standard getters and setters
+    getMap() {
+        return this.#map;
+    }
+    setAgent(newAgent) {
+        this.#agent = newAgent;
+    }
+    getAgent() {
+        return this.#agent;
+    }
+    getContainer() {
+        return this.#container;
+    }
+    getCanvas() {
+        return this.#canvas;
+    }
+    getCTX() {
+        return this.#ctx;
+    }
+    getImage() {
+        return this.#image;
+    }
 
+    // real methods
     /**
      * hides the container elements
      */
     hideContainer() {
-        this.container.style.display = 'none';
+        this.#container.style.display = 'none';
     }
 
     /**
      * shows the container elements
      */
     showContainer() {
-        this.container.style.display = 'block';
-        this.drawMap();
-        this.drawAgar();
+        this.#container.style.display = 'block';
     }
 
     /**
      * erases everything that is drawm on the canvas
      */
     clearCanvas() {
-        this.ctx.beginPath();
-        this.ctx.rect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.fillStyle = this.backgroundColor;
-        this.ctx.fill();
+        this.#ctx.beginPath();
+        this.#ctx.rect(0, 0, this.getCanvas().width, this.getCanvas().height);
+        this.#ctx.fillStyle = this.getBackgroundColor();
+        this.#ctx.fill();
     }
 
     /**
      * draws the map in the container
      */
-    drawMap() {
-        if (this.image == null) {
-            this.drawGrid(1, this.bounds, "grey");
+    draw() {
+        if (this.getImage() instanceof Image) {
+            this.getImage().drawImageOnCanvas(this.getCTX(), 0, 0, this.getWidth(), this.getHeight());
         } else {
-            this.image.drawImageOnCanvas(this.ctx, 0, 0, this.width, this.height);
+            this.drawGrid(1, this.getBounds(), "grey");            
         }
         
     }
@@ -77,17 +109,18 @@ export default class MiniMap extends GameMap {
     /**
      * draws the agar on the map in the container
      */
-    drawAgar() {
-        this.ctx.beginPath();
-        this.ctx.arc(
-            this.width * (this.agar.xCoord / this.map.width),
-            this.height * (this.agar.yCoord / this.map.height),
-            this.width * 0.02,
+    drawAgent() {
+        const ctx = this.getCTX();
+        ctx.beginPath();
+        ctx.arc(
+            this.getWidth() * (this.getAgent().getXCoord() / this.getMap().getWidth()),
+            this.getHeight() * (this.getAgent().getYCoord() / this.getMap().getHeight()),
+            this.getWidth() * 0.02,
             0,
             2 * Math.PI
         );
-        this.ctx.fillStyle = this.agar.color;
-        this.ctx.fill();
+        ctx.fillStyle = this.getAgent().getColor();
+        ctx.fill();
     }
 
     /**
@@ -95,7 +128,7 @@ export default class MiniMap extends GameMap {
      */
     animate() {
         this.clearCanvas();
-        this.drawMap();
-        this.drawAgar();
+        this.draw();
+        this.drawAgent();
     }
 }

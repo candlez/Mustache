@@ -1,4 +1,4 @@
-import GameObject from "./GameObject";
+import GameObject from "./GameObject.js";
 
 
 export default class Agent extends GameObject {
@@ -36,4 +36,7 @@ export default class Agent extends GameObject {
     getId() {
         return this.#id;
     }
+
+    // real methods
+
 }

@@ -6,10 +6,10 @@
 export default class GameObject {
     // fields
     #game;
+    #ctx
     #xCoord;
     #yCoord;
     #canvasCoords;
-
     #width;
     #height;
 
@@ -24,6 +24,7 @@ export default class GameObject {
      */
     constructor(game, xCoord, yCoord, width, height) {
         this.#game = game;
+        this.#ctx = game.getCTX();
         this.#xCoord = xCoord;
         this.#yCoord = yCoord;
         this.#canvasCoords = {x: null, y: null};
@@ -34,6 +35,7 @@ export default class GameObject {
     // standard getters and setters
     setGame(newGame) {
         this.#game = newGame;
+        this.#ctx = newGame.getCTX();
     }
     getGame() {
         return this.#game;
@@ -65,6 +67,9 @@ export default class GameObject {
     getCanvasCoords() {
         return this.#canvasCoords;
     }
+    getCTX() {
+        return this.#ctx;
+    }
 
     // actual methods
     /**
@@ -84,25 +89,25 @@ export default class GameObject {
      * @param {Number} yChange - the change to the yCoords
      */
     move(xChange, yChange) {
-        var newX = this.xCoord + xChange;
-        if (newX - this.width >= this.game.map.bounds.left) {
-            if (newX + this.width <= this.game.map.bounds.right) {
-                this.xCoord = newX;
+        var newX = this.getXCoord() + xChange;
+        if (newX - (this.getWidth() / 2) >= this.getGame().getMap().getBounds().left) {
+            if (newX + (this.getWidth() / 2) <= this.getGame().getMap().getBounds().right) {
+                this.setXCoord(newX);
             } else {
-                this.xCoord = this.game.map.bounds.right - this.width;
+                this.setXCoord(this.getGame().getMap().getBounds().right - (this.getWidth() / 2));
             }
         } else {
-            this.xCoord = this.game.map.bounds.left + this.width;
+            this.setXCoord(this.getGame().getMap().getBounds().left + (this.getWidth() / 2));
         }
-        var newY = this.yCoord + yChange;
-        if (newY - this.height >= this.game.map.bounds.top) {
-            if (newY + this.height <= this.game.map.bounds.right) {
-                this.yCoord = newY;
+        var newY = this.getYCoord() + yChange;
+        if (newY - (this.getHeight() / 2) >= this.getGame().getMap().getBounds().top) {
+            if (newY + (this.getHeight() / 2) <= this.getGame().getMap().getBounds().right) {
+                this.setYCoord(newY);
             } else {
-                this.yCoord = this.game.map.bounds.right - this.height;
+                this.getYCoord(this.getGame().getMap().getBounds().right - (this.getHeight() / 2));
             }
         } else {
-            this.yCoord = this.game.map.bounds.top + this.height;
+            this.getYCoord(this.getGame().getMap().getBounds().top + (this.getHeight() / 2));
         }
     }
 
@@ -112,16 +117,15 @@ export default class GameObject {
      * @param {Number} scale - the scale the GameObject is drawn at
      */
     draw(scale) {
-        const ctx = this.#game.getCTX();
-        ctx.beginPath();
         this.setCanvasCoords(scale);
-        this.rect(
+        this.#ctx.beginPath();
+        this.#ctx.rect(
             this.#canvasCoords.x - ((this.#width * scale) / 2),
             this.#canvasCoords.y - ((this.#height * scale) / 2),
             this.#width * scale,
             this.#height * scale
         );
-        ctx.fillStyle = "black";
-        ctx.fill();
+        this.#ctx.fillStyle = "black";
+        this.#ctx.fill();
     }
 }

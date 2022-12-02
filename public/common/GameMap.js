@@ -1,6 +1,22 @@
 import Image from './Image.js'
 
 export default class GameMap {
+	// fields
+	#game;
+	#ctx;
+	#xCoord;
+	#yCoord;
+	#bounds;
+	#width;
+	#height;
+	#canvasCoords;
+	#canvasBounds;
+	#squareSize;
+	#numOfSquares;
+	#backgroundColor;
+	#lineColor;
+	#image;
+
 	/**
 	 * a map that the agars cannot go out of
 	 * 
@@ -12,55 +28,108 @@ export default class GameMap {
 	 * @param {Number} squareSize - size of the squares in the grid
 	 */
     constructor(game, xCoord, yCoord, width, height, squareSize, source) {
-		this.game = game;
-		this.ctx = game.ctx;
+		this.#game = game;
+		this.#ctx = game.getCTX();
 
 		// these are the absolute coordinates
 		// x and y coords should represent the center
-        this.xCoord = xCoord;
-        this.yCoord = yCoord;
-		this.bounds = {
+        this.#xCoord = xCoord;
+        this.#yCoord = yCoord;
+		this.#bounds = {
 			top: yCoord - (height / 2),
 			bottom: yCoord + (height / 2),
 			left: xCoord - (width / 2), 
 			right: xCoord + (width / 2)
 		};
 
-		this.width = width;
-		this.height = height;
+		this.#width = width;
+		this.#height = height;
 
 		// canvas coordinates for drawing
-		this.canvasCoords = {x: null, y: null};
-		this.canvasBounds = {top: null, bottom: null, left: null, right: null};
+		this.#canvasCoords = {x: null, y: null};
+		this.#canvasBounds = {top: null, bottom: null, left: null, right: null};
 
-		this.squareSize = squareSize;
-		this.numOfSquares = width / squareSize;
-        this.backgroundColor = "white";
-		this.lineColor = "silver"
+		this.#squareSize = squareSize;
+		this.#numOfSquares = width / squareSize;
+        this.#backgroundColor = "white";
+		this.#lineColor = "silver"
 
-		this.image;
 		if (typeof source == "string") {
-			this.image = new Image(this.ctx, source, game.assetContainer.container, width, height);
-			this.image.setDisplay("none");
+			this.#image = new Image(this.#ctx, source, game.getAssetContainer().getContainer(), width, height);
+			this.#image.setDisplay("none");
 		}
     }
 
+	// standard getters and setters
+	getGame() {
+		return this.#game;
+	}
+	getCTX() {
+		return this.#ctx;
+	}
+	getXCoord() {
+		return this.#xCoord;
+	}
+	getYCoord() {
+		return this.#yCoord;
+	}
+	getBounds() {
+		return this.#bounds;
+	}
+	getWidth() {
+		return this.#width;
+	}
+	getHeight() {
+		return this.#height;
+	}
+	getCanvasCoords() {
+		return this.#canvasCoords;
+	}
+	getCanvasBounds() {
+		return this.#canvasBounds;
+	}
+	getSquareSize() {
+		return this.#squareSize;
+	}
+	getNumOfSquares() {
+		return this.#numOfSquares;
+	}
+	setBackgroundColor(newBackgroundColor) {
+		this.#backgroundColor = newBackgroundColor;
+	}
+	getBackgroundColor() {
+		return this.#backgroundColor;
+	}
+	setLineColor(newLineColor) {
+		this.#lineColor = newLineColor;
+	}
+	getLineColor() {
+		return this.#lineColor;
+	}
+	getImage() {
+		return this.#image;
+	}
+
+	// real methods
 	/**
 	 * sets the coordinates of the Map relative to the canvas
 	 * 
 	 * @param {Number} scale 
 	 */
 	setCanvasCoords(scale) {
-		var playerX = this.game.playerAgar.xCoord;
-		var playerY = this.game.playerAgar.yCoord;
+		var playerX = this.getGame().getPlayer().getXCoord();
+		var playerY = this.getGame().getPlayer().getYCoord();
 
-		this.canvasCoords.x = 1000 + (scale * (this.xCoord - playerX));
-		this.canvasCoords.y = 1000 + (scale * (this.yCoord - playerY));
+		var centerX = this.getGame().getWidth() / 2
+		var centerY = this.getGame().getHeight() / 2
 
-		this.canvasBounds.top = 1000 + (scale * (this.bounds.top - playerY));
-		this.canvasBounds.bottom = 1000 + (scale * (this.bounds.bottom - playerY));
-		this.canvasBounds.left = 1000 + (scale * (this.bounds.left - playerX));
-		this.canvasBounds.right = 1000 + (scale * (this.bounds.right - playerX));
+		this.#canvasCoords.x = centerX + (scale * (this.getXCoord() - playerX));
+		this.#canvasCoords.y = centerY + (scale * (this.getXCoord() - playerY));
+
+		this.#canvasBounds.top = centerY + (scale * (this.getBounds().top - playerY));
+		this.#canvasBounds.bottom = centerY + (scale * (this.getBounds().bottom - playerY));
+		this.#canvasBounds.left = centerX + (scale * (this.getBounds().left - playerX));
+		this.#canvasBounds.right = centerX + (scale * (this.getBounds().right - playerX));
 	}
 
 	/**
@@ -68,21 +137,21 @@ export default class GameMap {
 	 * edges of the map
 	 */
 	setBounds() {
-		this.bounds.top = this.yCoord - (this.height / 2);
-		this.bounds.bottom = this.yCoord + (this.height / 2);
+		this.#bounds.top = this.getYCoord() - (this.getHeight() / 2);
+		this.#bounds.bottom = this.getYCoord() + (this.getHeight() / 2);
 
-		this.bounds.left = this.xCoord - (this.width / 2);
-		this.bounds.right = this.xCoord + (this.width / 2);
+		this.#bounds.left = this.getXCoord() - (this.getWidth() / 2);
+		this.#bounds.right = this.getXCoord() + (this.getWidth() / 2);
 	}
 
 	/**
-	 * sets the squareSize
+	 * sets the squareSize and the number of squares
 	 * 
-	 * @param {Number} squareSize number of pixels the squares should be
+	 * @param {Number} squareSize - number of pixels the squares should be
 	 */
 	setSquareSize(squareSize) {
-		this.squareSize = squareSize;
-		this.numOfSquares = this.width / squareSize;
+		this.#squareSize = squareSize;
+		this.#numOfSquares = this.getWidth() / squareSize;
 	}
 
 	/**
@@ -93,34 +162,34 @@ export default class GameMap {
 	 * @param {String} color 
 	 */
 	drawGrid(scale, bounds, color) {
-		this.ctx.beginPath();
-		this.ctx.strokeStyle = color;
-
-		this.ctx.rect(
+		const ctx = this.getCTX();
+		ctx.beginPath();
+		ctx.strokeStyle = color;
+		ctx.rect(
 			bounds.left,
 			bounds.top,
-			this.width * scale,
-			this.height * scale
+			this.getWidth() * scale,
+			this.getHeight() * scale
 		);
-		this.ctx.stroke();
+		ctx.stroke();
 
-		var diff = this.squareSize * scale;
+		var diff = this.getSquareSize() * scale;
 
 		// vertical lines
-		for (var a = 1; a < this.numOfSquares; a++) {
-			this.ctx.beginPath();
+		for (var a = 1; a < this.getNumOfSquares(); a++) {
+			ctx.beginPath();
 			var b = a * diff;
-			this.ctx.moveTo(bounds.left + b, bounds.top);
-			this.ctx.lineTo(bounds.left + b, bounds.bottom);
-			this.ctx.stroke();
+			ctx.moveTo(bounds.left + b, bounds.top);
+			ctx.lineTo(bounds.left + b, bounds.bottom);
+			ctx.stroke();
 		}
 		// horizontal lines
-		for (var a = 1; a < this.numOfSquares; a++) {
-			this.ctx.beginPath();
+		for (var a = 1; a < this.getNumOfSquares(); a++) {
+			ctx.beginPath();
 			var b = a * diff;
-			this.ctx.moveTo(bounds.left, bounds.top + b);
-			this.ctx.lineTo(bounds.right, bounds.top + b);
-			this.ctx.stroke();
+			ctx.moveTo(bounds.left, bounds.top + b);
+			ctx.lineTo(bounds.right, bounds.top + b);
+			ctx.stroke();
 		}
 	}
 
@@ -129,19 +198,19 @@ export default class GameMap {
 	 * 
 	 * @param {Number} scale - the scale at which the map is drawn
      */
-    drawMap(scale) {
+    draw(scale) {
 		// update the corner and canvasCords fields
 		this.setCanvasCoords(scale)
-		if (typeof this.image == "object") {
-			this.image.drawImageOnCanvas(
-				this.ctx,
-				this.canvasBounds.left,
-				this.canvasBounds.top,
-				this.width * scale,
-				this.height * scale
+		if (this.getImage() instanceof Image) {
+			this.getImage().drawImageOnCanvas(
+				this.getCTX(),
+				this.getCanvasBounds().left,
+				this.getCanvasBounds().top,
+				this.getWidth() * scale,
+				this.getHeight() * scale
 			);
 		} else {
-			this.drawGrid(scale, this.canvasBounds, this.lineColor);
+			this.drawGrid(scale, this.getCanvasBounds(), this.getLineColor());
 		}
     }
 
@@ -155,8 +224,8 @@ export default class GameMap {
 	 * @param {Number} yChange - y component of change
 	 */
 	moveMap(xChange, yChange) {
-		this.xCoord += xChange;
-		this.yCoord += yChange;
+		this.#xCoord += xChange;
+		this.#yCoord += yChange;
 		this.setBounds();
 	}
 }
