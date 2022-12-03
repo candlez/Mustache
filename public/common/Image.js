@@ -9,7 +9,6 @@ export default class Image {
     #element;
     #width;
     #height;
-    #loaded;
 
     /**
      * initializes an Image object

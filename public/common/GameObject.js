@@ -41,13 +41,30 @@ export default class GameObject {
         return this.#game;
     }
     setXCoord(newXCoord) {
-        this.#xCoord = newXCoord;
+        var half = this.getWidth() / 2
+        var bounds = this.getGame().getMap().getBounds();
+        if (newXCoord - half < bounds.left) {
+            throw new RangeError("left bound violated");
+        } else if (newXCoord + half >  bounds.right) {
+            throw new RangeError("right bound violated");
+        } else {
+            this.#xCoord = newXCoord;
+        }
+        
     }
     getXCoord() {
         return this.#xCoord;
     }
     setYCoord(newYCoord) {
-        this.#yCoord = newYCoord;
+        var half = this.getHeight() / 2
+        var bounds = this.getGame().getMap().getBounds();
+        if (newYCoord - half < bounds.top) {
+            throw new RangeError("top bound violated");
+        } else if (newYCoord + half >  bounds.bottom) {
+            throw new RangeError("bottom bound violated");
+        } else {
+            this.#yCoord = newYCoord;
+        }
     }
     getYCoord() {
         return this.#yCoord;
@@ -89,25 +106,29 @@ export default class GameObject {
      * @param {Number} yChange - the change to the yCoords
      */
     move(xChange, yChange) {
-        var newX = this.getXCoord() + xChange;
-        if (newX - (this.getWidth() / 2) >= this.getGame().getMap().getBounds().left) {
-            if (newX + (this.getWidth() / 2) <= this.getGame().getMap().getBounds().right) {
-                this.setXCoord(newX);
+        var half = {x: this.getWidth() / 2, y: this.getHeight() / 2};
+        var bounds = this.getGame().getMap().getBounds();
+        try {
+            this.setXCoord(this.getXCoord() + xChange);
+        } catch (error) {
+            if (error.message == "left bound violated") {
+                this.setXCoord(bounds.left + half.x);
+            } else if (error.message == "right bound violated") {
+                this.setXCoord(bounds.right - half.x);
             } else {
-                this.setXCoord(this.getGame().getMap().getBounds().right - (this.getWidth() / 2));
+                console.log("strange error in movement");
             }
-        } else {
-            this.setXCoord(this.getGame().getMap().getBounds().left + (this.getWidth() / 2));
         }
-        var newY = this.getYCoord() + yChange;
-        if (newY - (this.getHeight() / 2) >= this.getGame().getMap().getBounds().top) {
-            if (newY + (this.getHeight() / 2) <= this.getGame().getMap().getBounds().right) {
-                this.setYCoord(newY);
+        try {
+            this.setYCoord(this.getYCoord() + yChange)
+        } catch (error) {
+            if (error.message == "top bound violated") {
+                this.setYCoord(bounds.top + half.y);
+            } else if (error.message == "bottom bound violated") {
+                this.setYCoord(bounds.bottom - half.y);
             } else {
-                this.getYCoord(this.getGame().getMap().getBounds().right - (this.getHeight() / 2));
+                console.log("strange error in movement");
             }
-        } else {
-            this.getYCoord(this.getGame().getMap().getBounds().top + (this.getHeight() / 2));
         }
     }
 

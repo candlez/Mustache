@@ -133,17 +133,9 @@ export default class AgarioGame extends AnimatedGame {
         // create map
         game.setMap(new MapPack(game, 5000, 5000, 10000, 10000, 100,
             [
-                ["", "", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", "", ""],
-                ["", "", "", "../assets/thanos_armor.jpg", "", "", "", "", "", ""],
-                ["", "", "", "", "../assets/thanos_background.jpg", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", "", ""],
-                ["", "", "", "", "", "", "", "", "", ""]
-            ] // this NEEDS to be fixed
+                {x: 4, y: 4, source: "../assets/thanos_armor.jpg"},
+                {x: 5, y: 5, source: "../assets/thanos_background.jpg"}
+            ] 
         ));
         
         // create minimap

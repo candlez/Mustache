@@ -16,30 +16,30 @@ export default class MapPack extends GameMap {
      * @param {Number} yCoord - absolute position of the map in y
      * @param {Number} width - width in absolute pixels (needs to be divisible by 1000)
      * @param {Number} height - height in absolute pixels (needs to be divisible by 1000)
+     * @param {Number} squareSize -
+     * @param {Array} sources - array of objects with x and y values as well as a source
      */
     constructor(game, xCoord, yCoord, width, height, squareSize, sources) {
         super(game, xCoord, yCoord, width, height, squareSize);
 
         this.#maps = [];
+        for (var x = 0; x < width; x += 1000) {
+            var column = []
+            for (var y = 0; y < height; y += 1000) {
+                column.push(new GameMap(game, x + 500, y + 500, 1000, 1000, squareSize));
+            }
+            this.#maps.push(column);
+        }
         if (typeof sources == "object") {
-            for (var x = 0; x < width; x += 1000) {
-                var column = [];
-                for (var y = 0; y < height; y += 1000) {
-                    if (sources[x / 1000][y / 1000] == "") {
-                        column.push(new GameMap(game, x + 500, y + 500, 1000, 1000, squareSize));
-                    } else {
-                        column.push(new GameMap(game, x + 500, y + 500, 1000, 1000, squareSize, sources[x / 1000][y / 1000]));
+            for (var i = 0; i < sources.length; i++) {
+                var sourceObj = sources[i];
+                try {
+                    this.#maps[sourceObj.x][sourceObj.y].changeSource(sourceObj.source);
+                } catch (error) {
+                    if (error instanceof TypeError) {
+                        console.log("probably bad coordinates in mappack")
                     }
                 }
-                this.#maps.push(column);
-            }
-        } else {
-            for (var x = 0; x < width; x += 1000) {
-                var column = []
-                for (var y = 0; y < height; y += 1000) {
-                    column.push(new GameMap(game, x + 500, y + 500, 1000, 1000, squareSize));
-                }
-                this.#maps.push(column);
             }
         }
     }
@@ -114,5 +114,15 @@ export default class MapPack extends GameMap {
                 map.draw(scale);
             });
         });
+    }
+
+    /**
+     * 
+     * @param {Number} x 
+     * @param {Number} y 
+     * @param {String} source 
+     */
+    changeMap(x, y, source) {
+        this.#maps[x][y].changeSource(source)
     }
 }

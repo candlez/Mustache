@@ -1,6 +1,8 @@
 import KeyLogger from "./KeyLogger.js";
 
-
+/**
+ * 
+ */
 export default class MovementKeyLogger {
     // fields
     #keyLoggers;

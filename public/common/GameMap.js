@@ -55,7 +55,7 @@ export default class GameMap {
 		this.#lineColor = "silver"
 
 		if (typeof source == "string") {
-			this.#image = new Image(this.#ctx, source, game.getAssetContainer().getContainer(), width, height);
+			this.#image = new Image("map", source, game.getAssetContainer().getContainer(), width, height);
 			this.#image.setDisplay("none");
 		}
     }
@@ -108,6 +108,12 @@ export default class GameMap {
 	}
 	getImage() {
 		return this.#image;
+	}
+	setImage(newImage) {
+		this.#image = newImage;
+		if (newImage instanceof Image) {
+			this.#image.setDisplay("none");
+		}
 	}
 
 	// real methods
@@ -227,5 +233,20 @@ export default class GameMap {
 		this.#xCoord += xChange;
 		this.#yCoord += yChange;
 		this.setBounds();
+	}
+
+	changeSource(newSource) {
+		if (newSource == "none") {
+			this.setImage(null);
+		} else {
+			console.log("image")
+			this.setImage(new Image(
+				"map", 
+				newSource, 
+				this.getGame().getAssetContainer().getContainer(), 
+				this.getWidth(), 
+				this.getHeight()
+			))
+		}
 	}
 }

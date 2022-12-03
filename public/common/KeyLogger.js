@@ -39,7 +39,6 @@ export default class KeyLogger {
         if (event.key == this.getKeyID()) {
             document.removeEventListener(this.boolToString(!this.getKeyDown()), this);
             this.setKeyDown(!this.getKeyDown())
-            console.log(event.key, this.boolToString(this.getKeyDown()))
             this.listen();
         }
     }

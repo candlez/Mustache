@@ -35,6 +35,10 @@ export default class AssetContainer {
         this.#assets.get(id).setDisplay("none");
     }
 
+    removeAsset() {
+        
+    }
+
     /**
      * looks for an asset with a given id
      * 
