@@ -14,6 +14,7 @@ export default class AnimatedGame {
     #map;
     #miniMap;
     #assetContainer;
+    #movementKeyLogger;
     #agents;
     #player;
     #scale;
@@ -44,6 +45,7 @@ export default class AnimatedGame {
         this.#map = null;
         this.#miniMap = null;
         this.#assetContainer = null;
+        this.#movementKeyLogger = null;
         this.#agents = [];
         this.#player = null;
         this.#scale = 1;
@@ -104,6 +106,12 @@ export default class AnimatedGame {
     getAssetContainer() {
         return this.#assetContainer;
     }
+    setMovementKeyLogger(newMovementKeyLogger) {
+        this.#movementKeyLogger = newMovementKeyLogger;
+    }
+    getMovementKeyLogger() {
+        return this.#movementKeyLogger;
+    }
     setGameState(newGameState) {
         this.#gameState = newGameState;
     }
@@ -157,9 +165,12 @@ export default class AnimatedGame {
      * calculates the change to x and y values of objects being moved
      */
     interpretKeys() {
+        var loggers = this.getMovementKeyLogger().getKeyLoggers();
         var unitVectors = [
-            keysDown.right + (-1 * keysDown.left),
-            (-1 * keysDown.up) + keysDown.down
+            loggers.get("d").getKeyDown() + // d
+            (-1 * loggers.get("a").getKeyDown()), // a
+            (-1 * loggers.get("w").getKeyDown()) + // w
+            loggers.get("s").getKeyDown() // s
         ];
         if (unitVectors[0] == 0 || unitVectors[1] == 0) {
             return {

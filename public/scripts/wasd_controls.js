@@ -1,3 +1,6 @@
+// this script is no longer in use
+// refer to the MovementKeyLogger class
+
 var keysDown = {up: false, right: false, down: false, left: false};
 
 /**

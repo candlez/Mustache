@@ -4,6 +4,7 @@ import AssetContainer from '../common/AssetContainer.js';
 import MapPack from '../common/MapPack.js';
 import MiniMap from '../common/MiniMap.js';
 import GameMap from '../common/GameMap.js';
+import MovementKeyLogger from '../common/MovementKeyLogger.js';
 
 /**
  * 
@@ -158,7 +159,8 @@ export default class AgarioGame extends AnimatedGame {
         game.addAgent(new Agar("enemy6", game, false, 7500, 2000, 300, "black"));
 
         // start tracking wasd button presses
-        startWASD();
+        game.setMovementKeyLogger(new MovementKeyLogger());
+        game.getMovementKeyLogger().startWASD();
 
         // start the animation cycle
         function animationLoop() {
@@ -167,7 +169,6 @@ export default class AgarioGame extends AnimatedGame {
                 requestAnimationFrame(animationLoop);
             }
         }
-
         requestAnimationFrame(animationLoop);
     }
 }
