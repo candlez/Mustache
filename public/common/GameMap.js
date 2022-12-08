@@ -143,11 +143,12 @@ export default class GameMap {
 	 * edges of the map
 	 */
 	setBounds() {
-		this.#bounds.top = this.getYCoord() - (this.getHeight() / 2);
-		this.#bounds.bottom = this.getYCoord() + (this.getHeight() / 2);
-
-		this.#bounds.left = this.getXCoord() - (this.getWidth() / 2);
-		this.#bounds.right = this.getXCoord() + (this.getWidth() / 2);
+		const halfX = this.getWidth() / 2;
+		const halfY = this.getHeight() / 2;
+		this.#bounds.top = this.getYCoord() - halfY;
+		this.#bounds.bottom = this.getYCoord() + halfY;
+		this.#bounds.left = this.getXCoord() - halfX;
+		this.#bounds.right = this.getXCoord() + halfX;
 	}
 
 	/**
@@ -239,7 +240,6 @@ export default class GameMap {
 		if (newSource == "none") {
 			this.setImage(null);
 		} else {
-			console.log("image")
 			this.setImage(new Image(
 				"map", 
 				newSource, 

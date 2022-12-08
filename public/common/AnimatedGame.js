@@ -3,6 +3,7 @@ import GameMap from './GameMap.js'
 import MiniMap from './MiniMap.js';
 import MapPack from './MapPack.js'
 import AssetContainer from './AssetContainer.js';
+import GameObject from "./GameObject.js";
 
 export default class AnimatedGame {
     // fields
@@ -16,6 +17,7 @@ export default class AnimatedGame {
     #assetContainer;
     #movementKeyLogger;
     #agents;
+    #objects;
     #player;
     #scale;
 
@@ -47,6 +49,7 @@ export default class AnimatedGame {
         this.#assetContainer = null;
         this.#movementKeyLogger = null;
         this.#agents = [];
+        this.#objects = [];
         this.#player = null;
         this.#scale = 1;
     }
@@ -75,6 +78,9 @@ export default class AnimatedGame {
     }
     getAgents() {
         return this.#agents; 
+    }
+    getObjects() {
+        return this.#objects;
     }
     setScale(scale) {
         this.#scale = scale;
@@ -223,6 +229,40 @@ export default class AnimatedGame {
     animateFrame() {
         this.clearPlaySpace(); // erase everything from the previous frame
         this.drawObjects(); // draw the objects
+    }
+
+    /**
+     * 
+     * @param {Number} xCoord 
+     * @param {Number} yCoord 
+     * @returns 
+     */
+    isOutOfBounds(xCoord, yCoord) {
+        const bounds = this.getMap().getBounds();
+        return (xCoord < bounds.left || xCoord > bounds.right || yCoord < bounds.top || yCoord > bounds.bottom);
+    }
+
+    isLegalPoint(xCoord, yCoord) {
+        if (this.isOutOfBounds(xCoord, yCoord)) {
+            return false;
+        } else {
+            var result = true
+            this.getObjects().forEach((object) => { // checking objects
+                if (object.getOpacity() == GameObject.PROPERTIES.OPACITY.BLOCKING) {
+                    if (object.isPointWithinBounds(xCoord, yCoord)) {
+                        result = false;
+                    }
+                }
+            });
+            this.getAgents().forEach((agent) => { // checking agents
+                if (agent.getOpacity() == GameObject.PROPERTIES.OPACITY.BLOCKING) {
+                    if (agent.isPointWithinBounds(xCoord, yCoord)) {
+                        result = false;
+                    }
+                }
+            });
+            return result;
+        }
     }
 
     static playGame(width, height) {

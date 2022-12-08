@@ -5,6 +5,7 @@ import MapPack from '../common/MapPack.js';
 import MiniMap from '../common/MiniMap.js';
 import GameMap from '../common/GameMap.js';
 import MovementKeyLogger from '../common/MovementKeyLogger.js';
+import GameObject from '../common/GameObject.js';
 
 /**
  * 
@@ -124,11 +125,16 @@ export default class AgarioGame extends AnimatedGame {
 
         // creates an AssetContainer
         game.setAssetContainer(new AssetContainer());
-        game.getAssetContainer().addAsset('thanos', "../assets/thanos_background.jpg", 500, 500);
-        game.getAssetContainer().addAsset('thanos_armor', "../assets/thanos_armor.jpg", 500, 500);
 
         // add player agar
-        game.addAgent(new Agar("player", game, true, 5000, 5000, 100, "blue", '../assets/mustachio.png'));
+        game.addAgent(new Agar("player", game, true, 5000, 5000, 100, { // properties
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+                radius: 100,
+                color: "blue",
+            }
+        }));
 
         // create map
         game.setMap(new MapPack(game, 5000, 5000, 10000, 10000, 100,
@@ -143,12 +149,58 @@ export default class AgarioGame extends AnimatedGame {
         game.getMiniMap().showContainer();
 
         // add enemy agars
-        game.addAgent(new Agar("enemy", game, false, 4500, 4500, 50, "green", '../assets/thanos_armor.jpg'));
-        game.addAgent(new Agar("enemy2", game, false, 5500, 5500, 50, "red"));
-        game.addAgent(new Agar("enemy3", game, false, 500, 4500, 150, "purple"));
-        game.addAgent(new Agar("enemy4", game, false, 7500, 7500, 200, "orange"));
-        game.addAgent(new Agar("enemy5", game, false, 5000, 2500, 250, "yellow"));
-        game.addAgent(new Agar("enemy6", game, false, 7500, 2000, 300, "black"));
+        game.addAgent(new Agar("enemy", game, false, 4500, 4500, 50, { // properties
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+                radius: 50,
+                color: "green"
+            }
+        }));
+        game.addAgent(new Agar("enemy2", game, false, 5500, 5500, 50, { // properties (blocking)
+            opacity: GameObject.PROPERTIES.OPACITY.BLOCKING,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+                radius: 50,
+                color: "red"
+            }
+        }));
+        game.addAgent(new Agar("enemy3", game, false, 500, 4500, 150, { // properties
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+                radius: 150,
+                color: "purple"
+            }
+        }));
+        game.addAgent(new Agar("enemy4", game, false, 7500, 7500, 200, { // properties
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+                radius: 200,
+                color: "orange"
+            }
+        }));
+        game.addAgent(new Agar("enemy5", game, false, 5000, 2500, 250, { // properties (blocking)
+            opacity: GameObject.PROPERTIES.OPACITY.BLOCKING,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+                radius: 250,
+                color: "yellow"
+            }
+        }));
+        game.addAgent(new Agar("enemy6", game, false, 7500, 2000, 300, { // properties
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+                radius: 300,
+                color: "black"
+            }
+        }));
+
+        console.log(game.isLegalPoint(4500, 4500));
+        console.log(game.isLegalPoint(5500, 5500));
+        console.log(game.isLegalPoint(10001, 5000));
 
         // start tracking wasd button presses
         game.setMovementKeyLogger(new MovementKeyLogger());

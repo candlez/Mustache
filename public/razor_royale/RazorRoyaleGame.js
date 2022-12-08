@@ -14,7 +14,9 @@ export default class RazorRoyaleGame extends AnimatedGame {
     /**
      * 
      */
-    playGame() {
+    static playGame(width, height) {
+        const game = new RazorRoyaleGame(width, height);
 
+        
     }
 }
