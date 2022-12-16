@@ -137,7 +137,14 @@ export default class AgarioGame extends AnimatedGame {
         }));
 
         // create map
-        game.setMap(new MapPack(game, 5000, 5000, 10000, 10000, 100,
+        game.setMap(new MapPack(game, 5000, 5000, 10000, 10000,
+            {
+                animation: {
+                    squareSize: 100,
+                    backgroundColor: "white",
+                    lineColor: "silver"
+                }
+            },
             [
                 {x: 4, y: 4, source: "../assets/thanos_armor.jpg"},
                 {x: 5, y: 5, source: "../assets/thanos_background.jpg"}
@@ -145,7 +152,14 @@ export default class AgarioGame extends AnimatedGame {
         ));
         
         // create minimap
-        game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, 350, '../assets/thanos_armor.jpg'));
+        game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, {
+            animation: {
+                type: GameMap.PROPERTIES.ANIMATION.TYPE.IMAGE,
+                source: '../assets/thanos_armor.jpg',
+                backgroundColor: "white"
+            }
+
+        }));
         game.getMiniMap().showContainer();
 
         // add enemy agars
@@ -198,9 +212,9 @@ export default class AgarioGame extends AnimatedGame {
             }
         }));
 
-        console.log(game.isLegalPoint(4500, 4500));
-        console.log(game.isLegalPoint(5500, 5500));
-        console.log(game.isLegalPoint(10001, 5000));
+        console.log("(4500, 4500) legal point?", game.isLegalPoint(4500, 4500));
+        console.log("(5500, 5500) legal point?", game.isLegalPoint(5500, 5500));
+        console.log("(10001, 5000) legal point?", game.isLegalPoint(10001, 5000));
 
         // start tracking wasd button presses
         game.setMovementKeyLogger(new MovementKeyLogger());

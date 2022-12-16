@@ -1,7 +1,5 @@
 import Agent from "./Agent.js";
 import GameMap from './GameMap.js'
-import MiniMap from './MiniMap.js';
-import MapPack from './MapPack.js'
 import AssetContainer from './AssetContainer.js';
 import GameObject from "./GameObject.js";
 

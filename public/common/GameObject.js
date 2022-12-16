@@ -97,7 +97,7 @@ export default class GameObject {
                     if (typeof properties.animation.radius != "number") {
                         throw new TypeError("Circle radius invalid");
                     } else if (typeof properties.animation.color != "string") {
-                        throw new TypeError("GameObject's color is invalid");
+                        throw new TypeError("Circle color is invalid");
                     }
             }
         }

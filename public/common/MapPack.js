@@ -19,18 +19,30 @@ export default class MapPack extends GameMap {
      * @param {Number} squareSize -
      * @param {Array} sources - array of objects with x and y values as well as a source
      */
-    constructor(game, xCoord, yCoord, width, height, squareSize, sources) {
-        super(game, xCoord, yCoord, width, height, squareSize);
-
+    constructor(game, xCoord, yCoord, width, height, properties, sources) {
+        super(game, xCoord, yCoord, width, {
+            animation: {
+                type: GameMap.PROPERTIES.ANIMATION.TYPE.NONE,
+                backgroundColor: properties.animation.backgroundColor
+            }
+        });
         this.#maps = [];
         for (var x = 0; x < width; x += 1000) {
             var column = []
             for (var y = 0; y < height; y += 1000) {
-                column.push(new GameMap(game, x + 500, y + 500, 1000, 1000, squareSize));
+                column.push(new GameMap(game, x + 500, y + 500, 1000, {
+                    animation: {
+                        type: GameMap.PROPERTIES.ANIMATION.TYPE.SQUARE,
+                        squareSize: properties.animation.squareSize,
+                        squaresPerSide: 1000 / properties.animation.squareSize,
+                        backgroundColor: properties.animation.backgroundColor,
+                        lineColor: properties.animation.lineColor,
+                    }
+                }));
             }
             this.#maps.push(column);
         }
-        if (typeof sources == "object") {
+        if (typeof sources == "object") { // setting up sources
             for (var i = 0; i < sources.length; i++) {
                 var sourceObj = sources[i];
                 try {
@@ -88,11 +100,11 @@ export default class MapPack extends GameMap {
 
         for (var x = 0 - counter; x < counter + 1; x++) {
             var mapX = xValue + x;
-            if (mapX > -1 && mapX < (this.getWidth() / 1000)) {
+            if (mapX > -1 && mapX < (this.getSideLength() / 1000)) {
                 var column = [];
                 for (var y = 0 - counter; y < counter + 1; y++) {
                     var mapY = yValue + y;
-                    if (mapY > -1 && mapY < (this.getHeight() / 1000)) {
+                    if (mapY > -1 && mapY < (this.getSideLength() / 1000)) {
                         column.push(this.getMaps()[mapX][mapY]);
                     }
                 }
