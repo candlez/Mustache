@@ -3,8 +3,7 @@ body {
 }
 #playSpace {
 	position: absolute;
-	/* background-color: transparent; */
-	border: 1px solid #000000; /* going to remove this later */
+	border: 1px solid #000000;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);

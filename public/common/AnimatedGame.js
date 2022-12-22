@@ -152,7 +152,7 @@ export default class AnimatedGame {
     removeAgent(id) {
         var indices = [];
         this.getAgents().forEach(function(agent, index) {
-            if (agent.getId() == id) {
+            if (agent.getID() == id) {
                 indices.push(index);
                 if (agent.getIsPlayer()) {
                     agent.getGame().getPlayer() = null;

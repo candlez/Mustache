@@ -122,12 +122,11 @@ export default class MiniMap extends GameMap {
         ctx.arc(
             this.getSideLength() * (this.getAgent().getXCoord() / this.getMap().getSideLength()),
             this.getSideLength() * (this.getAgent().getYCoord() / this.getMap().getSideLength()),
-            this.getSideLength() * 0.02,
+            this.getSideLength() * .02,
             0,
             2 * Math.PI
         );
         ctx.fillStyle = this.getAgent().getColor();
-        console.log(this.getSideLength())
         ctx.fill();
     }
 

@@ -1,0 +1,30 @@
+body {
+	overflow: hidden;
+}
+
+p {
+	color: blue;
+	position: absolute;
+	display: inline;
+	text-align: center;
+	width: 10%;
+	height: 5%;
+	margin: auto;
+	padding: 0;
+	top: -100px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+input {
+	position: absolute;
+	display: inline;
+	width: 10%;
+	height: 5%;
+	margin: auto;
+	padding: 0;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}

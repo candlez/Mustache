@@ -18,9 +18,8 @@ export default class Agar extends Agent {
      * @param {String} source - path to the image file for this Agar (optional)
      */
     constructor(id, game, isPlayer, xCoord, yCoord, mass, properties) {
-        super(id, game, isPlayer, xCoord, yCoord, properties); // to-do fix this
+        super(id, game, isPlayer, xCoord, yCoord, properties);
         this.#mass = mass;
-         // to-do move color to properties
     }
 
     // standard getters and setters
@@ -40,6 +39,6 @@ export default class Agar extends Agent {
         this.setRadius(this.getMass());
         this.setWidth(this.getMass() * 2);
         this.setHeight(this.getMass() * 2);
-        this.getGame().removeAgent(agar.getId());
+        this.getGame().removeAgent(agar.getID());
     }
 }

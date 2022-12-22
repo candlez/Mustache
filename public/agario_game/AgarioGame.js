@@ -114,10 +114,6 @@ export default class AgarioGame extends AnimatedGame {
      * deals with all tasks involved in running the game
      */
     static playGame(width, height) {
-        // hide start screen ** needs to be moved somewhere else
-        document.getElementById("paragraph").style.display = "none";
-        document.getElementById("pressMeTesting").style.display = "none";
-
         var game = new AgarioGame(width, height);
 
         // start game in data
