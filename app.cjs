@@ -27,6 +27,16 @@ const server = app.listen(5000, () => {
 const io = socket(server)
 
 io.sockets.on('connection', (socket) => {
-    console.log(socket)
+    console.log(socket.id)
+
+    socket.on("playerMoved", (data) => {
+        // you can alter stuff in here
+        // right now, the message is just being broadcast as is
+        socket.broadcast.emit("playerMoved", data);
+
+        // the code above does not send the message back to the original client
+        // the code below would do that
+        // io.sockets.emit("playerMoved", data);
+    })
 })
 // -----------------------------------------------------------------------------------

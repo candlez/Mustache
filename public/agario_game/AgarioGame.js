@@ -87,16 +87,6 @@ export default class AgarioGame extends AnimatedGame {
             var diff = targetScale - this.getScale();
             this.setScale(Math.round((this.getScale() + (diff * rate)) * 1000) / 1000);
         }
-    }
-
-    /**
-     * updates posiiton data so the objects can be drawn
-     * 
-     * also updates scale data
-     */
-    updatePositionData() {
-        var change = this.interpretKeys();
-        this.getPlayer().move(change.x, change.y)
     }    
 
     /**
@@ -116,6 +106,9 @@ export default class AgarioGame extends AnimatedGame {
     static playGame(width, height) {
         var game = new AgarioGame(width, height);
 
+        // get player name from previous page
+        var playerName = localStorage.getItem("playerName");
+
         // start game in data
         game.setGameState(true);
 
@@ -123,7 +116,7 @@ export default class AgarioGame extends AnimatedGame {
         game.setAssetContainer(new AssetContainer());
 
         // add player agar
-        game.addAgent(new Agar("player", game, true, 5000, 5000, 100, { // properties
+        game.addAgent(new Agar(playerName, game, true, 5000, 5000, 100, { // properties
             opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
             animation: {
                 type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
@@ -224,5 +217,6 @@ export default class AgarioGame extends AnimatedGame {
             }
         }
         requestAnimationFrame(animationLoop);
+        game.waitForMovement();
     }
 }

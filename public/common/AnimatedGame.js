@@ -18,6 +18,7 @@ export default class AnimatedGame {
     #objects;
     #player;
     #scale;
+    #socket
 
     /**
      * initializes an AnimatedGame object
@@ -50,6 +51,8 @@ export default class AnimatedGame {
         this.#objects = [];
         this.#player = null;
         this.#scale = 1;
+
+        this.#socket = io.connect('http://localhost:5000')
     }
 
     // standard getters and setters
@@ -128,6 +131,9 @@ export default class AnimatedGame {
     getPlayer() {
         return this.#player;
     }
+    getSocket() {
+        return this.#socket;
+    }
 
     // real methods
     /**
@@ -151,10 +157,12 @@ export default class AnimatedGame {
      */
     removeAgent(id) {
         var indices = [];
+        var flag = false;
         this.getAgents().forEach(function(agent, index) {
             if (agent.getID() == id) {
                 indices.push(index);
                 if (agent.getIsPlayer()) {
+                    flag = true;
                     agent.getGame().getPlayer() = null;
                 }
             }
@@ -162,6 +170,7 @@ export default class AnimatedGame {
         for (var i = indices.length - 1; i > -1; i--) {
             this.getAgents().splice(indices[i], 1);
         }
+        this.setGameState(false);
         // needs testing
     }
 
@@ -186,6 +195,24 @@ export default class AnimatedGame {
                 x: 7 * unitVectors[0],
                 y: 7 * unitVectors[1]
             }
+        }
+    }
+
+    /**
+     * updates posiiton data so the objects can be drawn
+     * 
+     * also updates scale data
+     */
+    updatePositionData() {
+        var change = this.interpretKeys();
+        if (change.x != 0 || change.y != 0) {
+            this.getPlayer().move(change.x, change.y)
+            var data = {
+                id: this.getPlayer().getID(),
+                xCoord: this.getPlayer().getXCoord(),
+                yCoord: this.getPlayer().getYCoord()
+            }
+            this.getSocket().emit("playerMoved", data);
         }
     }
 
@@ -261,6 +288,16 @@ export default class AnimatedGame {
             });
             return result;
         }
+    }
+
+    waitForMovement() {
+        this.getSocket().on("playerMoved", (data) => {
+            this.getAgents().forEach((agent) => {
+                if (agent.getID() == data.id) {
+                    agent.move(data.xCoord - agent.getXCoord(), data.yCoord - agent.getYCoord())
+                }
+            })
+        })
     }
 
     static playGame(width, height) {

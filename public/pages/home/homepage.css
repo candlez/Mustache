@@ -2,29 +2,46 @@ body {
 	overflow: hidden;
 }
 
-p {
-	color: blue;
+#elementContainer {
 	position: absolute;
-	display: inline;
-	text-align: center;
-	width: 10%;
-	height: 5%;
-	margin: auto;
-	padding: 0;
-	top: -100px;
-	bottom: 0;
-	left: 0;
-	right: 0;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: skyblue;
+	border-radius: 25px;
 }
-input {
-	position: absolute;
-	display: inline;
-	width: 10%;
-	height: 5%;
-	margin: auto;
-	padding: 0;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
+
+p {
+	position: relative;
+	display: block;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 32px;
+}
+#nameBox {
+	position: relative;
+	display: block;
+	text-align: center;
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 32px;
+	border-radius: 25px;
+	padding: 3px;
+}
+#startGameButton {
+	position: relative;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 32px;
+	border-radius: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
 }
