@@ -2,6 +2,7 @@ import Agent from "./Agent.js";
 import GameMap from './GameMap.js'
 import AssetContainer from './AssetContainer.js';
 import GameObject from "./GameObject.js";
+import Agar from "../agario_game/Agar.js";
 
 export default class AnimatedGame {
     // fields
@@ -13,6 +14,7 @@ export default class AnimatedGame {
     #map;
     #miniMap;
     #assetContainer;
+    #playerSpawnZone;
     #movementKeyLogger;
     #agents;
     #objects;
@@ -46,8 +48,9 @@ export default class AnimatedGame {
         this.#map = null;
         this.#miniMap = null;
         this.#assetContainer = null;
+        this.#playerSpawnZone = null;
         this.#movementKeyLogger = null;
-        this.#agents = [];
+        this.#agents = new Map();
         this.#objects = [];
         this.#player = null;
         this.#scale = 1;
@@ -113,6 +116,12 @@ export default class AnimatedGame {
     getAssetContainer() {
         return this.#assetContainer;
     }
+    setPlayerSpawnZone(newPlayerSpawnZone) {
+        this.#playerSpawnZone = newPlayerSpawnZone;
+    }
+    getPlayerSpawnZone() {
+        return this.#playerSpawnZone;
+    }
     setMovementKeyLogger(newMovementKeyLogger) {
         this.#movementKeyLogger = newMovementKeyLogger;
     }
@@ -143,7 +152,7 @@ export default class AnimatedGame {
      */
     addAgent(agent) {
         if (agent instanceof Agent) {
-            this.#agents.push(agent);
+            this.#agents.set(agent.getID(), agent);
         }
         if (agent.getIsPlayer()) {
             this.setPlayer(agent);
@@ -155,7 +164,7 @@ export default class AnimatedGame {
      * 
      * @param id - string that identifies the agents to be removed
      */
-    removeAgent(id) {
+    removeAgent(id) { // needs to be revised because agents is now a map
         var indices = [];
         var flag = false;
         this.getAgents().forEach(function(agent, index) {
@@ -209,11 +218,22 @@ export default class AnimatedGame {
             this.getPlayer().move(change.x, change.y)
             var data = {
                 id: this.getPlayer().getID(),
-                xCoord: this.getPlayer().getXCoord(),
-                yCoord: this.getPlayer().getYCoord()
+                x: this.getPlayer().getXCoord(),
+                y: this.getPlayer().getYCoord()
             }
             this.getSocket().emit("playerMoved", data);
         }
+    }
+
+    requestServerData() {
+        this.getSocket().emit("requestServerData");
+    }
+
+    requestAgentProperties(id) {
+        var data = {
+            id: id,
+        }
+        this.getSocket().emit("requestProperties", data);
     }
 
     /**
@@ -243,8 +263,8 @@ export default class AnimatedGame {
     drawObjects() {
         this.getMiniMap().animate();
         this.getMap().draw(this.getScale());
-        for (var i = this.getAgents().length; i > 0; i--) {
-            this.getAgents()[i - 1].draw(this.getScale());
+        for (const key of this.getAgents().keys()) {
+            this.getAgents().get(key).draw(this.getScale());
         }
     }
 
@@ -290,13 +310,50 @@ export default class AnimatedGame {
         }
     }
 
-    waitForMovement() {
-        this.getSocket().on("playerMoved", (data) => {
-            this.getAgents().forEach((agent) => {
-                if (agent.getID() == data.id) {
-                    agent.move(data.xCoord - agent.getXCoord(), data.yCoord - agent.getYCoord())
+    addAgentFromData(data) {
+        this.requestAgentProperties(data.id);
+        this.addAgent(new Agent(data.id, this.getGame(), false, data.x, data.y, { // properties (no animation style)
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
+            },
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE
+        }))
+    }
+
+    updateAgents(agentsObject) {
+        agentsObject.keys.forEach((key) => {
+            // eventually, this exception for the client player may need revision
+            // for example, if the server marks the player as dead, it woouldnt be able to tell rn
+            if (key != this.getPlayer().getID()) {
+                if (this.getAgents().get(key) == null) {
+                    // adds new Agents
+                    this.addAgentFromData(agentsObject[key])
+                    this.requestAgentProperties(key)
+                } else {
+                    // updates existing agents
+                    // try to make this less annoying
+                    this.getAgents().get(key).setXCoord(agentsObject[key].x);
+                    this.getAgents().get(key).setYCoord(agentsObject[key].y)
                 }
-            })
+            }
+        })
+    }
+
+    updateGameObjects(gameObjectsObject) {
+        // this is for when we add game objects that aren't agents
+    }
+
+    waitForAgentProperties() {
+        this.getSocket().on("sentProperties", (data) => {
+            console.log("properties recieved");
+            this.getAgents().get(data.id).setProperties(data.properties)
+        })
+    }
+
+    waitForServerUpdates() {
+        this.getSocket().on("sentServerData", (data) => {
+            this.updateAgents(data.agents);
+            this.updateGameObjects(data.gameObject);
         })
     }
 

@@ -8,12 +8,12 @@ export default class Agent extends GameObject {
     /**
      * initializes a new Agent object
      *  
+     * @param {String} id
      * @param {AnimatedGame} game 
      * @param {Boolean} isPlayer 
      * @param {Number} xCoord 
      * @param {Number} yCoord 
-     * @param {Number} width 
-     * @param {Number} height 
+     * @param {Object} properties
      */
     constructor(id, game, isPlayer, xCoord, yCoord, properties) {
         super(id, game, xCoord, yCoord, properties);

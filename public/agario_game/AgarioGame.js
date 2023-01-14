@@ -6,11 +6,25 @@ import MiniMap from '../common/MiniMap.js';
 import GameMap from '../common/GameMap.js';
 import MovementKeyLogger from '../common/MovementKeyLogger.js';
 import GameObject from '../common/GameObject.js';
+import SpawnZone from '../common/SpawnZone.js';
 
 /**
  * 
  */
 export default class AgarioGame extends AnimatedGame {
+    // fields
+    #sortedAgars;
+
+    // static fields
+    static SPAWN_PROPERTIES = {
+        opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+        animation: {
+            type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+            radius: 100,
+            color: "blue",
+        }
+    }
+    
     /**
      * initializes a Game object
      * 
@@ -19,6 +33,23 @@ export default class AgarioGame extends AnimatedGame {
      */
     constructor(width, height) {
         super(width, height);
+        this.#sortedAgars = [];
+    }
+
+    // getters and setters
+    setSortedAgars(newSortedAgars) {
+        this.#sortedAgars = newSortedAgars;
+    }
+    getSortedAgars() {
+        return this.#sortedAgars;
+    }
+
+    // methods
+    addAgent(agent) {
+        var agars = this.getSortedAgars();
+        agars.push(agent);
+        this.setSortedAgars(agars);
+        super.addAgent(agent);
     }
 
     /**
@@ -27,7 +58,7 @@ export default class AgarioGame extends AnimatedGame {
      * need to consider the case when masses are equal
      */
     sortAgarsByMass() {
-        this.getAgents().sort(function(a, b) {
+        this.getSortedAgars().sort(function(a, b) {
             return b.getMass() - a.getMass();
         });
     }
@@ -55,7 +86,7 @@ export default class AgarioGame extends AnimatedGame {
      * runs through all of the agars and checks if any of them are close enough to
      * for the bigger one to eat the smaller on
      */
-    eatCheck() {
+    eatCheck() { // wont work with new agents
         this.getAgents().forEach(function (agar, index, agars) {
             for (var i = index; i < agars.length - 1; i++) {
                 if (agar.getMass() != agars[i + 1].getMass()) {
@@ -67,6 +98,39 @@ export default class AgarioGame extends AnimatedGame {
                 }
             }
         });
+    }
+
+    addAgentFromData(data) {
+        this.addAgent(new Agar(data.id, this, false, data.x, data.y, data.mass, { // properties
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE,
+            },
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE
+        }))
+    }
+
+    spawnPlayer(id) {
+        // client stuff
+        var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
+        var newAgar = new Agar(id, this, true, spawnCoords.x, spawnCoords.y, 100, { // properties
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
+                radius: 100,
+                color: "blue",
+            }
+        })
+        this.addAgent(newAgar);
+
+        // socket stuff
+        var data = {
+            id: id,
+            x: spawnCoords.x,
+            y: spawnCoords.y,
+            mass: 100,
+            properties: AgarioGame.SPAWN_PROPERTIES,
+        }
+        this.getSocket().emit("playerSpawned", data);
     }
     
     /**
@@ -94,6 +158,7 @@ export default class AgarioGame extends AnimatedGame {
      */
     animateFrame() {
         this.updatePositionData(); // update the positions of objects
+        this.requestServerData(); // gets data from the server
         this.sortAgarsByMass(); // sort the agars by mass in descending order
         this.eatCheck(); // check if any agars are eating each other
         this.adjustScale(); // set the scale at which the objects will be drawn
@@ -115,19 +180,23 @@ export default class AgarioGame extends AnimatedGame {
         // creates an AssetContainer
         game.setAssetContainer(new AssetContainer());
 
-        // add player agar
-        game.addAgent(new Agar(playerName, game, true, 5000, 5000, 100, { // properties
+        // creates a SpawnZone for players
+        game.setPlayerSpawnZone(new SpawnZone("playerSpawnZone", game, 5000, 5000, {
+            left: 1000, top: 1000, right: 9000, bottom: 9000
+        }, {
             opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
             animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
-                radius: 100,
-                color: "blue",
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE,
             }
-        }));
+        }))
+
+        // add player agar
+        game.spawnPlayer(playerName);
+        console.log(game.getPlayer().getXCoord(), game.getPlayer().getYCoord())
 
         // create map
         game.setMap(new MapPack(game, 5000, 5000, 10000, 10000,
-            {
+            { // properties
                 animation: {
                     squareSize: 100,
                     backgroundColor: "white",
@@ -141,69 +210,18 @@ export default class AgarioGame extends AnimatedGame {
         ));
         
         // create minimap
-        game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, {
+        game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, { // properties
             animation: {
                 type: GameMap.PROPERTIES.ANIMATION.TYPE.IMAGE,
                 source: '../assets/thanos_armor.jpg',
                 backgroundColor: "white"
             }
-
         }));
         game.getMiniMap().showContainer();
 
-        // add enemy agars
-        game.addAgent(new Agar("enemy", game, false, 4500, 4500, 50, { // properties
-            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
-                radius: 50,
-                color: "green"
-            }
-        }));
-        game.addAgent(new Agar("enemy2", game, false, 5500, 5500, 50, { // properties (blocking)
-            opacity: GameObject.PROPERTIES.OPACITY.BLOCKING,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
-                radius: 50,
-                color: "red"
-            }
-        }));
-        game.addAgent(new Agar("enemy3", game, false, 500, 4500, 150, { // properties
-            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
-                radius: 150,
-                color: "purple"
-            }
-        }));
-        game.addAgent(new Agar("enemy4", game, false, 7500, 7500, 200, { // properties
-            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
-                radius: 200,
-                color: "orange"
-            }
-        }));
-        game.addAgent(new Agar("enemy5", game, false, 5000, 2500, 250, { // properties (blocking)
-            opacity: GameObject.PROPERTIES.OPACITY.BLOCKING,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
-                radius: 250,
-                color: "yellow"
-            }
-        }));
-        game.addAgent(new Agar("enemy6", game, false, 7500, 2000, 300, { // properties
-            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
-                radius: 300,
-                color: "black"
-            }
-        }));
-
-        console.log("(4500, 4500) legal point?", game.isLegalPoint(4500, 4500));
-        console.log("(5500, 5500) legal point?", game.isLegalPoint(5500, 5500));
-        console.log("(10001, 5000) legal point?", game.isLegalPoint(10001, 5000));
+        // console.log("(4500, 4500) legal point?", game.isLegalPoint(4500, 4500));
+        // console.log("(5500, 5500) legal point?", game.isLegalPoint(5500, 5500));
+        // console.log("(10001, 5000) legal point?", game.isLegalPoint(10001, 5000));
 
         // start tracking wasd button presses
         game.setMovementKeyLogger(new MovementKeyLogger());
@@ -217,6 +235,7 @@ export default class AgarioGame extends AnimatedGame {
             }
         }
         requestAnimationFrame(animationLoop);
-        game.waitForMovement();
+        game.waitForServerUpdates()
+        game.waitForAgentProperties()
     }
 }

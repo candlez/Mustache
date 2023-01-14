@@ -163,6 +163,10 @@ export default class GameObject {
         return this.#image;
     }
     // property getters and setters
+    setProperties(newProperties) {
+        GameObject.propertyValidation(newProperties);
+        this.#properties = newProperties;
+    }
     getProperties() {
         return this.#properties;
     }
@@ -296,7 +300,9 @@ export default class GameObject {
         const ctx = this.getCTX();
         switch (this.getAnimationType()) {
             case 0: // none
-                throw new TypeError("this object cannot be drawn");
+                // not sure this is necessary, might be easier to just let it pass over type: none
+                // throw new TypeError("this object cannot be drawn");
+                break;
             case 1: // image
                 var canvasCords = this.getCanvasCoords();
                 this.getImage().drawImageOnCanvas(
