@@ -8,13 +8,23 @@
 
         <script type="module" src="pages/home/scripts/button.js"></script>
         <script type="module" src="pages/home/scripts/start.js"></script>
+        <script type="module" src="pages/home/scripts/change_color.js"></script>
     </head>
     <body>
         <div id="elementContainer">
-            <p id="paragraph">Name</p>
+            <p id="nameText">Name</p>
 
             <input type="text" id="nameBox">
-            <input type="button" id="startGameButton" value="Play">
+
+            <div id="colorPickerSection" class="flex-container">
+                <div id="picker1" class="colorPicker" style="background-color: blue;"></div>
+                <div id="picker2" class="colorPicker" style="background-color: green;"></div>
+                <div id="picker3" class="colorPicker" style="background-color: yellow;"></div>
+                <div id="picker4" class="colorPicker" style="background-color: orange;"></div>
+                <div id="picker5" class="colorPicker" style="background-color: red;"></div>
+            </div>
+
+            <input type="button" id="startGameButton" value="Start Game">
         </div>
     </body>
 </html>

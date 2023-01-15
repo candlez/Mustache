@@ -21,7 +21,6 @@ export default class AgarioGame extends AnimatedGame {
         animation: {
             type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
             radius: 100,
-            color: "blue",
         }
     }
     
@@ -109,17 +108,16 @@ export default class AgarioGame extends AnimatedGame {
         }))
     }
 
-    spawnPlayer(id) {
+    generateSpawnProperties(color) {
+        var properties = AgarioGame.SPAWN_PROPERTIES;
+        properties.animation.color = color;
+        return properties;
+    }
+
+    spawnPlayer(id, color) {
         // client stuff
         var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
-        var newAgar = new Agar(id, this, true, spawnCoords.x, spawnCoords.y, 100, { // properties
-            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.CIRCLE,
-                radius: 100,
-                color: "blue",
-            }
-        })
+        var newAgar = new Agar(id, this, true, spawnCoords.x, spawnCoords.y, 100, this.generateSpawnProperties(color))
         this.addAgent(newAgar);
 
         // socket stuff
@@ -128,7 +126,7 @@ export default class AgarioGame extends AnimatedGame {
             x: spawnCoords.x,
             y: spawnCoords.y,
             mass: 100,
-            properties: AgarioGame.SPAWN_PROPERTIES,
+            properties: this.generateSpawnProperties(color),
         }
         this.getSocket().emit("playerSpawned", data);
     }
@@ -171,8 +169,10 @@ export default class AgarioGame extends AnimatedGame {
     static playGame(width, height) {
         var game = new AgarioGame(width, height);
 
-        // get player name from previous page
+        // get player name and color from previous page
         var playerName = localStorage.getItem("playerName");
+        var playerColor = localStorage.getItem("playerColor");
+        console.log(playerColor)
 
         // start game in data
         game.setGameState(true);
@@ -191,8 +191,7 @@ export default class AgarioGame extends AnimatedGame {
         }))
 
         // add player agar
-        game.spawnPlayer(playerName);
-        console.log(game.getPlayer().getXCoord(), game.getPlayer().getYCoord())
+        game.spawnPlayer(playerName, playerColor);
 
         // create map
         game.setMap(new MapPack(game, 5000, 5000, 10000, 10000,
