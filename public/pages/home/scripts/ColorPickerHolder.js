@@ -9,7 +9,7 @@ export default class ColorPickerHolder {
         this.#colorPickers = [selectedPicker];
         this.#selectedPicker = selectedPicker;
         selectedPicker.setColorPickerHolder(this);
-        localStorage.setItem("playerColor", selectedPicker.getColor())
+        sessionStorage.setItem("playerColor", selectedPicker.getColor())
 
         this.#marker = new Image("marker", "../../../assets/checkmark.png", selectedPicker.getElement(), 40, 40);
     }
@@ -21,7 +21,7 @@ export default class ColorPickerHolder {
     setSelectedPicker(newSelectedPicker) {
         this.#selectedPicker.toggle();
         this.#selectedPicker = newSelectedPicker;
-        localStorage.setItem("playerColor", newSelectedPicker.getColor())
+        sessionStorage.setItem("playerColor", newSelectedPicker.getColor())
     }
     getSelectedPicker() {
         return this.#selectedPicker;

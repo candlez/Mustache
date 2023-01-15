@@ -170,8 +170,8 @@ export default class AgarioGame extends AnimatedGame {
         var game = new AgarioGame(width, height);
 
         // get player name and color from previous page
-        var playerName = localStorage.getItem("playerName");
-        var playerColor = localStorage.getItem("playerColor");
+        var playerName = sessionStorage.getItem("playerName");
+        var playerColor = sessionStorage.getItem("playerColor");
         console.log(playerColor)
 
         // start game in data
