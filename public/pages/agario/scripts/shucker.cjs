@@ -6,7 +6,8 @@ const shucker = function(map) {
         obj[key] = {
             id: key,
             x: agent.x,
-            y: agent.y
+            y: agent.y,
+            mass: agent.mass,
         }
     }
     return obj;

@@ -44,7 +44,7 @@ export default class AnimatedGame {
         this.#ctx = this.#canvas.getContext('2d');
 
         // fields
-        this.#gameState = false;
+        this.#gameState = "initialized";
         this.#map = null;
         this.#miniMap = null;
         this.#assetContainer = null;
@@ -239,11 +239,11 @@ export default class AnimatedGame {
     /**
      * clears the whole play space of drawings
      */
-    clearPlaySpace() {
+    clearPlaySpace(color) {
         const ctx = this.getCTX();
         ctx.beginPath();
         ctx.rect(0, 0, this.getCanvas().width, this.getCanvas().height);
-        ctx.fillStyle = this.getMap().getBackgroundColor();
+        ctx.fillStyle = color;
         ctx.fill();
     }
 
@@ -272,8 +272,87 @@ export default class AnimatedGame {
      * draws a frame based on currently available data
      */
     animateFrame() {
-        this.clearPlaySpace(); // erase everything from the previous frame
+        this.clearPlaySpace(this.getMap().getBackgroundColor()); // erase everything from the previous frame
         this.drawObjects(); // draw the objects
+    }
+
+    loadingScreenAnimation(counter) {
+        var counterMod = counter % 600
+        var text = "loading"
+        var textMod = Math.floor((counterMod % 200) / 50);
+        while (textMod > 0) {
+            text += " .";
+            textMod--;
+        }
+        if (counterMod < 301) { // animations
+            this.clearPlaySpace("white");
+            const ctx = this.getCTX();
+            const center = {
+                x: this.getWidth() / 2,
+                y: this.getHeight() / 2,
+            }
+            const radius = 200
+            ctx.beginPath();
+            ctx.arc(center.x,center.y, radius, 1.5 * Math.PI, (1.5 * Math.PI) + ((counterMod / 300) * 2 * Math.PI), false);
+            ctx.lineWidth = 30;
+            ctx.stroke();
+            ctx.font = "50px Spectral";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "black";
+            ctx.fillText(text, center.x, center.y);
+        } else {
+            this.clearPlaySpace("white");
+            const ctx = this.getCTX();
+            const center = {
+                x: this.getWidth() / 2,
+                y: this.getHeight() / 2,
+            }
+            const radius = 200
+            ctx.beginPath();
+            ctx.arc(center.x,center.y, radius, (1.5 * Math.PI) + ((counterMod / 300) * 2 * Math.PI), 1.5 * Math.PI, false);
+            ctx.lineWidth = 30;
+            ctx.stroke();
+            ctx.lineWidth = 30;
+            ctx.stroke();
+            ctx.font = "50px Spectral";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "black";
+            ctx.fillText(text, center.x, center.y);
+        }
+    }
+    
+    gameAnimationLoop() {
+        const game = this;
+
+        function animationLoop() {
+            game.animateFrame();
+            if (game.getGameState() == "alive") {
+                requestAnimationFrame(animationLoop);
+            }
+        }
+        requestAnimationFrame(animationLoop);
+    }
+
+    loadingAnimationLoop() {
+        var counter = 0;
+
+        const game = this;
+
+        function animationLoop() {
+            game.loadingScreenAnimation(counter);
+            counter++;
+            if (game.getGameState() == "loading") {
+                requestAnimationFrame(animationLoop);
+            }
+        }
+        requestAnimationFrame(animationLoop);
+    }
+
+    beginLoading() {
+        this.setGameState("loading");
+        this.loadingAnimationLoop();
     }
 
     /**

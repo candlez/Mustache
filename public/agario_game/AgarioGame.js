@@ -163,19 +163,25 @@ export default class AgarioGame extends AnimatedGame {
         super.animateFrame();
     }
 
+    startGame() {
+        this.setGameState("alive");
+        this.getMiniMap().showContainer();
+        this.getMovementKeyLogger().startWASD();
+        this.gameAnimationLoop();
+
+    }
+
     /**
      * deals with all tasks involved in running the game
      */
     static playGame(width, height) {
         var game = new AgarioGame(width, height);
 
+        game.beginLoading();
+
         // get player name and color from previous page
         var playerName = sessionStorage.getItem("playerName");
         var playerColor = sessionStorage.getItem("playerColor");
-        console.log(playerColor)
-
-        // start game in data
-        game.setGameState(true);
 
         // creates an AssetContainer
         game.setAssetContainer(new AssetContainer());
@@ -206,7 +212,7 @@ export default class AgarioGame extends AnimatedGame {
                 {x: 4, y: 4, source: "../assets/thanos_armor.jpg"},
                 {x: 5, y: 5, source: "../assets/thanos_background.jpg"}
             ] 
-        ));
+        )); // need to fix images as maps
         
         // create minimap
         game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, { // properties
@@ -216,7 +222,6 @@ export default class AgarioGame extends AnimatedGame {
                 backgroundColor: "white"
             }
         }));
-        game.getMiniMap().showContainer();
 
         // console.log("(4500, 4500) legal point?", game.isLegalPoint(4500, 4500));
         // console.log("(5500, 5500) legal point?", game.isLegalPoint(5500, 5500));
@@ -224,17 +229,12 @@ export default class AgarioGame extends AnimatedGame {
 
         // start tracking wasd button presses
         game.setMovementKeyLogger(new MovementKeyLogger());
-        game.getMovementKeyLogger().startWASD();
 
         // start the animation cycle
-        function animationLoop() {
-            game.animateFrame();
-            if (game.getGameState()) {
-                requestAnimationFrame(animationLoop);
-            }
-        }
-        requestAnimationFrame(animationLoop);
-        game.waitForServerUpdates()
-        game.waitForAgentProperties()
+        game.startGame()
+
+        // begin recieving server updates
+        game.waitForServerUpdates();
+        game.waitForAgentProperties();
     }
 }

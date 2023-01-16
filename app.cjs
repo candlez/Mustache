@@ -63,5 +63,9 @@ io.sockets.on('connection', (socket) => {
         console.log("properties requested from: " + socket.id)
         io.to(socket.id).emit("sentProperties", {id: data.id, properties: agents.get(data.id).properties})
     })
+
+    socket.on("disconnect", (reason) => {
+        console.log(socket.id + " has disconnected, this is why: " + reason);
+    })
 })
 // -----------------------------------------------------------------------------------

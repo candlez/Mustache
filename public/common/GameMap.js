@@ -206,6 +206,7 @@ export default class GameMap {
 		const scaledSideLength = this.getSideLength() * scale;
 		ctx.beginPath();
 		ctx.strokeStyle = color;
+		ctx.lineWidth = 1;
 		ctx.rect(
 			bounds.left,
 			bounds.top,
