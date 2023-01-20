@@ -99,8 +99,8 @@ export default class AgarioGame extends AnimatedGame {
         });
     }
 
-    addAgentFromData(data) {
-        this.addAgent(new Agar(data.id, this, false, data.x, data.y, data.mass, { // properties
+    addAgentFromData(key, agent) {
+        this.addAgent(new Agar(key, this, false, agent.x, agent.y, agent.mass, { // properties
             animation: {
                 type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE,
             },
@@ -156,7 +156,7 @@ export default class AgarioGame extends AnimatedGame {
      */
     animateFrame() {
         this.updatePositionData(); // update the positions of objects
-        this.requestServerData(); // gets data from the server
+        this.requestServerData(false); // gets data from the server
         this.sortAgarsByMass(); // sort the agars by mass in descending order
         this.eatCheck(); // check if any agars are eating each other
         this.adjustScale(); // set the scale at which the objects will be drawn
@@ -230,11 +230,14 @@ export default class AgarioGame extends AnimatedGame {
         // start tracking wasd button presses
         game.setMovementKeyLogger(new MovementKeyLogger());
 
-        // start the animation cycle
-        game.startGame()
-
         // begin recieving server updates
         game.waitForServerUpdates();
         game.waitForAgentProperties();
+
+        // get initial data
+        game.requestServerData(true)
+
+        // start the animation cycle
+        game.startGame()
     }
 }

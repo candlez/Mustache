@@ -167,7 +167,7 @@ export default class AnimatedGame {
     removeAgent(id) { // needs to be revised because agents is now a map
         var indices = [];
         var flag = false;
-        this.getAgents().forEach(function(agent, index) {
+        this.getAgents().forEach((agent, index) => {
             if (agent.getID() == id) {
                 indices.push(index);
                 if (agent.getIsPlayer()) {
@@ -179,8 +179,7 @@ export default class AnimatedGame {
         for (var i = indices.length - 1; i > -1; i--) {
             this.getAgents().splice(indices[i], 1);
         }
-        this.setGameState(false);
-        // needs testing
+        this.setGameState(flag);
     }
 
     /**
@@ -225,8 +224,8 @@ export default class AnimatedGame {
         }
     }
 
-    requestServerData() {
-        this.getSocket().emit("requestServerData");
+    requestServerData(initialRequest) {
+        this.getSocket().emit("requestServerData", initialRequest);
     }
 
     requestAgentProperties(id) {
@@ -389,9 +388,9 @@ export default class AnimatedGame {
         }
     }
 
-    addAgentFromData(data) {
-        this.requestAgentProperties(data.id);
-        this.addAgent(new Agent(data.id, this.getGame(), false, data.x, data.y, { // properties (no animation style)
+    addAgentFromData(key, agent) {
+        this.requestAgentProperties(key);
+        this.addAgent(new Agent(key, this.getGame(), false, agent.x, agent.y, { // properties (no animation style)
             animation: {
                 type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
             },
@@ -399,22 +398,38 @@ export default class AnimatedGame {
         }))
     }
 
+    updateAgentFromData(key, agent) {
+        this.getAgents().get(key).setXCoord(agent.x);
+        this.getAgents().get(key).setYCoord(agent.y);
+    }
+
     updateAgents(agentsObject) {
         agentsObject.keys.forEach((key) => {
-            // eventually, this exception for the client player may need revision
-            // for example, if the server marks the player as dead, it woouldnt be able to tell rn
-            if (key != this.getPlayer().getID()) {
-                if (this.getAgents().get(key) == null) {
-                    // adds new Agents
-                    this.addAgentFromData(agentsObject[key])
+            console.log("updating agents:", agentsObject)
+            if (this.getAgents().get(key) == null) {
+                if (agentsObject[key].state == "alive") {
+                    this.addAgentFromData(key, agentsObject[key])
                     this.requestAgentProperties(key)
-                } else {
-                    // updates existing agents
-                    // try to make this less annoying
-                    this.getAgents().get(key).setXCoord(agentsObject[key].x);
-                    this.getAgents().get(key).setYCoord(agentsObject[key].y)
+                }
+            } else {
+                if (agentsObject[key].state == "alive" && key != this.getPlayer().getID()) {
+                    this.updateAgentFromData(key, agentsObject[key])
                 }
             }
+
+
+
+
+            // if (this.getAgents().get(key) == null) {
+            //     // adds new Agents
+            //     this.addAgentFromData(agentsObject[key])
+            //     this.requestAgentProperties(key)
+            // } else {
+            //     // updates existing agents
+            //     // try to make this less annoying
+            //     this.getAgents().get(key).setXCoord(agentsObject[key].x);
+            //     this.getAgents().get(key).setYCoord(agentsObject[key].y);
+            // }
         })
     }
 

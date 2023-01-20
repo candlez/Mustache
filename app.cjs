@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const { allowedNodeEnvironmentFlags } = require('process')
 const app = express()
 const socket = require('socket.io')
 const dataShucker = require('./public/pages/agario/scripts/shucker.cjs')
@@ -31,11 +32,33 @@ const io = socket(server)
 var agents = new Map();
 var gameObjects = new Map();
 
+function resetChange(id) {
+    agents.get(id).changed = false;
+}
+
+function startTimer(id) {
+    agents.get(id).timer = setTimeout(resetChange, 250, id)
+}
+
+function resetTimer(id) {
+    clearTimeout(agents.get(id).timer);
+    startTimer(id);
+}
+
+function changedTimeOut(id) {
+    if (agents.get(id).changed) {
+        resetTimer(id);
+    } else {
+        agents.get(id).changed = true;
+        startTimer(id);
+    }
+}
+
 io.sockets.on('connection', (socket) => {
     socket.on("playerMoved", (data) => {
-        var mass = agents.get(data.id).mass
-        var properties = agents.get(data.id)
-        agents.set(data.id, {x: data.x, y: data.y, mass: mass, properties: properties})
+        agents.get(data.id).x = data.x;
+        agents.get(data.id).y = data.y;
+        changedTimeOut(data.id);
 
         // example code
         // you can alter stuff in here
@@ -45,27 +68,41 @@ io.sockets.on('connection', (socket) => {
         // the code above does not send the message back to the original client
         // the code below would do that
         // io.sockets.emit("playerMoved", data);
-    })
-
-    socket.on("playerSpawned", (data) => {
-        agents.set(data.id, {x: data.x, y: data.y, mass: data.mass, properties: data.properties})
     });
 
-    socket.on("requestServerData", () => {
-        var data = {
-            agents: dataShucker(agents),
-            gameObjects: dataShucker(gameObjects),
+    socket.on("playerEaten", (data) => {
+
+    });
+
+    socket.on("playerSpawned", (data) => {
+        agents.set(data.id, {
+            x: data.x, 
+            y: data.y, 
+            mass: data.mass, 
+            properties: data.properties,
+            state: "alive",
+            changed: false,
+            timer: null,
+        })
+        changedTimeOut(data.id);
+    });
+
+    socket.on("requestServerData", (initialRequest) => {
+        var returnData = {
+            agents: dataShucker(agents, initialRequest),
+            gameObjects: dataShucker(gameObjects, initialRequest),
         }
-        io.to(socket.id).emit("sentServerData", data);
+        io.to(socket.id).emit("sentServerData", returnData);
     })
 
     socket.on("requestProperties", (data) => {
-        console.log("properties requested from: " + socket.id)
+        console.log("properties for: " + data.id + " requested from: " + socket.id)
         io.to(socket.id).emit("sentProperties", {id: data.id, properties: agents.get(data.id).properties})
     })
 
     socket.on("disconnect", (reason) => {
         console.log(socket.id + " has disconnected, this is why: " + reason);
+
     })
 })
 // -----------------------------------------------------------------------------------
