@@ -164,22 +164,8 @@ export default class AnimatedGame {
      * 
      * @param id - string that identifies the agents to be removed
      */
-    removeAgent(id) { // needs to be revised because agents is now a map
-        var indices = [];
-        var flag = false;
-        this.getAgents().forEach((agent, index) => {
-            if (agent.getID() == id) {
-                indices.push(index);
-                if (agent.getIsPlayer()) {
-                    flag = true;
-                    agent.getGame().getPlayer() = null;
-                }
-            }
-        })
-        for (var i = indices.length - 1; i > -1; i--) {
-            this.getAgents().splice(indices[i], 1);
-        }
-        this.setGameState(flag);
+    removeAgent(id) {
+        this.getAgents().delete(id);
     }
 
     /**
@@ -233,6 +219,24 @@ export default class AnimatedGame {
             id: id,
         }
         this.getSocket().emit("requestProperties", data);
+    }
+
+    sendPlayerDataToServer() {
+        const player = this.getPlayer();
+        var data = {
+            id: player.getID(),
+            x: player.getXCoord(),
+            y: player.getYCoord(),
+            properties: this.generateSpawnProperties(player.getColor())
+        }
+        this.getSocket().emit("playerSpawned", data);
+    }
+
+    generatePlayerID() {
+        var data = {
+            id: this.getPlayer().getID()
+        }
+        this.getSocket().emit("requestPlayerID", data)
     }
 
     /**
@@ -405,7 +409,6 @@ export default class AnimatedGame {
 
     updateAgents(agentsObject) {
         agentsObject.keys.forEach((key) => {
-            console.log("updating agents:", agentsObject)
             if (this.getAgents().get(key) == null) {
                 if (agentsObject[key].state == "alive") {
                     this.addAgentFromData(key, agentsObject[key])
@@ -416,20 +419,6 @@ export default class AnimatedGame {
                     this.updateAgentFromData(key, agentsObject[key])
                 }
             }
-
-
-
-
-            // if (this.getAgents().get(key) == null) {
-            //     // adds new Agents
-            //     this.addAgentFromData(agentsObject[key])
-            //     this.requestAgentProperties(key)
-            // } else {
-            //     // updates existing agents
-            //     // try to make this less annoying
-            //     this.getAgents().get(key).setXCoord(agentsObject[key].x);
-            //     this.getAgents().get(key).setYCoord(agentsObject[key].y);
-            // }
         })
     }
 
@@ -449,6 +438,15 @@ export default class AnimatedGame {
             this.updateAgents(data.agents);
             this.updateGameObjects(data.gameObject);
         })
+    }
+
+    waitForPlayerID() {
+        this.getSocket().on("sentPlayerID", (combinedID) => {
+            this.getAgents().delete(this.getPlayer().getID());
+            this.getPlayer().setID(combinedID);
+            this.getAgents().set(combinedID, this.getPlayer());
+            this.sendPlayerDataToServer();
+        });
     }
 
     static playGame(width, height) {

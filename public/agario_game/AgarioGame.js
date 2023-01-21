@@ -45,10 +45,19 @@ export default class AgarioGame extends AnimatedGame {
 
     // methods
     addAgent(agent) {
-        var agars = this.getSortedAgars();
-        agars.push(agent);
-        this.setSortedAgars(agars);
+        this.getSortedAgars().push(agent);
         super.addAgent(agent);
+    }
+
+    removeAgent(id) {
+        var newSortedAgars = this.getSortedAgars();
+        for (var i = newSortedAgars.length - 1; i >= 0; i--) {
+            if (newSortedAgars[i].getID() == id) {
+                newSortedAgars.splice(i, 1);
+            }
+        }
+        this.setSortedAgars(newSortedAgars);
+        super.removeAgent(id);
     }
 
     /**
@@ -115,18 +124,19 @@ export default class AgarioGame extends AnimatedGame {
     }
 
     spawnPlayer(id, color) {
-        // client stuff
         var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
         var newAgar = new Agar(id, this, true, spawnCoords.x, spawnCoords.y, 100, this.generateSpawnProperties(color))
         this.addAgent(newAgar);
+    }
 
-        // socket stuff
+    sendPlayerDataToServer() {
+        const player = this.getPlayer();
         var data = {
-            id: id,
-            x: spawnCoords.x,
-            y: spawnCoords.y,
-            mass: 100,
-            properties: this.generateSpawnProperties(color),
+            id: player.getID(),
+            x: player.getXCoord(),
+            y: player.getYCoord(),
+            mass: player.getMass(),
+            properties: this.generateSpawnProperties(player.getColor())
         }
         this.getSocket().emit("playerSpawned", data);
     }
@@ -168,7 +178,6 @@ export default class AgarioGame extends AnimatedGame {
         this.getMiniMap().showContainer();
         this.getMovementKeyLogger().startWASD();
         this.gameAnimationLoop();
-
     }
 
     /**
@@ -223,6 +232,10 @@ export default class AgarioGame extends AnimatedGame {
             }
         }));
 
+        // generate new id
+        game.waitForPlayerID();
+        game.generatePlayerID();
+
         // console.log("(4500, 4500) legal point?", game.isLegalPoint(4500, 4500));
         // console.log("(5500, 5500) legal point?", game.isLegalPoint(5500, 5500));
         // console.log("(10001, 5000) legal point?", game.isLegalPoint(10001, 5000));
@@ -233,11 +246,12 @@ export default class AgarioGame extends AnimatedGame {
         // begin recieving server updates
         game.waitForServerUpdates();
         game.waitForAgentProperties();
+        
 
         // get initial data
-        game.requestServerData(true)
+        game.requestServerData(true);
 
         // start the animation cycle
-        game.startGame()
+        game.startGame();
     }
 }

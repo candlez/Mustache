@@ -1,6 +1,5 @@
 const express = require('express')
 const path = require('path')
-const { allowedNodeEnvironmentFlags } = require('process')
 const app = express()
 const socket = require('socket.io')
 const dataShucker = require('./public/pages/agario/scripts/shucker.cjs')
@@ -32,6 +31,8 @@ const io = socket(server)
 var agents = new Map();
 var gameObjects = new Map();
 
+// set linking socket ids to player ids
+
 function resetChange(id) {
     agents.get(id).changed = false;
 }
@@ -55,6 +56,11 @@ function changedTimeOut(id) {
 }
 
 io.sockets.on('connection', (socket) => {
+    socket.on("requestPlayerID", (data) => {
+        var combinedID = data.id + "." + socket.id;
+        io.to(socket.id).emit("sentPlayerID", combinedID)
+    });
+
     socket.on("playerMoved", (data) => {
         agents.get(data.id).x = data.x;
         agents.get(data.id).y = data.y;

@@ -112,6 +112,9 @@ export default class GameObject {
     }
 
     // standard getters and setters
+    setID(newID) {
+        this.#id = newID;
+    }
     getID() {
         return this.#id;
     }
