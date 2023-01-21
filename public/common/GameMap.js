@@ -248,7 +248,6 @@ export default class GameMap {
 			case 0: // none
 				break;
 			case 1: // drawing an image
-				console.log(this.getImage(), this.getCTX(), bounds, scaledSideLength, "drawn as image")
 				this.getImage().drawImageOnCanvas(
 					this.getCTX(),
 					bounds.left,
@@ -287,7 +286,8 @@ export default class GameMap {
 				this.getGame().getAssetContainer().getContainer(), 
 				this.getSideLength(), 
 				this.getSideLength()
-			))
+			));
+			this.getProperties().animation.type = GameMap.PROPERTIES.ANIMATION.TYPE.IMAGE;
 		}
 	}
 }
