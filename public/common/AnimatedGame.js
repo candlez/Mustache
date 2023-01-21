@@ -449,6 +449,13 @@ export default class AnimatedGame {
         });
     }
 
+    waitForPlayerDisconnects() {
+        this.getSocket().on("playerDisconnected", (id) => {
+            console.log("attempting to remove agent with ID: ", id)
+            this.removeAgent(id);
+        })
+    }
+
     static playGame(width, height) {
         const game = new AnimatedGame(width, height);
     }

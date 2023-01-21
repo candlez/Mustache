@@ -246,6 +246,7 @@ export default class AgarioGame extends AnimatedGame {
         // begin recieving server updates
         game.waitForServerUpdates();
         game.waitForAgentProperties();
+        game.waitForPlayerDisconnects();
         
 
         // get initial data

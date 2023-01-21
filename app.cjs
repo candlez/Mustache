@@ -32,7 +32,9 @@ var agents = new Map();
 var gameObjects = new Map();
 
 // set linking socket ids to player ids
+var socketToID = new Map();
 
+// timer functions
 function resetChange(id) {
     agents.get(id).changed = false;
 }
@@ -89,7 +91,8 @@ io.sockets.on('connection', (socket) => {
             state: "alive",
             changed: false,
             timer: null,
-        })
+        });
+        socketToID.set(socket.id, data.id);
         changedTimeOut(data.id);
     });
 
@@ -108,7 +111,9 @@ io.sockets.on('connection', (socket) => {
 
     socket.on("disconnect", (reason) => {
         console.log(socket.id + " has disconnected, this is why: " + reason);
-
+        socket.broadcast.emit("playerDisconnected", socketToID.get(socket.id));
+        agents.delete(socketToID.get(socket.id));
+        socketToID.delete(socket.id);
     })
 })
 // -----------------------------------------------------------------------------------
