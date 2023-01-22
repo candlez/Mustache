@@ -20,6 +20,10 @@ app.get('/agario', (req, res) => {
     res.sendFile(path.resolve(__dirname, './public/pages/agario/agario.html'))
 })
 
+app.get('/razor_royale', (req, res) => {
+    res.sendFile(path.resolve(__dirname, './public/pages/razor_royale/razor_royale.html'))
+})
+
 const server = app.listen(5000, () => {
     console.log('server is listening on port 5000...')
 })
