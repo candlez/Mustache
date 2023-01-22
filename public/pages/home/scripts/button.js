@@ -1,5 +1,9 @@
-import {startGame} from './start.js'
+import {startGame, startAgario} from './start.js'
 
-const button = document.getElementById('startGameButton');
+const startButton = document.getElementById('startGameButton');
 
-button.addEventListener('click', startGame);
+startButton.addEventListener('click', startGame);
+
+const agarioButton = document.getElementById('agarioButton');
+
+agarioButton.addEventListener('click', startAgario);
