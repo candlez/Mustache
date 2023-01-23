@@ -118,16 +118,39 @@ export default class MiniMap extends GameMap {
      */
     drawAgent() {
         const ctx = this.getCTX();
-        ctx.beginPath();
-        ctx.arc(
-            this.getSideLength() * (this.getAgent().getXCoord() / this.getMap().getSideLength()),
-            this.getSideLength() * (this.getAgent().getYCoord() / this.getMap().getSideLength()),
-            this.getSideLength() * .02,
-            0,
-            2 * Math.PI
-        );
-        ctx.fillStyle = this.getAgent().getColor();
-        ctx.fill();
+        var miniMapCoords = {
+            x: this.getSideLength() * (this.getAgent().getXCoord() / this.getMap().getSideLength()),
+            y: this.getSideLength() * (this.getAgent().getYCoord() / this.getMap().getSideLength())
+        }
+        var agentSize = this.getSideLength() * .04;
+        switch (this.getAgent().getAnimationType()) {
+            case 0: // animation type: none
+                break;
+            case 1: // animation type: image
+            case 2: // animation type: rectangle
+                ctx.beginPath();
+                ctx.rect(
+                    miniMapCoords.x,
+                    miniMapCoords.y,
+                    agentSize,
+                    agentSize
+                );
+                ctx.fillStyle = this.getAgent().getColor();
+                ctx.fill();
+                break;
+            case 3: // animation type: circle
+                ctx.beginPath();
+                ctx.arc(
+                    miniMapCoords.x,
+                    miniMapCoords.y,
+                    agentSize, //make this update with increase in size
+                    0,
+                    2 * Math.PI
+                );
+                ctx.fillStyle = this.getAgent().getColor();
+                ctx.fill();
+                break;
+        }
     }
 
     /**

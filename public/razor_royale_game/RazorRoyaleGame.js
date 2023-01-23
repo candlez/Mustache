@@ -14,8 +14,8 @@ export default class RazorRoyaleGame extends AnimatedGame {
         opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
         animation: {
             type: GameObject.PROPERTIES.ANIMATION.TYPE.RECTANGLE,
-            width: 100,
-            height: 100,
+            width: 200,
+            height: 200,
         }
     }
 
