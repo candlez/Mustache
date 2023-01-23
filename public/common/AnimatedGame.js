@@ -2,7 +2,6 @@ import Agent from "./Agent.js";
 import GameMap from './GameMap.js'
 import AssetContainer from './AssetContainer.js';
 import GameObject from "./GameObject.js";
-import Agar from "../agario_game/Agar.js";
 
 export default class AnimatedGame {
     // fields
@@ -454,6 +453,28 @@ export default class AnimatedGame {
             console.log("attempting to remove agent with ID: ", id)
             this.removeAgent(id);
         })
+    }
+
+    generateSpawnProperties() {
+        return {
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE,
+            }
+        };
+    }
+
+    spawnPlayer(id) {
+        var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
+        var newAgent = new Agent(id, this, true, spawnCoords.x, spawnCoords.y, this.generateSpawnProperties())
+        this.addAgent(newAgent);
+    }
+
+    startGame() {
+        this.setGameState("alive");
+        this.getMiniMap().showContainer();
+        this.getMovementKeyLogger().startWASD();
+        this.gameAnimationLoop();
     }
 
     static playGame(width, height) {

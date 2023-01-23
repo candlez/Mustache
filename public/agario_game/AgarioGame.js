@@ -173,13 +173,6 @@ export default class AgarioGame extends AnimatedGame {
         super.animateFrame();
     }
 
-    startGame() {
-        this.setGameState("alive");
-        this.getMiniMap().showContainer();
-        this.getMovementKeyLogger().startWASD();
-        this.gameAnimationLoop();
-    }
-
     /**
      * deals with all tasks involved in running the game
      */
@@ -221,7 +214,7 @@ export default class AgarioGame extends AnimatedGame {
                 {x: 4, y: 4, source: "../assets/thanos_armor.jpg"},
                 {x: 5, y: 5, source: "../assets/thanos_background.jpg"}
             ] 
-        )); // need to fix images as maps
+        ));
         
         // create minimap
         game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, { // properties

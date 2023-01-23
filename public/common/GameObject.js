@@ -316,12 +316,11 @@ export default class GameObject {
                     this.getHeight() * scale
                 );
             case 2: // rectangle
-                var canvasCords = this.getCanvasCoords();
+                var canvasCoords = this.getCanvasCoords();
                 ctx.beginPath();
                 ctx.rect(
-                    
-                    this.canvasCoords.x - ((this.getWidth() * scale) / 2),
-                    this.canvasCoords.y - ((this.getHeight() * scale) / 2),
+                    canvasCoords.x - ((this.getWidth() * scale) / 2),
+                    canvasCoords.y - ((this.getHeight() * scale) / 2),
                     this.getWidth() * scale,
                     this.getHeight() * scale
                 );

@@ -1,4 +1,4 @@
-import Agent from "../common/Agent,js";
+import Agent from "../common/Agent.js";
 
 export default class Mustache extends Agent {
 
