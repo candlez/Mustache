@@ -316,7 +316,7 @@ export default class GameObject {
                     this.getHeight() * scale
                 );
             case 2: // rectangle
-                var canvasCoords = this.getCanvasCoords();
+                var canvasCoords = this.getCanvasCoords(scale);
                 ctx.beginPath();
                 ctx.rect(
                     canvasCoords.x - ((this.getWidth() * scale) / 2),
