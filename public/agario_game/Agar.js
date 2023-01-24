@@ -26,6 +26,10 @@ export default class Agar extends Agent {
     getMass() {
         return this.#mass;
     }
+    setMass(newMass) {
+        this.#mass = newMass;
+        this.setRadius(newMass);
+    }
 
     // real methods
 
@@ -35,7 +39,7 @@ export default class Agar extends Agent {
      * @param {Agar} agar - the Agar to be eaten
      */
     eatAgar(agar) {
-        this.#mass += agar.getMass();
+        this.setMass(this.getMass() + agar.getMass())
         this.setRadius(this.getMass());
         this.setWidth(this.getMass() * 2);
         this.setHeight(this.getMass() * 2);

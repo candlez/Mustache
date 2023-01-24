@@ -25,17 +25,6 @@ export default class MovementKeyLogger {
         this.getKeyLoggers().set(key, new KeyLogger(key));
     }
 
-    /**
-     * 
-     */
-    startWASD() {
-        this.addKeyLogger("w");
-        this.addKeyLogger("a");
-        this.addKeyLogger("s");
-        this.addKeyLogger("d");
-        this.listen()
-    }
-
     listen() {
         this.getKeyLoggers().forEach(function(logger) {
             logger.listen();

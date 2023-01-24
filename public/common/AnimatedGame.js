@@ -15,6 +15,7 @@ export default class AnimatedGame {
     #assetContainer;
     #playerSpawnZone;
     #movementKeyLogger;
+    #testingKeyLogger;
     #agents;
     #objects;
     #player;
@@ -49,6 +50,7 @@ export default class AnimatedGame {
         this.#assetContainer = null;
         this.#playerSpawnZone = null;
         this.#movementKeyLogger = null;
+        this.#testingKeyLogger = null;
         this.#agents = new Map();
         this.#objects = [];
         this.#player = null;
@@ -127,6 +129,12 @@ export default class AnimatedGame {
     getMovementKeyLogger() {
         return this.#movementKeyLogger;
     }
+    setTestingKeyLogger(newTestingKeyLogger) {
+        this.#testingKeyLogger = newTestingKeyLogger;
+    }
+    getTestingKeyLogger() {
+        return this.#testingKeyLogger;
+    }
     setGameState(newGameState) {
         this.#gameState = newGameState;
     }
@@ -170,9 +178,9 @@ export default class AnimatedGame {
     /**
      * calculates the change to x and y values of objects being moved
      */
-    interpretKeys() {
-        var loggers = this.getMovementKeyLogger().getKeyLoggers();
-        var unitVectors = [
+    interpretMovementKeys() {
+        const loggers = this.getMovementKeyLogger().getKeyLoggers();
+        const unitVectors = [
             loggers.get("d").getKeyDown() + // d
             (-1 * loggers.get("a").getKeyDown()), // a
             (-1 * loggers.get("w").getKeyDown()) + // w
@@ -191,13 +199,32 @@ export default class AnimatedGame {
         }
     }
 
+    intrepretTestingKeys() {
+        const loggers = this.getTestingKeyLogger().getKeyLoggers();
+        if (loggers.get("9").getKeyDown()) {
+            console.log("9 was pressed");
+        }
+        if (loggers.get("8").getKeyDown()) {
+            console.log("8 was pressed");
+        }
+        if (loggers.get("7").getKeyDown()) {
+            console.log("7 was pressed");
+        }
+        if (loggers.get("6").getKeyDown()) {
+            console.log("6 was pressed");
+        }
+        if (loggers.get("5").getKeyDown()) {
+            console.log("5 was pressed");
+        }
+    }
+
     /**
      * updates posiiton data so the objects can be drawn
      * 
      * also updates scale data
      */
     updatePositionData() {
-        var change = this.interpretKeys();
+        var change = this.interpretMovementKeys();
         if (change.x != 0 || change.y != 0) {
             this.getPlayer().move(change.x, change.y)
             var data = {
@@ -270,14 +297,24 @@ export default class AnimatedGame {
         }
     }
 
-    adjustScale() {
-
+    adjustScale(scaleVar) {
+        var rate = .05
+        if (scaleVar * this.getScale() > 100) {
+            var targetScale = Math.round((100 / scaleVar) * 1000) / 1000;
+            var diff = this.getScale() - targetScale;
+            this.setScale(Math.round((this.getScale() - (diff * rate)) * 1000) / 1000);
+        } else if (scaleVar * this.getScale() < 100) {
+            var targetScale = Math.round((100 / scaleVar) * 1000) / 1000;
+            var diff = targetScale - this.getScale();
+            this.setScale(Math.round((this.getScale() + (diff * rate)) * 1000) / 1000);
+        }
     }
 
     /**
      * draws a frame based on currently available data
      */
     animateFrame() {
+        this.intrepretTestingKeys()
         this.updatePositionData();
         this.requestServerData(false);
         this.adjustScale();
@@ -481,6 +518,7 @@ export default class AnimatedGame {
         this.setGameState("alive");
         this.getMiniMap().showContainer();
         this.getMovementKeyLogger().startWASD();
+        this.getTestingKeyLogger().startTestKeys();
         this.gameAnimationLoop();
     }
 

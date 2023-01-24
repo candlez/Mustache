@@ -4,9 +4,11 @@ import AssetContainer from '../common/AssetContainer.js';
 import MapPack from '../common/MapPack.js';
 import MiniMap from '../common/MiniMap.js';
 import GameMap from '../common/GameMap.js';
-import MovementKeyLogger from '../common/MovementKeyLogger.js';
+import MovementKeyLoggerContainer from '../common/MovementKeyLoggerContainer.js';
+import TestingKeyLoggerContainer from '../common/TestingKeyLoggerContainer.js';
 import GameObject from '../common/GameObject.js';
 import SpawnZone from '../common/SpawnZone.js';
+
 
 /**
  * 
@@ -149,17 +151,21 @@ export default class AgarioGame extends AnimatedGame {
      * scale = 100 / player mass
      */
     adjustScale() {
-        var rate = .05
-        if (this.getPlayer().getMass() * this.getScale() > 100) {
-            var targetScale = Math.round((100 / this.getPlayer().getMass()) * 1000) / 1000;
-            var diff = this.getScale() - targetScale;
-            this.setScale(Math.round((this.getScale() - (diff * rate)) * 1000) / 1000);
-        } else if (this.getPlayer().getMass() * this.getScale() < 100) {
-            var targetScale = Math.round((100 / this.getPlayer().getMass()) * 1000) / 1000;
-            var diff = targetScale - this.getScale();
-            this.setScale(Math.round((this.getScale() + (diff * rate)) * 1000) / 1000);
+        
+    }
+
+    intrepretTestingKeys() {
+        const loggers = this.getTestingKeyLogger().getKeyLoggers();
+        var flag = false;
+        if (loggers.get("9").getKeyDown()) {
+            flag = true;
+            this.getPlayer().setMass(this.getPlayer().getMass() + 5);
         }
-    }    
+
+        if (!flag) {
+            super.intrepretTestingKeys();
+        }
+    }
 
     /**
      * draws a frame based on currently available data
@@ -231,7 +237,8 @@ export default class AgarioGame extends AnimatedGame {
         // console.log("(10001, 5000) legal point?", game.isLegalPoint(10001, 5000));
 
         // start tracking wasd button presses
-        game.setMovementKeyLogger(new MovementKeyLogger());
+        game.setMovementKeyLogger(new MovementKeyLoggerContainer());
+        game.setTestingKeyLogger(new TestingKeyLoggerContainer());
 
         // begin recieving server updates
         game.waitForServerUpdates();

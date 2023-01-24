@@ -6,7 +6,8 @@ import SpawnZone from '../common/SpawnZone.js';
 import MapPack from '../common/MapPack.js';
 import GameMap from '../common/GameMap.js';
 import MiniMap from '../common/MiniMap.js';
-import MovementKeyLogger from '../common/MovementKeyLogger.js';
+import MovementKeyLoggerContainer from '../common/MovementKeyLoggerContainer.js';
+import TestingKeyLoggerContainer from '../common/TestingKeyLoggerContainer.js';
 
 export default class RazorRoyaleGame extends AnimatedGame {
 
@@ -90,7 +91,8 @@ export default class RazorRoyaleGame extends AnimatedGame {
         game.waitForPlayerID();
         game.generatePlayerID();
 
-        game.setMovementKeyLogger(new MovementKeyLogger());
+        game.setMovementKeyLogger(new MovementKeyLoggerContainer());
+        game.setTestingKeyLogger(new TestingKeyLoggerContainer());
 
         game.waitForServerUpdates();
         game.waitForAgentProperties();
