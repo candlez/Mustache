@@ -270,10 +270,17 @@ export default class AnimatedGame {
         }
     }
 
+    adjustScale() {
+
+    }
+
     /**
      * draws a frame based on currently available data
      */
     animateFrame() {
+        this.updatePositionData();
+        this.requestServerData(false);
+        this.adjustScale();
         this.clearPlaySpace(this.getMap().getBackgroundColor()); // erase everything from the previous frame
         this.drawObjects(); // draw the objects
     }

@@ -165,11 +165,8 @@ export default class AgarioGame extends AnimatedGame {
      * draws a frame based on currently available data
      */
     animateFrame() {
-        this.updatePositionData(); // update the positions of objects
-        this.requestServerData(false); // gets data from the server
         this.sortAgarsByMass(); // sort the agars by mass in descending order
         this.eatCheck(); // check if any agars are eating each other
-        this.adjustScale(); // set the scale at which the objects will be drawn
         super.animateFrame();
     }
 
