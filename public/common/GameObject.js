@@ -122,7 +122,6 @@ export default class GameObject {
     setXCoord(newXCoord) {
         var half = this.getWidth() / 2
         var bounds = this.getGame().getMap().getBounds();
-        console.log(bounds, half, (newXCoord - half), this.getWidth())
         if (newXCoord - half < bounds.left) {
             throw new RangeError("left bound violated");
         } else if (newXCoord + half >  bounds.right) {
@@ -207,7 +206,7 @@ export default class GameObject {
         if (this.getProperties().animation.width != undefined) {
             return this.getProperties().animation.width;
         } else if (this.getProperties().animation.radius != undefined) {
-            return this.getProperties().animation.radius;
+            return this.getProperties().animation.radius * 2;
         } else {
             throw new Error("this GameObject has no width or radius")
         }
@@ -219,7 +218,7 @@ export default class GameObject {
         if (this.getProperties().animation.height != undefined) {
             return this.getProperties().animation.height;
         } else if (this.getProperties().animation.radius != undefined) {
-            return this.getProperties().animation.radius;
+            return this.getProperties().animation.radius * 2;
         } else {
             throw new Error("this GameObject has no height or radius")
         }
@@ -296,13 +295,11 @@ export default class GameObject {
         try {
             this.setXCoord(this.getXCoord() + xChange);
         } catch (error) {
-            console.log("out of bounds horizontal")
             this.setXCoord(this.movementErrorCorrection(error, bounds));
         }
         try {
             this.setYCoord(this.getYCoord() + yChange);
         } catch (error) {
-            console.log("out of bounds vertical")
             this.setYCoord(this.movementErrorCorrection(error, bounds));
         }
     }
