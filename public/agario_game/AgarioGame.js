@@ -222,8 +222,8 @@ export default class AgarioGame extends AnimatedGame {
         // create minimap
         game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, { // properties
             animation: {
-                type: GameMap.PROPERTIES.ANIMATION.TYPE.IMAGE,
-                source: '../assets/thanos_armor.jpg',
+                type: GameMap.PROPERTIES.ANIMATION.TYPE.SQUARE,
+                // source: '../assets/thanos_armor.jpg',
                 backgroundColor: "white"
             }
         }));

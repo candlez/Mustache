@@ -122,7 +122,11 @@ export default class MiniMap extends GameMap {
             x: this.getSideLength() * (this.getAgent().getXCoord() / this.getMap().getSideLength()),
             y: this.getSideLength() * (this.getAgent().getYCoord() / this.getMap().getSideLength())
         }
-        var agentSize = this.getSideLength() * .04;
+        const minimumWidth = 20;
+        var agentSize = (this.getAgent().getWidth() / this.getMap().getSideLength()) * this.getSideLength();
+        if (agentSize < minimumWidth) {
+            agentSize = minimumWidth;
+        }
         switch (this.getAgent().getAnimationType()) {
             case 0: // animation type: none
                 break;
@@ -143,7 +147,7 @@ export default class MiniMap extends GameMap {
                 ctx.arc(
                     miniMapCoords.x,
                     miniMapCoords.y,
-                    agentSize, //make this update with increase in size
+                    agentSize / 2, //make this update with increase in size
                     0,
                     2 * Math.PI
                 );
