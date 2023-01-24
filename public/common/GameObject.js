@@ -10,7 +10,6 @@ export default class GameObject {
     #ctx
     #xCoord;
     #yCoord;
-    #canvasCoords;
     #properties;
     #image;
 
@@ -45,7 +44,6 @@ export default class GameObject {
         this.#ctx = game.getCTX();
         this.#xCoord = xCoord;
         this.#yCoord = yCoord;
-        this.#canvasCoords = {x: null, y: null};
         GameObject.propertyValidation(properties);
         this.#properties = properties;
         if (properties.animation.type == GameObject.PROPERTIES.ANIMATION.TYPE.IMAGE) { // sets the image field
@@ -124,6 +122,7 @@ export default class GameObject {
     setXCoord(newXCoord) {
         var half = this.getWidth() / 2
         var bounds = this.getGame().getMap().getBounds();
+        console.log(bounds, half, (newXCoord - half), this.getWidth())
         if (newXCoord - half < bounds.left) {
             throw new RangeError("left bound violated");
         } else if (newXCoord + half >  bounds.right) {
@@ -205,13 +204,25 @@ export default class GameObject {
         this.#properties.animation.width = newWidth;
     }
     getWidth() {
-        return this.getProperties().animation.width;
+        if (this.getProperties().animation.width != undefined) {
+            return this.getProperties().animation.width;
+        } else if (this.getProperties().animation.radius != undefined) {
+            return this.getProperties().animation.radius;
+        } else {
+            throw new Error("this GameObject has no width or radius")
+        }
     }
     setHeight(newHeight) {
         this.#properties.animation.height = newHeight;
     }
     getHeight() {
-        return this.getProperties().animation.height;
+        if (this.getProperties().animation.height != undefined) {
+            return this.getProperties().animation.height;
+        } else if (this.getProperties().animation.radius != undefined) {
+            return this.getProperties().animation.radius;
+        } else {
+            throw new Error("this GameObject has no height or radius")
+        }
     }
     setColor(newColor) {
         this.#properties.animation.color = newColor;
@@ -285,11 +296,13 @@ export default class GameObject {
         try {
             this.setXCoord(this.getXCoord() + xChange);
         } catch (error) {
+            console.log("out of bounds horizontal")
             this.setXCoord(this.movementErrorCorrection(error, bounds));
         }
         try {
             this.setYCoord(this.getYCoord() + yChange);
         } catch (error) {
+            console.log("out of bounds vertical")
             this.setYCoord(this.movementErrorCorrection(error, bounds));
         }
     }

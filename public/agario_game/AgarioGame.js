@@ -151,7 +151,7 @@ export default class AgarioGame extends AnimatedGame {
      * scale = 100 / player mass
      */
     adjustScale() {
-        
+        super.adjustScale(this.getPlayer().getMass())
     }
 
     intrepretTestingKeys() {
