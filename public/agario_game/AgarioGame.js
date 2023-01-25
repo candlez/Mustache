@@ -161,6 +161,10 @@ export default class AgarioGame extends AnimatedGame {
             flag = true;
             this.getPlayer().setMass(this.getPlayer().getMass() + 5);
         }
+        if (loggers.get("8").getKeyDown()) {
+            flag = true;
+            this.getPlayer().setMass(this.getPlayer().getMass() - 5)
+        }
 
         if (!flag) {
             super.intrepretTestingKeys();
@@ -224,7 +228,10 @@ export default class AgarioGame extends AnimatedGame {
             animation: {
                 type: GameMap.PROPERTIES.ANIMATION.TYPE.SQUARE,
                 // source: '../assets/thanos_armor.jpg',
-                backgroundColor: "white"
+                backgroundColor: "white",
+                lineColor: "silver",
+                squaresPerSide: 10,
+                squareSize: 35,
             }
         }));
 

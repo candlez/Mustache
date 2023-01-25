@@ -105,6 +105,7 @@ export default class MiniMap extends GameMap {
                 );
                 break;
             case 2:
+                console.log(this, scale, this.getBounds(), this.getLineColor())
                 this.drawGrid(
                     scale,
                     this.getBounds(),
