@@ -47,6 +47,7 @@ export default class GameMap {
 			left: xCoord - half, 
 			right: xCoord + half
 		};
+		GameMap.propertyValidation(properties);
 		this.#properties = properties;
 		if (properties.animation.type == GameMap.PROPERTIES.ANIMATION.TYPE.IMAGE) { // setting up image field
 			this.#image = new Image(
