@@ -67,7 +67,7 @@ export default class GameMap {
 		if (properties.animation == undefined) {
 			throw new TypeError("Gamemap has no animation properties");
 		}
-		if (typeof properties.animation.type == "number") {
+		if (typeof properties.animation.type != "number") {
 			throw new TypeError("Gamemap has no animation type");
 		} else {
 			switch (properties.animation.type) {

@@ -7,31 +7,54 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	background-color: skyblue;
+	background-color: saddlebrown;
 	border-radius: 25px;
+	padding: 5px;
 }
 
 #nameText {
 	position: relative;
 	display: block;
 	text-align: center;
+	color: moccasin;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 10px;
+	margin-bottom: 0px;
+	line-height: 50%;
+	font-size: 36px;
+}
+#nameBoxContainer {
+	position: relative;
+	width: 90%;
+	margin-top: 10px;
 	margin-bottom: 10px;
-	font-size: 32px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 10px;
+	border-radius: 10px;
 }
 #nameBox {
 	position: relative;
-	display: block;
+	display: inline-block;
 	text-align: center;
+	width: 83%;
 	margin-left: 30px;
 	margin-right: 30px;
-	margin-top: 10px;
-	margin-bottom: 10px;
 	font-size: 32px;
 	border-radius: 25px;
 	padding: 3px;
+	background: peru;
+	color: moccasin;
+	border-color: moccasin;
+}
+#errorText {
+	width: 100%;
+	margin-top: 0px;
+	line-height: 200%;
+	text-align: center;
+	font-size: 20px;
+	font-family: monospace;
 }
 #colorPickerSection {
 	display: flex;
@@ -52,7 +75,7 @@ img {
 	border-style: solid;
 	border: 1;
 	border-radius: 5px;
-	border-color: black;
+	border-color: moccasin;
 
 }
 #startGameButton {
@@ -66,4 +89,7 @@ img {
 	border-radius: 5px;
 	padding-left: 15px;
 	padding-right: 15px;
+	background-color: peru;
+	color: moccasin;
+	border-color: moccasin;
 }

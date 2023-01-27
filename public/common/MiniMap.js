@@ -37,13 +37,6 @@ export default class MiniMap extends GameMap {
         this.#container.appendChild(this.#canvas);
 
         this.#ctx = this.#canvas.getContext('2d');
-
-        // if (typeof imageSource == "string") {
-        //     this.#image = new Image("miniMap", imageSource, this.#container, sideLength, sideLength);
-        //     this.#image.setDisplay("none");
-        // } else {
-        //     this.#image = null;
-        // }
     }
     // standard getters and setters
     getMap() {
