@@ -437,7 +437,7 @@ export default class AnimatedGame {
 
     addAgentFromData(key, agent) {
         this.requestAgentProperties(key);
-        this.addAgent(new Agent(key, this.getGame(), false, agent.x, agent.y, { // properties (no animation style)
+        this.addAgent(new Agent(key, this, false, agent.x, agent.y, { // properties (no animation style)
             animation: {
                 type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
             },
