@@ -18,6 +18,7 @@ export default class AnimatedGame {
     #testingKeyLogger;
     #agents;
     #objects;
+    #blocking;
     #player;
     #scale;
     #socket
@@ -52,7 +53,8 @@ export default class AnimatedGame {
         this.#movementKeyLogger = null;
         this.#testingKeyLogger = null;
         this.#agents = new Map();
-        this.#objects = [];
+        this.#objects = new Map();
+        this.#blocking = [];
         this.#player = null;
         this.#scale = 1;
 
@@ -86,6 +88,9 @@ export default class AnimatedGame {
     }
     getObjects() {
         return this.#objects;
+    }
+    getBlocking() {
+        return this.#blocking;
     }
     setScale(scale) {
         this.#scale = scale;
@@ -164,6 +169,9 @@ export default class AnimatedGame {
         if (agent.getIsPlayer()) {
             this.setPlayer(agent);
         }
+        if (agent.getOpacity() == 1) {
+            this.getBlocking().push(agent);
+        }
     }
 
     /**
@@ -172,7 +180,34 @@ export default class AnimatedGame {
      * @param id - string that identifies the agents to be removed
      */
     removeAgent(id) {
+        if (this.getAgents().get(id).getOpacity() == 1) {
+            this.removeFromBlocking(id);
+        }
         this.getAgents().delete(id);
+    }
+
+    addObject(object) {
+        if (object instanceof GameObject) {
+            this.#objects.set(object.getID(), object);
+        }
+        if (object.getOpacity() == 1) {
+            this.getBlocking().push(object);
+        }
+    }
+
+    removeObject(id) {
+        if (this.getObjects().get(id).getOpacity() == 1) {
+            this.removeFromBlocking(id);
+        }
+        this.getObjects().delete(id);
+    }
+
+    removeFromBlocking(id) {
+        for (var i = this.getBlocking().length - 1; i >= 0 ; i--) {
+            if (this.getBlocking()[i].getID() == id) {
+                this.getBlocking().splice(i, 1);
+            }
+        }
     }
 
     /**
@@ -292,9 +327,13 @@ export default class AnimatedGame {
     drawObjects() {
         this.getMiniMap().animate();
         this.getMap().draw(this.getScale());
+        for (const key of this.getObjects().keys()) {
+            this.getObjects().get(key).draw(this.getScale())
+        }
         for (const key of this.getAgents().keys()) {
             this.getAgents().get(key).draw(this.getScale());
         }
+
     }
 
     adjustScale(scaleVar) {
@@ -401,38 +440,16 @@ export default class AnimatedGame {
         this.loadingAnimationLoop();
     }
 
-    /**
-     * 
-     * @param {Number} xCoord 
-     * @param {Number} yCoord 
-     * @returns 
-     */
-    isOutOfBounds(xCoord, yCoord) {
-        const bounds = this.getMap().getBounds();
-        return (xCoord < bounds.left || xCoord > bounds.right || yCoord < bounds.top || yCoord > bounds.bottom);
-    }
-
-    isLegalPoint(xCoord, yCoord) {
-        if (this.isOutOfBounds(xCoord, yCoord)) {
-            return false;
-        } else {
-            var result = true
-            this.getObjects().forEach((object) => { // checking objects
-                if (object.getOpacity() == GameObject.PROPERTIES.OPACITY.BLOCKING) {
-                    if (object.isPointWithinBounds(xCoord, yCoord)) {
-                        result = false;
-                    }
-                }
-            });
-            this.getAgents().forEach((agent) => { // checking agents
-                if (agent.getOpacity() == GameObject.PROPERTIES.OPACITY.BLOCKING) {
-                    if (agent.isPointWithinBounds(xCoord, yCoord)) {
-                        result = false;
-                    }
-                }
-            });
-            return result;
+    pointValidation(xCoord, yCoord) {
+        if (this.getMap().isOutOfBounds(xCoord, yCoord)) {
+            throw new RangeError("out of bounds", {cause: this.getMap().getBounds()})
         }
+        this.getBlocking().forEach((blockingObject) => {
+            if (blockingObject.isPointWithinBounds(xCoord, yCoord)) {
+                console.log("blocking detected!")
+                throw new RangeError("hit blocking object", {cause: blockingObject.getBounds()});
+            }
+        })
     }
 
     addAgentFromData(key, agent) {

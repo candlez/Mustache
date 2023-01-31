@@ -120,30 +120,14 @@ export default class GameObject {
         return this.#game;
     }
     setXCoord(newXCoord) {
-        var half = this.getWidth() / 2
-        var bounds = this.getGame().getMap().getBounds();
-        if (newXCoord - half < bounds.left) {
-            throw new RangeError("left bound violated");
-        } else if (newXCoord + half >  bounds.right) {
-            throw new RangeError("right bound violated");
-        } else {
-            this.#xCoord = newXCoord;
-        }
+        this.#xCoord = newXCoord;
         
     }
     getXCoord() {
         return this.#xCoord;
     }
     setYCoord(newYCoord) {
-        var half = this.getHeight() / 2
-        var bounds = this.getGame().getMap().getBounds();
-        if (newYCoord - half < bounds.top) {
-            throw new RangeError("top bound violated");
-        } else if (newYCoord + half >  bounds.bottom) {
-            throw new RangeError("bottom bound violated");
-        } else {
-            this.#yCoord = newYCoord;
-        }
+        this.#yCoord = newYCoord;
     }
     getYCoord() {
         return this.#yCoord;
@@ -241,7 +225,21 @@ export default class GameObject {
 
     isWithinRectangleBounds(xCoord, yCoord) {
         const bounds = this.getBounds();
-        return (xCoord > bounds.left || xCoord < bounds.right || yCoord > bounds.top || yCoord < bounds.bottom);
+        var xFlag;
+        var yFlag;
+        // console.log(bounds, xCoord, yCoord)
+
+        if (xCoord == undefined) {
+            xFlag = true;
+        } else {
+            xFlag = xCoord > bounds.left && xCoord < bounds.right;
+        }
+        if (yCoord == undefined) {
+            yFlag = true;
+        } else {
+            yFlag = yCoord > bounds.top && yCoord < bounds.bottom;
+        }
+        return xFlag && yFlag;
     }
 
     /**
@@ -255,34 +253,35 @@ export default class GameObject {
             case 0: // none
                 throw new TypeError("GameObject has no bounds");
             case 1: // image
-                return this.isPointWithinBounds(xCoord, yCoord);
+                return this.isWithinRectangleBounds(xCoord, yCoord);
             case 2: // rectangle
-                return this.isPointWithinBounds(xCoord, yCoord);
+                return this.isWithinRectangleBounds(xCoord, yCoord);
             case 3: // circle
                 return this.isWithinCircleBounds(xCoord, yCoord);
         }
+    }
+
+    movementErrorHandling(error) {
 
     }
 
-    /**
-     * 
-     * @param {Error} error 
-     * @param {Object} bounds 
-     * @returns 
-     */
-    movementErrorCorrection(error, bounds) {
-        if (error.message == "left bound violated") {
-            return bounds.left + (this.getWidth() / 2);
-        } else if (error.message == "right bound violated") {
-            return bounds.right - (this.getWidth() / 2);
-        } else if (error.message == "top bound violated") {
-            return bounds.top + (this.getHeight() / 2);
-        } else if (error.message == "bottom bound violated") {
-            return bounds.bottom - (this.getHeight() / 2);
-        } else {
-            throw new Error(error.message);
-        }
-    }
+    /*
+    if you have a positive xChange and violate a horizontal bounds, then you need to be set to the left bounds
+    if you have a negative xChange and violate a horizontal bounds, then you need to be set to the right bounds
+    if you have a positive yChange and violate a vertical bounds, then you need to be set to the bottom bounds
+    if you have a negative yChange and violate a vertical bounds, then you need to be set to the top bounds
+    */
+
+    /*
+    1. find new coords
+    2. check if new coords are legal
+    3. check if new bounds are legal
+    4. correct the error if there is one
+    */
+
+    /*
+    should I change this so that it simply takes the new coords as arguments?
+    */
 
     /**
      * changes the absolute coordinates of the Agent
@@ -291,17 +290,83 @@ export default class GameObject {
      * @param {Number} yChange - the change to the yCoords
      */
     move(xChange, yChange) {
-        var bounds = this.getGame().getMap().getBounds();
-        try {
-            this.setXCoord(this.getXCoord() + xChange);
-        } catch (error) {
-            this.setXCoord(this.movementErrorCorrection(error, bounds));
+        var newX = this.getXCoord() + xChange;
+        var newY = this.getYCoord() + yChange;
+        const halfX = this.getWidth() / 2;
+        const halfY = this.getHeight() / 2;
+
+        if (xChange > 0) {
+            try {
+                this.getGame().pointValidation(newX + halfX, newY);
+                this.getGame().pointValidation(newX + halfX, this.getYCoord() + halfY)
+                this.getGame().pointValidation(newX + halfX, this.getYCoord() - halfY)
+                this.getGame().pointValidation(newX, this.getYCoord())
+            } catch (error) {
+                if (error instanceof RangeError) {
+                    if (error.message == "out of bounds") {
+                        newX = error.cause.right - halfX;
+                    } else {
+                        newX = error.cause.left - halfX;
+                    }
+                } else {
+                    throw new Error(error.message);
+                }
+            } 
+        } else {
+            try {
+                this.getGame().pointValidation(newX - halfX, newY);
+                this.getGame().pointValidation(newX - halfX, this.getYCoord() + halfY)
+                this.getGame().pointValidation(newX - halfX, this.getYCoord() - halfY)
+                this.getGame().pointValidation(newX, this.getYCoord())
+            } catch (error) {
+                if (error instanceof RangeError) {
+                    if (error.message == "out of bounds") {
+                        newX = error.cause.left + halfX;
+                    } else {
+                        newX = error.cause.right + halfX;
+                    }
+                } else {
+                    throw new Error(error.message);
+                }
+            }
         }
-        try {
-            this.setYCoord(this.getYCoord() + yChange);
-        } catch (error) {
-            this.setYCoord(this.movementErrorCorrection(error, bounds));
+        if (yChange > 0) {
+            try {
+                this.getGame().pointValidation(newX, newY + halfY);
+                this.getGame().pointValidation(newX + halfX, newY + halfY);
+                this.getGame().pointValidation(newX - halfX, newY + halfY);
+                this.getGame().pointValidation(newX, newY);
+            } catch (error) {
+                if (error instanceof RangeError) {
+                    if (error.message == "out of bounds") {
+                        newY = error.cause.bottom - halfY;
+                    } else {
+                        newY = error.cause.top - halfY;
+                    }
+                } else {
+                    throw new Error(error.message);
+                }
+            }
+        } else {
+            try {
+                this.getGame().pointValidation(newX, newY - halfY);
+                this.getGame().pointValidation(newX + halfX, newY - halfY);
+                this.getGame().pointValidation(newX - halfX, newY - halfY);
+                this.getGame().pointValidation(newX, newY);
+            } catch (error) {
+                if (error instanceof RangeError) {
+                    if (error.message == "out of bounds") {
+                        newY = error.cause.top + halfY;
+                    } else {
+                        newY = error.cause.bottom + halfY;
+                    }
+                } else {
+                    throw new Error(error.message);
+                }
+            }
         }
+        this.setXCoord(newX);
+        this.setYCoord(newY);
     }
 
     /**

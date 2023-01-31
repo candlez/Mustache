@@ -291,4 +291,9 @@ export default class GameMap {
 			this.getProperties().animation.type = GameMap.PROPERTIES.ANIMATION.TYPE.IMAGE;
 		}
 	}
+
+	isOutOfBounds(xCoord, yCoord) {
+		const bounds = this.getBounds();
+		return (xCoord < bounds.left || xCoord > bounds.right || yCoord < bounds.top || yCoord > bounds.bottom);
+	}
 }

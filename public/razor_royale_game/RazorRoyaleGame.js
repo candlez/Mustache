@@ -1,6 +1,7 @@
 import AnimatedGame from '../common/AnimatedGame.js';
 import GameObject from '../common/GameObject.js';
 import Mustache from '../razor_royale_game/Mustache.js';
+import Wall from './Wall.js'
 import AssetContainer from '../common/AssetContainer.js';
 import SpawnZone from '../common/SpawnZone.js';
 import MapPack from '../common/MapPack.js';
@@ -80,8 +81,8 @@ export default class RazorRoyaleGame extends AnimatedGame {
             { // properties
                 animation: {
                     squareSize: 100,
-                    backgroundColor: "white",
-                    lineColor: "silver"
+                    backgroundColor: "rgb(15, 15, 15)",
+                    lineColor: "gainsboro"
                 }
             },
             [
@@ -90,11 +91,17 @@ export default class RazorRoyaleGame extends AnimatedGame {
             ] 
         ));
 
+        game.addObject(new Wall("firstWall", game, 5000, 5000, 200, 200, "moccasin"));
+        game.addObject(new Wall("secondWall", game, 5000, 4800, 200, 200, "crimson"));
+        game.addObject(new Wall("thirdWall", game, 5000, 4600, 200, 200, "crimson"));
+        game.addObject(new Wall("fourthWall", game, 5000, 4400, 200, 200, "crimson"));
+        game.addObject(new Wall("fifthWall", game, 5000, 4200, 200, 200, "crimson"));
+
         game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, { // properties
             animation: {
                 type: GameMap.PROPERTIES.ANIMATION.TYPE.IMAGE,
                 source: '../assets/thanos_armor.jpg',
-                backgroundColor: "white"
+                backgroundColor: "moccasin"
             }
         }));
 
