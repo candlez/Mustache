@@ -91,7 +91,7 @@ export default class RazorRoyaleGame extends AnimatedGame {
             ] 
         ));
 
-        game.addObject(new Wall("firstWall", game, 5000, 5000, 200, 200, "moccasin"));
+        game.addObject(new Wall("firstWall", game, 5000, 5000, 200, 200, "crimson"));
         game.addObject(new Wall("secondWall", game, 5000, 4800, 200, 200, "crimson"));
         game.addObject(new Wall("thirdWall", game, 5000, 4600, 200, 200, "crimson"));
         game.addObject(new Wall("fourthWall", game, 5000, 4400, 200, 200, "crimson"));

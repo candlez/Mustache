@@ -3,6 +3,8 @@ const path = require('path')
 const app = express()
 const socket = require('socket.io')
 const dataShucker = require('./public/pages/agario/scripts/shucker.cjs')
+const data = require('./map_presets/razor_royale_one/game_objects.json')
+const readData = require('./public/pages/razor_royale/scripts/read_data.cjs')
 
 
 app.use(express.static('./public')) // static means it's a static website
@@ -24,7 +26,7 @@ app.get('/razor_royale', (req, res) => {
     res.sendFile(path.resolve(__dirname, './public/pages/razor_royale/razor_royale.html'))
 })
 
-const server = app.listen(5000, () => {
+const server = app.listen(443, () => {
     console.log('server is listening on port 5000...')
 })
 // -----------------------------------------------------------------------------------
@@ -33,7 +35,7 @@ const io = socket(server)
 
 // these represent a master list of agents and gameObjects in the game
 var agents = new Map();
-var gameObjects = new Map();
+var gameObjects = readData(data);
 
 // set linking socket ids to player ids
 var socketToID = new Map();

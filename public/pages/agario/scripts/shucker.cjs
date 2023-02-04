@@ -5,7 +5,6 @@ const shucker = function(map, initialRequest) {
             obj.keys.push(key);
             var agent = map.get(key)
             if (agent.state == "alive") {
-                // console.log(key + " is alive")
                 obj[key] = {
                     x: agent.x,
                     y: agent.y,
@@ -13,7 +12,6 @@ const shucker = function(map, initialRequest) {
                     state: "alive",
                 }
             } else {
-                // console.log(key + " is not alive")
                 obj[key] = {
                     state: agent.state,
                 }
