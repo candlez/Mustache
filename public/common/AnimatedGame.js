@@ -58,7 +58,7 @@ export default class AnimatedGame {
         this.#player = null;
         this.#scale = 1;
 
-        this.#socket = io.connect('http://localhost:5000')
+        this.#socket = io.connect(window.location.hostname);
     }
 
     // standard getters and setters

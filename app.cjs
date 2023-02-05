@@ -2,6 +2,8 @@ const express = require('express')
 const path = require('path')
 const app = express()
 const socket = require('socket.io')
+
+// app specific
 const dataShucker = require('./public/pages/agario/scripts/shucker.cjs')
 const data = require('./map_presets/razor_royale_one/game_objects.json')
 const readData = require('./public/pages/razor_royale/scripts/read_data.cjs')
@@ -62,6 +64,7 @@ function changedTimeOut(id) {
         startTimer(id);
     }
 }
+
 
 io.sockets.on('connection', (socket) => {
     socket.on("requestPlayerID", (data) => {
