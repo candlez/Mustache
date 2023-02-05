@@ -26,8 +26,8 @@ app.get('/razor_royale', (req, res) => {
     res.sendFile(path.resolve(__dirname, './public/pages/razor_royale/razor_royale.html'))
 })
 
-const server = app.listen(443, () => {
-    console.log('server is listening on port 5000...')
+const server = app.listen(80, () => {
+    console.log('server is listening on port 80...')
 })
 // -----------------------------------------------------------------------------------
 // socket stuff ----------------------------------------------------------------------
