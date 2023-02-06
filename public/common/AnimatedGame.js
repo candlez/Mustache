@@ -169,7 +169,7 @@ export default class AnimatedGame {
         if (agent.getIsPlayer()) {
             this.setPlayer(agent);
         }
-        if (agent.getOpacity() == 1) {
+        else if (agent.getOpacity() == 1) {
             this.getBlocking().push(agent);
         }
     }
