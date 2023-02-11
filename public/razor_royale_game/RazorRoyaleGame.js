@@ -43,6 +43,17 @@ export default class RazorRoyaleGame extends AnimatedGame {
         this.addAgent(newPlayer);
     }
 
+    addObjectFromData(key, object) { // update this as new types of objects are added
+        this.requestObjectProperties(key);
+        if (object.type == "wall") {
+            var wall = Wall.createPropertyless(key, this, object.x, object.y);
+            this.addObject(wall);
+            this.getBlocking().push(wall);
+        } else {
+            console.log("unrecognized GameObject type")
+        }
+    }
+
     addAgentFromData(key, agent) {
         this.requestAgentProperties(key);
         this.addAgent(new Mustache(key, this, false, agent.x, agent.y, {
@@ -91,11 +102,11 @@ export default class RazorRoyaleGame extends AnimatedGame {
             ] 
         ));
 
-        game.addObject(new Wall("firstWall", game, 5000, 5000, 200, 200, "crimson"));
-        game.addObject(new Wall("secondWall", game, 5000, 4800, 200, 200, "crimson"));
-        game.addObject(new Wall("thirdWall", game, 5000, 4600, 200, 200, "crimson"));
-        game.addObject(new Wall("fourthWall", game, 5000, 4400, 200, 200, "crimson"));
-        game.addObject(new Wall("fifthWall", game, 5000, 4200, 200, 200, "crimson"));
+        // game.addObject(new Wall("firstWall", game, 5000, 5000, 200, 200, "crimson"));
+        // game.addObject(new Wall("secondWall", game, 5000, 4800, 200, 200, "crimson"));
+        // game.addObject(new Wall("thirdWall", game, 5000, 4600, 200, 200, "crimson"));
+        // game.addObject(new Wall("fourthWall", game, 5000, 4400, 200, 200, "crimson"));
+        // game.addObject(new Wall("fifthWall", game, 5000, 4200, 200, 200, "crimson"));
 
         game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, { // properties
             animation: {
@@ -113,6 +124,7 @@ export default class RazorRoyaleGame extends AnimatedGame {
 
         game.waitForServerUpdates();
         game.waitForAgentProperties();
+        game.waitForObjectProperties();
         game.waitForPlayerDisconnects();
 
         game.requestServerData(true);

@@ -275,11 +275,18 @@ export default class AnimatedGame {
         this.getSocket().emit("requestServerData", initialRequest);
     }
 
+    requestObjectProperties(id) {
+        var data = {
+            id: id,
+        }
+        this.getSocket().emit("requestObjectProperties", data);
+    }
+
     requestAgentProperties(id) {
         var data = {
             id: id,
         }
-        this.getSocket().emit("requestProperties", data);
+        this.getSocket().emit("requestAgentProperties", data);
     }
 
     sendPlayerDataToServer() {
@@ -353,6 +360,7 @@ export default class AnimatedGame {
      * draws a frame based on currently available data
      */
     animateFrame() {
+        // console.log(this.getObjects())
         this.intrepretTestingKeys()
         this.updatePositionData();
         this.requestServerData(false);
@@ -410,8 +418,9 @@ export default class AnimatedGame {
     
     gameAnimationLoop() {
         const game = this;
-
+        
         function animationLoop() {
+            // console.log(game.getObjects())
             game.animateFrame();
             if (game.getGameState() == "alive") {
                 requestAnimationFrame(animationLoop);
@@ -452,6 +461,16 @@ export default class AnimatedGame {
         })
     }
 
+    addObjectFromData(key, object) {
+        this.requestObjectProperties(key);
+        this.addObject(new GameObject(key, this, object.x, object.y, {
+            animation: {
+                type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
+            },
+            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE
+        }))
+    }
+
     addAgentFromData(key, agent) {
         this.requestAgentProperties(key);
         this.addAgent(new Agent(key, this, false, agent.x, agent.y, { // properties (no animation style)
@@ -462,17 +481,35 @@ export default class AnimatedGame {
         }))
     }
 
+    updateObjectFromData(key, object) {
+        this.getObjects().get(key).setXCoord(object.x);
+        this.getObjects().get(key).setYCoord(object.y);
+    }
+
     updateAgentFromData(key, agent) {
         this.getAgents().get(key).setXCoord(agent.x);
         this.getAgents().get(key).setYCoord(agent.y);
+    }
+
+    updateGameObjects(gameObjectsObject) {
+        gameObjectsObject.keys.forEach((key) => {
+            if (this.getObjects().get(key) == null) {
+                this.addObjectFromData(key, gameObjectsObject[key]);
+                // this.requestObjectProperties(key);
+            } else {
+                if (gameObjectsObject[key].state == "alive") {
+                    this.updateObjectFromData(key, gameObjectsObject[key])
+                }
+            }
+        })
     }
 
     updateAgents(agentsObject) {
         agentsObject.keys.forEach((key) => {
             if (this.getAgents().get(key) == null) {
                 if (agentsObject[key].state == "alive") {
-                    this.addAgentFromData(key, agentsObject[key])
-                    this.requestAgentProperties(key)
+                    this.addAgentFromData(key, agentsObject[key]);
+                    // this.requestAgentProperties(key);
                 }
             } else {
                 if (agentsObject[key].state == "alive" && key != this.getPlayer().getID()) {
@@ -482,13 +519,16 @@ export default class AnimatedGame {
         })
     }
 
-    updateGameObjects(gameObjectsObject) {
-        // this is for when we add game objects that aren't agents
+    waitForObjectProperties() {
+        this.getSocket().on("sentObjectProperties", (data) => {
+            console.log("properties for " + data.id + " recieved");
+            this.getObjects().get(data.id).setProperties(data.properties)
+        })
     }
 
     waitForAgentProperties() {
-        this.getSocket().on("sentProperties", (data) => {
-            console.log("properties recieved");
+        this.getSocket().on("sentAgentProperties", (data) => {
+            console.log("properties for " + data.id + " recieved");
             this.getAgents().get(data.id).setProperties(data.properties)
         })
     }
@@ -496,7 +536,7 @@ export default class AnimatedGame {
     waitForServerUpdates() {
         this.getSocket().on("sentServerData", (data) => {
             this.updateAgents(data.agents);
-            this.updateGameObjects(data.gameObject);
+            this.updateGameObjects(data.gameObjects);
         })
     }
 

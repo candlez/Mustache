@@ -1,0 +1,31 @@
+{
+    "gameObjects": [
+        {
+            "id": "wallOne",
+            "type": "wall",
+            "xCoord": 5000,
+            "yCoord": 5000,
+            "properties": { 
+                "animation": {
+                    "color": "crimson",
+                    "width": 200,
+                    "height": 200
+                }
+            }
+        },
+        {
+            "id": "wallTwo",
+            "type": "wall",
+            "xCoord": 5000,
+            "yCoord": 4800,
+            "properties": { 
+                "animation": {
+                    "color": "crimson",
+                    "width": 200,
+                    "height": 200
+                }
+            }
+            
+        }
+    ]
+}

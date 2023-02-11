@@ -1,0 +1,12 @@
+{
+    "mapPresets": [
+        {
+            "id": "map1",
+            "folderName": "razor_royale_one"
+        },
+        {
+            "id": "map2",
+            "folderName": "razor_royale_two"
+        }
+    ]
+}

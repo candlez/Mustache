@@ -4,9 +4,10 @@ const app = express()
 const socket = require('socket.io')
 
 // app specific
-const dataShucker = require('./public/pages/agario/scripts/shucker.cjs')
-const data = require('./map_presets/razor_royale_one/game_objects.json')
-const readData = require('./public/pages/razor_royale/scripts/read_data.cjs')
+const dataShucker = require('./app_scripts/shucker.cjs')
+// const data = require('./map_presets/razor_royale_one/game_objects.json')
+// const readData = require('./public/pages/razor_royale/scripts/read_data.cjs')
+const mapLoadingFunctions = require('./app_scripts/load_map.cjs')
 
 
 app.use(express.static('./public')) // static means it's a static website
@@ -37,7 +38,7 @@ const io = socket(server)
 
 // these represent a master list of agents and gameObjects in the game
 var agents = new Map();
-var gameObjects = readData(data);
+var gameObjects = new Map() // readData(data);
 
 // set linking socket ids to player ids
 var socketToID = new Map();
@@ -56,7 +57,7 @@ function resetTimer(id) {
     startTimer(id);
 }
 
-function changedTimeOut(id) {
+function changedTimeOut(id, map) {
     if (agents.get(id).changed) {
         resetTimer(id);
     } else {
@@ -65,6 +66,8 @@ function changedTimeOut(id) {
     }
 }
 
+
+mapLoadingFunctions.loadMap(gameObjects, "razor_royale_maps")
 
 io.sockets.on('connection', (socket) => {
     socket.on("requestPlayerID", (data) => {
@@ -107,15 +110,21 @@ io.sockets.on('connection', (socket) => {
 
     socket.on("requestServerData", (initialRequest) => {
         var returnData = {
-            agents: dataShucker(agents, initialRequest),
-            gameObjects: dataShucker(gameObjects, initialRequest),
+            agents: dataShucker.agentShucker(agents, initialRequest),
+            gameObjects: dataShucker.gameObjectShucker(gameObjects, initialRequest),
         }
         io.to(socket.id).emit("sentServerData", returnData);
     })
 
-    socket.on("requestProperties", (data) => {
+    socket.on("requestObjectProperties", (data) => {
         console.log("properties for: " + data.id + " requested from: " + socket.id)
-        io.to(socket.id).emit("sentProperties", {id: data.id, properties: agents.get(data.id).properties})
+        console.log(gameObjects.get(data.id).properties)
+        io.to(socket.id).emit("sentObjectProperties", {id: data.id, properties: gameObjects.get(data.id).properties})
+    })
+
+    socket.on("requestAgentProperties", (data) => {
+        console.log("properties for: " + data.id + " requested from: " + socket.id)
+        io.to(socket.id).emit("sentAgentProperties", {id: data.id, properties: agents.get(data.id).properties})
     })
 
     socket.on("disconnect", (reason) => {
