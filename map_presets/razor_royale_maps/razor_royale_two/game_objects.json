@@ -7,10 +7,12 @@
             "yCoord": 5000,
             "properties": { 
                 "animation": {
+                    "type": 2,
                     "color": "crimson",
                     "width": 200,
                     "height": 200
-                }
+                },
+                "opacity": 1
             }
         },
         {
@@ -20,10 +22,44 @@
             "yCoord": 4800,
             "properties": { 
                 "animation": {
+                    "type": 2,
                     "color": "crimson",
                     "width": 200,
                     "height": 200
-                }
+                },
+                "opacity": 1
+            }
+            
+        },
+        {
+            "id": "wallThree",
+            "type": "wall",
+            "xCoord": 4800,
+            "yCoord": 4800,
+            "properties": { 
+                "animation": {
+                    "type": 2,
+                    "color": "crimson",
+                    "width": 200,
+                    "height": 200
+                },
+                "opacity": 1
+            }
+            
+        },
+        {
+            "id": "wallFour",
+            "type": "wall",
+            "xCoord": 4800,
+            "yCoord": 4600,
+            "properties": { 
+                "animation": {
+                    "type": 2,
+                    "color": "crimson",
+                    "width": 200,
+                    "height": 200
+                },
+                "opacity": 1
             }
             
         }

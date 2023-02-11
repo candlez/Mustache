@@ -420,7 +420,6 @@ export default class AnimatedGame {
         const game = this;
         
         function animationLoop() {
-            // console.log(game.getObjects())
             game.animateFrame();
             if (game.getGameState() == "alive") {
                 requestAnimationFrame(animationLoop);

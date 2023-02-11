@@ -118,7 +118,6 @@ io.sockets.on('connection', (socket) => {
 
     socket.on("requestObjectProperties", (data) => {
         console.log("properties for: " + data.id + " requested from: " + socket.id)
-        console.log(gameObjects.get(data.id).properties)
         io.to(socket.id).emit("sentObjectProperties", {id: data.id, properties: gameObjects.get(data.id).properties})
     })
 
