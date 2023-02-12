@@ -58,12 +58,7 @@ export default class RazorRoyaleGame extends AnimatedGame {
 
         game.setPlayerSpawnZone(new SpawnZone("playerSpawnZone", game, 5000, 5000, {
             left: 1000, top: 1000, right: 9000, bottom: 9000
-        }, {
-            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE,
-            }
-        }))
+        }, SpawnZone.DEFAULT_PROPERTIES))
         
         game.spawnPlayer(playerName, playerColor);
 

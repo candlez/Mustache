@@ -6,6 +6,13 @@ export default class SpawnZone extends GameObject {
     #width;
     #height;
 
+    static DEFAULT_PROPERTIES = {
+        opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+        Animation: {
+            type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
+        }
+    }
+
     /**
      * instantiates a new SpawnZone object
      * 
