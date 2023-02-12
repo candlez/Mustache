@@ -1,4 +1,5 @@
 const fs = require('fs/promises');
+const timers = require('./timers.cjs');
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -28,8 +29,11 @@ const loadMap = async function(objectMap, mapFolder) {
             x: object.xCoord,
             y: object.yCoord,
             properties: object.properties,
-            state: "alive"
-        })
+            state: "alive",
+            changed: false,
+            timer: null
+        });
+        timers.changedTimeOut(objectMap, object.id);
     }
 }
 

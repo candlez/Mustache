@@ -5,8 +5,7 @@ const socket = require('socket.io')
 
 // app specific
 const dataShucker = require('./app_scripts/shucker.cjs')
-// const data = require('./map_presets/razor_royale_one/game_objects.json')
-// const readData = require('./public/pages/razor_royale/scripts/read_data.cjs')
+const timers = require('./app_scripts/timers.cjs')
 const mapLoadingFunctions = require('./app_scripts/load_map.cjs')
 
 
@@ -43,28 +42,7 @@ var gameObjects = new Map() // readData(data);
 // set linking socket ids to player ids
 var socketToID = new Map();
 
-// timer functions
-function resetChange(id) {
-    agents.get(id).changed = false;
-}
 
-function startTimer(id) {
-    agents.get(id).timer = setTimeout(resetChange, 250, id)
-}
-
-function resetTimer(id) {
-    clearTimeout(agents.get(id).timer);
-    startTimer(id);
-}
-
-function changedTimeOut(id, map) {
-    if (agents.get(id).changed) {
-        resetTimer(id);
-    } else {
-        agents.get(id).changed = true;
-        startTimer(id);
-    }
-}
 
 
 mapLoadingFunctions.loadMap(gameObjects, "razor_royale_maps")
@@ -78,7 +56,7 @@ io.sockets.on('connection', (socket) => {
     socket.on("playerMoved", (data) => {
         agents.get(data.id).x = data.x;
         agents.get(data.id).y = data.y;
-        changedTimeOut(data.id);
+        timers.changedTimeOut(agents, data.id);
 
         // example code
         // you can alter stuff in here
@@ -105,7 +83,7 @@ io.sockets.on('connection', (socket) => {
             timer: null,
         });
         socketToID.set(socket.id, data.id);
-        changedTimeOut(data.id);
+        timers.changedTimeOut(agents, data.id);
     });
 
     socket.on("requestServerData", (initialRequest) => {

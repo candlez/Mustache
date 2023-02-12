@@ -454,7 +454,6 @@ export default class AnimatedGame {
         }
         this.getBlocking().forEach((blockingObject) => {
             if (blockingObject.isPointWithinBounds(xCoord, yCoord)) {
-                console.log("blocking detected!")
                 throw new RangeError("hit blocking object", {cause: blockingObject.getBounds()});
             }
         })
@@ -494,7 +493,6 @@ export default class AnimatedGame {
         gameObjectsObject.keys.forEach((key) => {
             if (this.getObjects().get(key) == null) {
                 this.addObjectFromData(key, gameObjectsObject[key]);
-                // this.requestObjectProperties(key);
             } else {
                 if (gameObjectsObject[key].state == "alive") {
                     this.updateObjectFromData(key, gameObjectsObject[key])
@@ -508,7 +506,6 @@ export default class AnimatedGame {
             if (this.getAgents().get(key) == null) {
                 if (agentsObject[key].state == "alive") {
                     this.addAgentFromData(key, agentsObject[key]);
-                    // this.requestAgentProperties(key);
                 }
             } else {
                 if (agentsObject[key].state == "alive" && key != this.getPlayer().getID()) {
