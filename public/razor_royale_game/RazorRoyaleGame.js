@@ -56,12 +56,7 @@ export default class RazorRoyaleGame extends AnimatedGame {
 
     addAgentFromData(key, agent) {
         this.requestAgentProperties(key);
-        this.addAgent(new Mustache(key, this, false, agent.x, agent.y, {
-            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE,
-            }
-        }))
+        this.addAgent(Mustache.createPropertyless(key, this, false, agent.x, agent.y));
     }
 
     /**
