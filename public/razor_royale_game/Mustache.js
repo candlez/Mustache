@@ -26,4 +26,10 @@ export default class Mustache extends Agent {
     static createPropertyless(id, game, isPlayer, xCoord, yCoord) {
         return new Mustache(id, game, isPlayer, xCoord, yCoord, Mustache.PROPERTYLESS);
     }
+
+    static createNewlySpawned(id, game, isPlayer, xCoord, yCoord, color) {
+        var properties = Mustache.SPAWN_PROPERTIES;
+        properties.animation.color = color;
+        return new Mustache(id, game, isPlayer, xCoord, yCoord, properties);
+    }
 }

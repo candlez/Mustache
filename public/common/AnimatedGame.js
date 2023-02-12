@@ -169,7 +169,7 @@ export default class AnimatedGame {
         if (agent.getIsPlayer()) {
             this.setPlayer(agent);
         }
-        else if (agent.getOpacity() == 1) {
+        else if (agent.getOpacity() == GameObject.PROPERTIES.OPACITY.BLOCKING) {
             this.getBlocking().push(agent);
         }
     }
@@ -295,7 +295,7 @@ export default class AnimatedGame {
             id: player.getID(),
             x: player.getXCoord(),
             y: player.getYCoord(),
-            properties: this.generateSpawnProperties(player.getColor())
+            properties: player.getProperties()
         }
         this.getSocket().emit("playerSpawned", data);
     }
@@ -360,7 +360,6 @@ export default class AnimatedGame {
      * draws a frame based on currently available data
      */
     animateFrame() {
-        // console.log(this.getObjects())
         this.intrepretTestingKeys()
         this.updatePositionData();
         this.requestServerData(false);
@@ -525,6 +524,7 @@ export default class AnimatedGame {
     waitForAgentProperties() {
         this.getSocket().on("sentAgentProperties", (data) => {
             console.log("properties for " + data.id + " recieved");
+            console.log(data.properties)
             this.getAgents().get(data.id).setProperties(data.properties)
         })
     }
@@ -552,7 +552,7 @@ export default class AnimatedGame {
         })
     }
 
-    generateSpawnProperties() {
+    generateSpawnProperties() { // remove this
         return {
             opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
             animation: {

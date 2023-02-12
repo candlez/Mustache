@@ -12,15 +12,6 @@ import TestingKeyLoggerContainer from '../common/TestingKeyLoggerContainer.js';
 
 export default class RazorRoyaleGame extends AnimatedGame {
 
-    static SPAWN_PROPERTIES = {
-        opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-        animation: {
-            type: GameObject.PROPERTIES.ANIMATION.TYPE.RECTANGLE,
-            width: 200,
-            height: 200,
-        }
-    }
-
     /**
      * initializes a new RazorRoyaleGame object
      * 
@@ -31,16 +22,9 @@ export default class RazorRoyaleGame extends AnimatedGame {
         super(width, height);
     }
 
-    generateSpawnProperties(color) {
-        var properties = RazorRoyaleGame.SPAWN_PROPERTIES;
-        properties.animation.color = color;
-        return properties;
-    }
-
     spawnPlayer(id, color) {
         var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
-        var newPlayer = new Mustache(id, this, true, spawnCoords.x, spawnCoords.y, this.generateSpawnProperties(color));
-        this.addAgent(newPlayer);
+        this.addAgent(Mustache.createNewlySpawned(id, this, true, spawnCoords.x, spawnCoords.y, color));
     }
 
     addObjectFromData(key, object) { // update this as new types of objects are added
