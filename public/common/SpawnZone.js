@@ -8,7 +8,7 @@ export default class SpawnZone extends GameObject {
 
     static DEFAULT_PROPERTIES = {
         opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-        Animation: {
+        animation: {
             type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
         }
     }

@@ -3,13 +3,6 @@ import GameObject from "../common/GameObject.js";
 
 export default class Mustache extends Agent {
 
-    static PROPERTYLESS = {
-        opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-        animation: {
-            type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
-        }
-    }
-
     static SPAWN_PROPERTIES = {
         opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
         animation: {

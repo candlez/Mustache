@@ -56,6 +56,7 @@ export default class RazorRoyaleGame extends AnimatedGame {
 
         game.setAssetContainer(new AssetContainer());
 
+        console.log(SpawnZone.DEFAULT_PROPERTIES)
         game.setPlayerSpawnZone(new SpawnZone("playerSpawnZone", game, 5000, 5000, {
             left: 1000, top: 1000, right: 9000, bottom: 9000
         }, SpawnZone.DEFAULT_PROPERTIES))

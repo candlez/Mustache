@@ -15,7 +15,6 @@ export default class GameObject {
 
     // static property values
     static PROPERTIES = {
-        // to-do add static properties to compare to
         ANIMATION: {
             TYPE: {
                 NONE: 0,
@@ -27,6 +26,13 @@ export default class GameObject {
         OPACITY: {
             INVISIBLE: 0,
             BLOCKING: 1,
+        }
+    }
+
+    static PROPERTYLESS = {
+        opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
+        animation: {
+            type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
         }
     }
 

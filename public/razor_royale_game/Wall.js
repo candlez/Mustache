@@ -2,13 +2,6 @@ import GameObject from "../common/GameObject.js";
 
 export default class Wall extends GameObject {
 
-    static PROPERTYLESS = {
-        opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE,
-        animation: {
-            type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
-        }
-    }
-
     constructor(id, game, xCoord, yCoord, width, height, color) {
         super(id, game, xCoord, yCoord, {
             opacity: GameObject.PROPERTIES.OPACITY.BLOCKING,
