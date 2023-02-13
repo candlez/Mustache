@@ -461,14 +461,11 @@ export default class AnimatedGame {
         })
     }
 
-    addObjectFromData(key, object) { // should be abstract
-        this.requestObjectProperties(key);
-        this.addObject(new GameObject(key, this, object.x, object.y, {
-            animation: {
-                type: GameObject.PROPERTIES.ANIMATION.TYPE.NONE
-            },
-            opacity: GameObject.PROPERTIES.OPACITY.INVISIBLE
-        }))
+    /**
+     * abstract
+     */
+    addObjectFromData() { // should be abstract
+        throw new Error("addObjectFromData is an abstract method and should not be called");
     }
 
     addAgentFromData(key, agent) { // should be abstract
