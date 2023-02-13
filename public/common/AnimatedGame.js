@@ -3,6 +3,9 @@ import GameMap from './GameMap.js'
 import AssetContainer from './AssetContainer.js';
 import GameObject from "./GameObject.js";
 
+/**
+ * this class is abstract
+ */
 export default class AnimatedGame {
     // fields
     #width;
@@ -324,7 +327,7 @@ export default class AnimatedGame {
      * 
      * @returns - an array of the page width and height
      */
-    getPageDimensions() {
+    getPageDimensions() { // what is this for?
         return [window.innerWidth, window.innerHeight];
     }
 
@@ -458,7 +461,7 @@ export default class AnimatedGame {
         })
     }
 
-    addObjectFromData(key, object) {
+    addObjectFromData(key, object) { // should be abstract
         this.requestObjectProperties(key);
         this.addObject(new GameObject(key, this, object.x, object.y, {
             animation: {
@@ -468,7 +471,7 @@ export default class AnimatedGame {
         }))
     }
 
-    addAgentFromData(key, agent) {
+    addAgentFromData(key, agent) { // should be abstract
         this.requestAgentProperties(key);
         this.addAgent(Agent.createPropertyless(key, this, false, agent.x, agent.y));
     }
@@ -556,7 +559,7 @@ export default class AnimatedGame {
         };
     }
 
-    spawnPlayer(id) {
+    spawnPlayer(id) { // make abstract because agent is an abstract class
         var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
         var newAgent = new Agent(id, this, true, spawnCoords.x, spawnCoords.y, this.generateSpawnProperties())
         this.addAgent(newAgent);
@@ -570,7 +573,7 @@ export default class AnimatedGame {
         this.gameAnimationLoop();
     }
 
-    static playGame(width, height) {
-        const game = new AnimatedGame(width, height);
+    static playGame(width, height) { // should be abstract
+        throw new Error("playGame is an abstract method and should not be called")
     }
 }
