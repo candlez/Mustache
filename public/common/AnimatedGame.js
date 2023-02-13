@@ -559,10 +559,11 @@ export default class AnimatedGame {
         };
     }
 
-    spawnPlayer(id) { // make abstract because agent is an abstract class
-        var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
-        var newAgent = new Agent(id, this, true, spawnCoords.x, spawnCoords.y, this.generateSpawnProperties())
-        this.addAgent(newAgent);
+    /**
+     * abstract
+     */
+    spawnPlayer() {
+        throw new Error("spawnPlayer is an abstract method and should not be called")
     }
 
     startGame() {
@@ -573,7 +574,10 @@ export default class AnimatedGame {
         this.gameAnimationLoop();
     }
 
-    static playGame(width, height) { // should be abstract
+    /**
+     * abstract
+     */
+    static playGame() {
         throw new Error("playGame is an abstract method and should not be called")
     }
 }
