@@ -464,13 +464,15 @@ export default class AnimatedGame {
     /**
      * abstract
      */
-    addObjectFromData() { // should be abstract
+    addObjectFromData() {
         throw new Error("addObjectFromData is an abstract method and should not be called");
     }
 
-    addAgentFromData(key, agent) { // should be abstract
-        this.requestAgentProperties(key);
-        this.addAgent(Agent.createPropertyless(key, this, false, agent.x, agent.y));
+    /**
+     * abstract
+     */
+    addAgentFromData() {
+        throw new Error("addAgentFromData is an abstract method and should not be called")
     }
 
     updateObjectFromData(key, object) {
