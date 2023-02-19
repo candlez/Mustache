@@ -62,6 +62,13 @@ export default class ElectricityManager extends SpawnZone {
 
     spawnElectricityAtIndex(index) {
         var spawn = this.generateSpawnCoords();
+        try {
+            this.getGame().pointValidation(spawn.x, spawn.y);
+        } catch (error) {
+            console.log(spawn, error)
+            this.spawnElectricityAtIndex(index);
+            return;
+        }
         this.#electricity[index] = new Electricity(this.generateElectricityID(index), this.getGame(), spawn.x, spawn.y);
         this.getGame().addObject(this.#electricity[index]);
         this.#currentElectricity++;

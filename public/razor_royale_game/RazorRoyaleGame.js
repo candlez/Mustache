@@ -34,6 +34,25 @@ export default class RazorRoyaleGame extends AnimatedGame {
     }
 
     // methods
+    intrepretTestingKeys() {
+        const loggers = this.getTestingKeyLogger().getKeyLoggers();
+        if (loggers.get("9").getKeyDown()) {
+            this.getElectricityManagers()[0].fill();
+        }
+        if (loggers.get("8").getKeyDown()) {
+            console.log("8 was pressed");
+        }
+        if (loggers.get("7").getKeyDown()) {
+            console.log("7 was pressed");
+        }
+        if (loggers.get("6").getKeyDown()) {
+            console.log("6 was pressed");
+        }
+        if (loggers.get("5").getKeyDown()) {
+            console.log("5 was pressed");
+        }
+    }
+
     spawnPlayer(id, color) {
         var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
         this.addAgent(Mustache.createNewlySpawned(id, this, true, spawnCoords.x, spawnCoords.y, color));
@@ -44,7 +63,6 @@ export default class RazorRoyaleGame extends AnimatedGame {
             this.requestObjectProperties(key);
             var wall = Wall.createPropertyless(key, this, object.x, object.y);
             this.addObject(wall);
-            this.getBlocking().push(wall);
         } else if (object.type == "electricityManager") {
             var electricityManager = new ElectricityManager(
                 key, 
@@ -57,7 +75,6 @@ export default class RazorRoyaleGame extends AnimatedGame {
             );
             this.addObject(electricityManager);
             this.getElectricityManagers().push(electricityManager);
-            this.getElectricityManagers()[0].fill();
         } else {
             console.log("unrecognized GameObject type")
         }

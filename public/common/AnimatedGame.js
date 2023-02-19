@@ -364,7 +364,6 @@ export default class AnimatedGame {
      * draws a frame based on currently available data
      */
     animateFrame() {
-        // console.log(this.getBlocking())
         this.intrepretTestingKeys()
         this.updatePositionData();
         this.requestServerData(false);
@@ -516,7 +515,10 @@ export default class AnimatedGame {
     waitForObjectProperties() {
         this.getSocket().on("sentObjectProperties", (data) => {
             console.log("properties for " + data.id + " recieved");
-            this.getObjects().get(data.id).setProperties(data.properties)
+            this.getObjects().get(data.id).setProperties(data.properties);
+            if (data.properties.opacity == GameObject.PROPERTIES.OPACITY.BLOCKING) {
+                this.getBlocking().push(this.getObjects().get(data.id));
+            }
         })
     }
 

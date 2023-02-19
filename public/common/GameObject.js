@@ -251,7 +251,7 @@ export default class GameObject {
     /**
      * 
      * @param {Number} xCoord - xCoord being tested
-     * @param {NUmber} yCoord - yCoord being tested
+     * @param {Number} yCoord - yCoord being tested
      * @returns - whether or not the point is within the bounds of the object
      */
     isPointWithinBounds(xCoord, yCoord) {
