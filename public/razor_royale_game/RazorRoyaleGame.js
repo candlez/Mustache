@@ -40,16 +40,28 @@ export default class RazorRoyaleGame extends AnimatedGame {
             this.getElectricityManagers()[0].fill();
         }
         if (loggers.get("8").getKeyDown()) {
-            console.log("8 was pressed");
+            this.spawnElectricity(1);
         }
         if (loggers.get("7").getKeyDown()) {
-            console.log("7 was pressed");
+            this.spawnElectricity(5);
         }
         if (loggers.get("6").getKeyDown()) {
             console.log("6 was pressed");
         }
         if (loggers.get("5").getKeyDown()) {
             console.log("5 was pressed");
+        }
+    }
+
+    spawnElectricity(count) {
+        if (count < 1) {
+            throw new RangeError("cant spawn less than 1 electricity");
+        }
+        while (count > 0) {
+            var electricityManagers = this.getElectricityManagers()
+            var index = Math.floor(Math.random() * electricityManagers.length);
+            electricityManagers[index].spawnElectricity(1);
+            count--;
         }
     }
 
