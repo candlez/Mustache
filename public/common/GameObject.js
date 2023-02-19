@@ -267,28 +267,6 @@ export default class GameObject {
         }
     }
 
-    movementErrorHandling(error) {
-
-    }
-
-    /*
-    if you have a positive xChange and violate a horizontal bounds, then you need to be set to the left bounds
-    if you have a negative xChange and violate a horizontal bounds, then you need to be set to the right bounds
-    if you have a positive yChange and violate a vertical bounds, then you need to be set to the bottom bounds
-    if you have a negative yChange and violate a vertical bounds, then you need to be set to the top bounds
-    */
-
-    /*
-    1. find new coords
-    2. check if new coords are legal
-    3. check if new bounds are legal
-    4. correct the error if there is one
-    */
-
-    /*
-    should I change this so that it simply takes the new coords as arguments?
-    */
-
     /**
      * changes the absolute coordinates of the Agent
      * 

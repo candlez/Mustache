@@ -193,7 +193,8 @@ export default class AnimatedGame {
         if (object instanceof GameObject) {
             this.#objects.set(object.getID(), object);
         }
-        if (object.getOpacity() == 1) {
+        if (object.getOpacity() == GameObject.PROPERTIES.OPACITY.BLOCKING) {
+            console.log(object)
             this.getBlocking().push(object);
         }
     }
@@ -363,6 +364,7 @@ export default class AnimatedGame {
      * draws a frame based on currently available data
      */
     animateFrame() {
+        // console.log(this.getBlocking())
         this.intrepretTestingKeys()
         this.updatePositionData();
         this.requestServerData(false);

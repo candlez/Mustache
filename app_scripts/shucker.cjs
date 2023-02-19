@@ -29,11 +29,22 @@ const gameObjectShucker = function(gameObjects, initialRequest) {
             obj.keys.push(key);
             var gameObject = gameObjects.get(key);
             if (gameObject.state == "alive") {
-                obj[key] = {
-                    x: gameObject.x,
-                    y: gameObject.y,
-                    type: gameObject.type,
-                    state: gameObject.state
+                if (gameObject.type == "electricityManager") {
+                    obj[key] = {
+                        x: gameObject.x,
+                        y: gameObject.y,
+                        bounds: gameObject.bounds,
+                        max: gameObject.max,
+                        type: gameObject.type,
+                        state: gameObject.state
+                    }
+                } else {
+                    obj[key] = {
+                        x: gameObject.x,
+                        y: gameObject.y,
+                        type: gameObject.type,
+                        state: gameObject.state
+                    }
                 }
             } else {
                 obj[key] = {

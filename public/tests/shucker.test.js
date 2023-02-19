@@ -1,4 +1,4 @@
-import {shucker} from '../pages/agario/scripts/shucker.js';
+import {shucker} from '../../app_scripts/shucker.cjs';
 
 describe('testing for the shucker script', () => {
     var map;

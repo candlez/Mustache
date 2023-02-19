@@ -69,7 +69,7 @@ io.sockets.on('connection', (socket) => {
     });
 
     socket.on("playerEaten", (data) => {
-
+        // remove
     });
 
     socket.on("playerSpawned", (data) => {

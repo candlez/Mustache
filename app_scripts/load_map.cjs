@@ -24,17 +24,31 @@ const loadMap = async function(objectMap, mapFolder) {
     const map = await getMapDataByID(mapFolder, mapID);
     for (var i = 0; i < map.gameObjects.length; i++) {
         var object = map.gameObjects[i]
-        objectMap.set(object.id, {
-            type: object.type,
-            x: object.xCoord,
-            y: object.yCoord,
-            properties: object.properties,
-            state: "alive",
-            changed: false,
-            timer: null
-        });
+        if (object.type == "wall") {
+            objectMap.set(object.id, {
+                type: object.type,
+                x: object.xCoord,
+                y: object.yCoord,
+                properties: object.properties,
+                state: "alive",
+                changed: false,
+                timer: null
+            });
+        } else if (object.type == "electricityManager") {
+            objectMap.set(object.id, {
+                type: object.type,
+                x: object.xCoord,
+                y: object.yCoord,
+                bounds: object.bounds,
+                max: object.max,
+                state: "alive",
+                changed: false,
+                timer: null
+            });
+        }
         timers.changedTimeOut(objectMap, object.id);
     }
+    console.log(objectMap)
 }
 
 

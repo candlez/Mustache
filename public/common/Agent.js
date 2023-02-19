@@ -28,8 +28,5 @@ export default class Agent extends GameObject {
         return this.#isPlayer;
     }
 
-    // real methods
-    static createPropertyless(id, game, isPlayer, xCoord, yCoord) {
-        return new Agent(id, game, isPlayer, xCoord, yCoord, Agent.PROPERTYLESS);
-    }
+
 }

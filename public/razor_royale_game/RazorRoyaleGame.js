@@ -7,10 +7,14 @@ import SpawnZone from '../common/SpawnZone.js';
 import MapPack from '../common/MapPack.js';
 import GameMap from '../common/GameMap.js';
 import MiniMap from '../common/MiniMap.js';
+import ElectricityManager from './ElectricityManager.js';
 import MovementKeyLoggerContainer from '../common/MovementKeyLoggerContainer.js';
 import TestingKeyLoggerContainer from '../common/TestingKeyLoggerContainer.js';
+import Electricity from './Electricity.js';
 
 export default class RazorRoyaleGame extends AnimatedGame {
+    // fields
+    #electricityManagers
 
     /**
      * initializes a new RazorRoyaleGame object
@@ -20,19 +24,40 @@ export default class RazorRoyaleGame extends AnimatedGame {
      */
     constructor(width, height) {
         super(width, height);
+
+        this.#electricityManagers = [];
     }
 
+    // getters and setters
+    getElectricityManagers() {
+        return this.#electricityManagers;
+    }
+
+    // methods
     spawnPlayer(id, color) {
         var spawnCoords = this.getPlayerSpawnZone().generateSpawnCoords();
         this.addAgent(Mustache.createNewlySpawned(id, this, true, spawnCoords.x, spawnCoords.y, color));
     }
 
     addObjectFromData(key, object) { // update this as new types of objects are added
-        this.requestObjectProperties(key);
         if (object.type == "wall") {
+            this.requestObjectProperties(key);
             var wall = Wall.createPropertyless(key, this, object.x, object.y);
             this.addObject(wall);
             this.getBlocking().push(wall);
+        } else if (object.type == "electricityManager") {
+            var electricityManager = new ElectricityManager(
+                key, 
+                this, 
+                object.x, 
+                object.y, 
+                object.bounds, 
+                object.max,
+                ElectricityManager.DEFAULT_PROPERTIES
+            );
+            this.addObject(electricityManager);
+            this.getElectricityManagers().push(electricityManager);
+            this.getElectricityManagers()[0].fill();
         } else {
             console.log("unrecognized GameObject type")
         }
@@ -56,7 +81,6 @@ export default class RazorRoyaleGame extends AnimatedGame {
 
         game.setAssetContainer(new AssetContainer());
 
-        console.log(SpawnZone.DEFAULT_PROPERTIES)
         game.setPlayerSpawnZone(new SpawnZone("playerSpawnZone", game, 5000, 5000, {
             left: 1000, top: 1000, right: 9000, bottom: 9000
         }, SpawnZone.DEFAULT_PROPERTIES))
@@ -76,12 +100,6 @@ export default class RazorRoyaleGame extends AnimatedGame {
                 {x: 5, y: 5, source: "../assets/thanos_background.jpg"}
             ] 
         ));
-
-        // game.addObject(new Wall("firstWall", game, 5000, 5000, 200, 200, "crimson"));
-        // game.addObject(new Wall("secondWall", game, 5000, 4800, 200, 200, "crimson"));
-        // game.addObject(new Wall("thirdWall", game, 5000, 4600, 200, 200, "crimson"));
-        // game.addObject(new Wall("fourthWall", game, 5000, 4400, 200, 200, "crimson"));
-        // game.addObject(new Wall("fifthWall", game, 5000, 4200, 200, 200, "crimson"));
 
         game.setMiniMap(new MiniMap(game, game.getMap(), game.getPlayer(), 350, { // properties
             animation: {
@@ -103,6 +121,12 @@ export default class RazorRoyaleGame extends AnimatedGame {
         game.waitForPlayerDisconnects();
 
         game.requestServerData(true);
+
+        // var electric = game.getMap().getMaps()[4][4]
+        // var manager = new ElectricityManager(game, electric, 10);
+        // manager.fill();
+        
+        // game.addObject(new Electricity("testing", game, 2000, 2000));
 
         game.startGame();
     }

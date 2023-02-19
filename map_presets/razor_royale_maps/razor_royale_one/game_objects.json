@@ -3,14 +3,14 @@
         {
             "id": "wallOne",
             "type": "wall",
-            "xCoord": 5000,
-            "yCoord": 5000,
+            "xCoord": 5300,
+            "yCoord": 5200,
             "properties": { 
                 "animation": {
                     "type": 2,
                     "color": "crimson",
-                    "width": 200,
-                    "height": 200
+                    "width": 400,
+                    "height": 400
                 },
                 "opacity": 1
             }
@@ -25,11 +25,38 @@
                     "type": 2,
                     "color": "crimson",
                     "width": 200,
-                    "height": 200
+                    "height": 400
                 },
                 "opacity": 1
             }
-            
+        },
+        {
+            "id": "wallThree",
+            "type": "wall",
+            "xCoord": 4950,
+            "yCoord": 5550,
+            "properties": { 
+                "animation": {
+                    "type": 2,
+                    "color": "crimson",
+                    "width": 300,
+                    "height": 300
+                },
+                "opacity": 1
+            }
+        },
+        {
+            "id": "electricityManagerOne",
+            "type": "electricityManager",
+            "xCoord": 5000,
+            "yCoord": 5000,
+            "bounds": {
+                "left": 4000,
+                "top": 4000,
+                "right": 6000,
+                "bottom": 6000
+            },
+            "max": 20
         }
     ]
 }

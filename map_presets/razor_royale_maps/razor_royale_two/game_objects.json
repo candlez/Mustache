@@ -62,6 +62,19 @@
                 "opacity": 1
             }
             
+        },
+        {
+            "id": "electricityManagerOne",
+            "type": "electricityManager",
+            "xCoord": 5000,
+            "yCoord": 5000,
+            "bounds": {
+                "left": 4000,
+                "top": 4000,
+                "right": 6000,
+                "bottom": 6000
+            },
+            "max": 20
         }
     ]
 }
