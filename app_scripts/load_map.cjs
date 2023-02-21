@@ -48,7 +48,6 @@ const loadMap = async function(objectMap, mapFolder) {
         }
         timers.changedTimeOut(objectMap, object.id);
     }
-    console.log(objectMap)
 }
 
 

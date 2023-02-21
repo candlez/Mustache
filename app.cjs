@@ -7,6 +7,7 @@ const socket = require('socket.io')
 const dataShucker = require('./app_scripts/shucker.cjs')
 const timers = require('./app_scripts/timers.cjs')
 const mapLoadingFunctions = require('./app_scripts/load_map.cjs')
+const spawnElectricity = require('./app_scripts/razor_royale/spawn_electricity.cjs')
 
 
 app.use(express.static('./public')) // static means it's a static website
@@ -41,6 +42,7 @@ var gameObjects = new Map() // readData(data);
 
 // set linking socket ids to player ids
 var socketToID = new Map();
+var socketIDs = [];
 
 
 
@@ -48,6 +50,9 @@ var socketToID = new Map();
 mapLoadingFunctions.loadMap(gameObjects, "razor_royale_maps")
 
 io.sockets.on('connection', (socket) => {
+    socketIDs.push(socket.id);
+    console.log(socketIDs)
+
     socket.on("requestPlayerID", (data) => {
         var combinedID = data.id + "." + socket.id;
         io.to(socket.id).emit("sentPlayerID", combinedID)
@@ -102,6 +107,10 @@ io.sockets.on('connection', (socket) => {
     socket.on("requestAgentProperties", (data) => {
         console.log("properties for: " + data.id + " requested from: " + socket.id)
         io.to(socket.id).emit("sentAgentProperties", {id: data.id, properties: agents.get(data.id).properties})
+    })
+
+    socket.on("spawnElectricity", () => {
+        spawnElectricity(io, socketIDs);
     })
 
     socket.on("disconnect", (reason) => {

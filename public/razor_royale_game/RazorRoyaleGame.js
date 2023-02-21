@@ -46,7 +46,7 @@ export default class RazorRoyaleGame extends AnimatedGame {
             this.spawnElectricity(5);
         }
         if (loggers.get("6").getKeyDown()) {
-            console.log("6 was pressed");
+            this.getSocket().emit("spawnElectricity");
         }
         if (loggers.get("5").getKeyDown()) {
             console.log("5 was pressed");
@@ -95,6 +95,13 @@ export default class RazorRoyaleGame extends AnimatedGame {
     addAgentFromData(key, agent) {
         this.requestAgentProperties(key);
         this.addAgent(Mustache.createPropertyless(key, this, false, agent.x, agent.y));
+    }
+
+
+    waitForSpawnElectricity() {
+        this.getSocket().on("spawnElectricity", (data) => {
+            this.spawnElectricity(data);
+        })
     }
 
     /**
@@ -148,14 +155,9 @@ export default class RazorRoyaleGame extends AnimatedGame {
         game.waitForAgentProperties();
         game.waitForObjectProperties();
         game.waitForPlayerDisconnects();
+        game.waitForSpawnElectricity();
 
         game.requestServerData(true);
-
-        // var electric = game.getMap().getMaps()[4][4]
-        // var manager = new ElectricityManager(game, electric, 10);
-        // manager.fill();
-        
-        // game.addObject(new Electricity("testing", game, 2000, 2000));
 
         game.startGame();
     }
