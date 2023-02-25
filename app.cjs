@@ -44,9 +44,6 @@ var gameObjects = new Map() // readData(data);
 var socketToID = new Map();
 var socketIDs = [];
 
-
-
-
 mapLoadingFunctions.loadMap(gameObjects, "razor_royale_maps")
 
 io.sockets.on('connection', (socket) => {

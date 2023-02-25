@@ -2,16 +2,15 @@ body {
 	overflow: hidden;
 }
 #playSpace {
-	position: absolute;
+	position: fixed;
 	border: 1px solid #000000;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	
 }
 
 .miniMapContainer {
-	position: absolute;
+	position: fixed;
 	background-color: ghostwhite;
 	bottom: 1%;
 	/* border-radius: 15px; */
@@ -23,7 +22,7 @@ body {
 }
 
 .miniMap {
-	display: inherit;
+	display: fixed;
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -31,6 +30,6 @@ body {
 }
 
 .assetContainer {
-	position: absolute;
+	position: fixed;
 	top: -750px;
 }

@@ -98,11 +98,11 @@ export default class RazorRoyaleGame extends AnimatedGame {
     }
 
 
-    waitForSpawnElectricity() {
-        this.getSocket().on("spawnElectricity", (data) => {
-            this.spawnElectricity(data);
-        })
-    }
+    // waitForSpawnElectricity() {
+    //     this.getSocket().on("spawnElectricity", (data) => {
+    //         this.spawnElectricity(data);
+    //     })
+    // }
 
     /**
      * 
@@ -146,7 +146,7 @@ export default class RazorRoyaleGame extends AnimatedGame {
         }));
 
         game.waitForPlayerID();
-        game.generatePlayerID();
+        game.getConnection().generatePlayerID();
 
         game.setMovementKeyLogger(new MovementKeyLoggerContainer());
         game.setTestingKeyLogger(new TestingKeyLoggerContainer());
@@ -157,8 +157,9 @@ export default class RazorRoyaleGame extends AnimatedGame {
         game.waitForPlayerDisconnects();
         game.waitForSpawnElectricity();
 
-        game.requestServerData(true);
+        game.getConnection().requestServerData(true);
 
         game.startGame();
+        return game;
     }
 }

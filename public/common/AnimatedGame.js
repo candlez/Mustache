@@ -8,14 +8,15 @@ import GameObject from "./GameObject.js";
  */
 export default class AnimatedGame {
     // fields
-    #width;
-    #height;
-    #canvas;
-    #ctx;
+    #width; // move to Display
+    #height; // move to Display
+    #canvas; // move to Display
+    #ctx; // move to Display
+
     #gameState;
     #map;
-    #miniMap;
-    #assetContainer;
+    #miniMap; // move to Display
+    #assetContainer; // move to Display
     #playerSpawnZone;
     #movementKeyLogger;
     #testingKeyLogger;
@@ -23,8 +24,11 @@ export default class AnimatedGame {
     #objects;
     #blocking;
     #player;
-    #scale;
-    #socket
+    #scale; // move to Display
+    #socket; // move to ServerConnection
+
+    #connection;
+    #display;
 
     /**
      * initializes an AnimatedGame object
@@ -32,26 +36,26 @@ export default class AnimatedGame {
      * @param {Number} width - the width of the canvas
      * @param {Number} height - the height of the canvas
      */
-    constructor(width, height) {
+    constructor(width, height) { // remove parameters? maybe the only parameter passed in should be the connection
         // takes parameters
-        this.#width = width;
-        this.#height = height;
+        this.#width = width; // move to Display
+        this.#height = height; // move to Display
 
         // creates a canvas with parameters, adds it to body
-        this.#canvas = document.createElement('canvas');
-        this.#canvas.id = "playSpace";
-        document.body.appendChild(this.#canvas);
-        this.#canvas.width = width;
-        this.#canvas.height = height;
+        this.#canvas = document.createElement('canvas'); // move to Display
+        this.#canvas.id = "playSpace"; // move to Display
+        document.body.appendChild(this.#canvas); // move to Display
+        this.#canvas.width = width; // move to Display
+        this.#canvas.height = height; // move to Display
 
         // creates context
-        this.#ctx = this.#canvas.getContext('2d');
+        this.#ctx = this.#canvas.getContext('2d'); // move to Display
 
         // fields
         this.#gameState = "initialized";
         this.#map = null;
         this.#miniMap = null;
-        this.#assetContainer = null;
+        this.#assetContainer = null; // move to Display
         this.#playerSpawnZone = null;
         this.#movementKeyLogger = null;
         this.#testingKeyLogger = null;
@@ -59,23 +63,23 @@ export default class AnimatedGame {
         this.#objects = new Map();
         this.#blocking = [];
         this.#player = null;
-        this.#scale = 1;
+        this.#scale = 1; // move to Display
 
-        this.#socket = io.connect(window.location.hostname);
+        this.#socket = io.connect(window.location.hostname); // move to ServerConnection
     }
 
     // standard getters and setters
-    setWidth(newWidth) {
+    setWidth(newWidth) { // move to Display
         this.#width = newWidth;
     }
-    getWidth() {
+    getWidth() { // move to Display
         return this.#width;
     }
-    setHeight(newHeight) {
+    setHeight(newHeight) { // move to Display
         this.#height = newHeight;
         this.#canvas.height = newHeight;
     }
-    getHeight() {
+    getHeight() { // move to Display
         return this.#height;
     }
     setMap(newMap) {
@@ -95,10 +99,10 @@ export default class AnimatedGame {
     getBlocking() {
         return this.#blocking;
     }
-    setScale(scale) {
+    setScale(scale) { // move to Display
         this.#scale = scale;
     }
-    getScale() {
+    getScale() { // move to Display
         return this.#scale;
     }
     setMiniMap(newMiniMap) {
@@ -107,22 +111,22 @@ export default class AnimatedGame {
     getMiniMap() {
         return this.#miniMap;
     }
-    getCTX() {
+    getCTX() { // move to Display
         return this.#ctx;
     }
-    setCanvas(newCanvas) {
+    setCanvas(newCanvas) { // move to Display
         this.#canvas = newCanvas;
         this.#ctx = newCanvas.getContext('2d');
     }
-    getCanvas() {
+    getCanvas() { // move to Display
         return this.#canvas;
     }
-    setAssetContainer(newAssetContainer) {
+    setAssetContainer(newAssetContainer) { // move to Display
         if (newAssetContainer instanceof AssetContainer) {
             this.#assetContainer = newAssetContainer;
         }
     }
-    getAssetContainer() {
+    getAssetContainer() { // move to Display
         return this.#assetContainer;
     }
     setPlayerSpawnZone(newPlayerSpawnZone) {
@@ -155,8 +159,14 @@ export default class AnimatedGame {
     getPlayer() {
         return this.#player;
     }
-    getSocket() {
+    getSocket() { // move to Display
         return this.#socket;
+    }
+    setConnection(newConnection) {
+        this.#connection = newConnection;
+    }
+    getConnection() {
+        return this.#connection;
     }
 
     // real methods
@@ -262,80 +272,71 @@ export default class AnimatedGame {
      * 
      * also updates scale data
      */
-    updatePositionData() {
+    updatePositionData() { // change name to updatePosition
         var change = this.interpretMovementKeys();
         if (change.x != 0 || change.y != 0) {
             this.getPlayer().move(change.x, change.y)
-            var data = {
-                id: this.getPlayer().getID(),
-                x: this.getPlayer().getXCoord(),
-                y: this.getPlayer().getYCoord()
-            }
-            this.getSocket().emit("playerMoved", data);
+            this.getConnection().updatePosition(this.getPlayer());
+            // var data = {
+            //     id: this.getPlayer().getID(),
+            //     x: this.getPlayer().getXCoord(),
+            //     y: this.getPlayer().getYCoord()
+            // }
+            // this.getSocket().emit("playerMoved", data); // move to ServerConnection
         }
     }
 
-    requestServerData(initialRequest) {
-        this.getSocket().emit("requestServerData", initialRequest);
-    }
+    // requestServerData(initialRequest) { // move to ServerConnection
+    //     this.getSocket().emit("requestServerData", initialRequest);
+    // }
 
-    requestObjectProperties(id) {
-        var data = {
-            id: id,
-        }
-        this.getSocket().emit("requestObjectProperties", data);
-    }
+    // requestObjectProperties(id) { // move to ServerConnection
+    //     var data = {
+    //         id: id,
+    //     }
+    //     this.getSocket().emit("requestObjectProperties", data);
+    // }
 
-    requestAgentProperties(id) {
-        var data = {
-            id: id,
-        }
-        this.getSocket().emit("requestAgentProperties", data);
-    }
+    // requestAgentProperties(id) { // move to ServerConnection
+    //     var data = {
+    //         id: id,
+    //     }
+    //     this.getSocket().emit("requestAgentProperties", data);
+    // }
 
-    sendPlayerDataToServer() {
-        const player = this.getPlayer();
-        var data = {
-            id: player.getID(),
-            x: player.getXCoord(),
-            y: player.getYCoord(),
-            properties: player.getProperties()
-        }
-        this.getSocket().emit("playerSpawned", data);
-    }
+    // sendPlayerDataToServer() { // move to ServerConnection
+    //     const player = this.getPlayer();
+    //     var data = {
+    //         id: player.getID(),
+    //         x: player.getXCoord(),
+    //         y: player.getYCoord(),
+    //         properties: player.getProperties()
+    //     }
+    //     this.getSocket().emit("playerSpawned", data);
+    // }
 
-    generatePlayerID() {
-        var data = {
-            id: this.getPlayer().getID()
-        }
-        this.getSocket().emit("requestPlayerID", data)
-    }
+    // generatePlayerID() { // move to ServerConnection
+    //     var data = {
+    //         id: this.getPlayer().getID()
+    //     }
+    //     this.getSocket().emit("requestPlayerID", data)
+    // }
 
-    /**
-     * clears the whole play space of drawings
-     */
-    clearPlaySpace(color) {
-        const ctx = this.getCTX();
-        ctx.beginPath();
-        ctx.rect(0, 0, this.getCanvas().width, this.getCanvas().height);
-        ctx.fillStyle = color;
-        ctx.fill();
-    }
-
-    /**
-     * gets the width and height of a page for elements that need
-     * to be scaled based on window size
-     * 
-     * @returns - an array of the page width and height
-     */
-    getPageDimensions() { // what is this for?
-        return [window.innerWidth, window.innerHeight];
-    }
+    // /**
+    //  * clears the whole play space of drawings
+    //  */
+    // clearPlaySpace(color) { // // move to Display and rename
+    //     const ctx = this.getCTX();
+    //     ctx.beginPath();
+    //     ctx.rect(0, 0, this.getCanvas().width, this.getCanvas().height);
+    //     ctx.fillStyle = color;
+    //     ctx.fill();
+    // }
 
     /**
      * draws all objects on the play space
      */
-    drawObjects() {
+    drawObjects() { // move to Display
         this.getMiniMap().animate();
         this.getMap().draw(this.getScale());
         for (const key of this.getObjects().keys()) {
@@ -347,7 +348,7 @@ export default class AnimatedGame {
 
     }
 
-    adjustScale(scaleVar) {
+    adjustScale(scaleVar) { // move to Display
         var rate = .05
         if (scaleVar * this.getScale() > 100) {
             var targetScale = Math.round((100 / scaleVar) * 1000) / 1000;
@@ -360,91 +361,91 @@ export default class AnimatedGame {
         }
     }
 
-    /**
-     * draws a frame based on currently available data
-     */
-    animateFrame() {
-        this.intrepretTestingKeys()
-        this.updatePositionData();
-        this.requestServerData(false);
-        this.adjustScale();
-        this.clearPlaySpace(this.getMap().getBackgroundColor()); // erase everything from the previous frame
-        this.drawObjects(); // draw the objects
-    }
+    // /**
+    //  * draws a frame based on currently available data
+    //  */
+    // animateFrame() { // move to Display
+    //     this.intrepretTestingKeys()
+    //     this.updatePositionData();
+    //     this.requestServerData(false);
+    //     this.adjustScale();
+    //     this.clearPlaySpace(this.getMap().getBackgroundColor()); // erase everything from the previous frame
+    //     this.drawObjects(); // draw the objects
+    // }
 
-    loadingScreenAnimation(counter) {
-        var counterMod = counter % 600
-        var text = "loading"
-        var textMod = Math.floor((counterMod % 200) / 50);
-        while (textMod > 0) {
-            text += " .";
-            textMod--;
-        }
-        if (counterMod < 301) { // animations
-            this.clearPlaySpace("white");
-            const ctx = this.getCTX();
-            const center = {
-                x: this.getWidth() / 2,
-                y: this.getHeight() / 2,
-            }
-            const radius = 200
-            ctx.beginPath();
-            ctx.arc(center.x,center.y, radius, 1.5 * Math.PI, (1.5 * Math.PI) + ((counterMod / 300) * 2 * Math.PI), false);
-            ctx.lineWidth = 30;
-            ctx.stroke();
-            ctx.font = "50px Spectral";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillStyle = "black";
-            ctx.fillText(text, center.x, center.y);
-        } else {
-            this.clearPlaySpace("white");
-            const ctx = this.getCTX();
-            const center = {
-                x: this.getWidth() / 2,
-                y: this.getHeight() / 2,
-            }
-            const radius = 200
-            ctx.beginPath();
-            ctx.arc(center.x,center.y, radius, (1.5 * Math.PI) + ((counterMod / 300) * 2 * Math.PI), 1.5 * Math.PI, false);
-            ctx.lineWidth = 30;
-            ctx.stroke();
-            ctx.lineWidth = 30;
-            ctx.stroke();
-            ctx.font = "50px Spectral";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillStyle = "black";
-            ctx.fillText(text, center.x, center.y);
-        }
-    }
+    // loadingScreenAnimation(counter) { // move to Display
+    //     var counterMod = counter % 600
+    //     var text = "loading"
+    //     var textMod = Math.floor((counterMod % 200) / 50);
+    //     while (textMod > 0) {
+    //         text += " .";
+    //         textMod--;
+    //     }
+    //     if (counterMod < 301) { // animations
+    //         this.clearPlaySpace("white");
+    //         const ctx = this.getCTX();
+    //         const center = {
+    //             x: this.getWidth() / 2,
+    //             y: this.getHeight() / 2,
+    //         }
+    //         const radius = 200
+    //         ctx.beginPath();
+    //         ctx.arc(center.x,center.y, radius, 1.5 * Math.PI, (1.5 * Math.PI) + ((counterMod / 300) * 2 * Math.PI), false);
+    //         ctx.lineWidth = 30;
+    //         ctx.stroke();
+    //         ctx.font = "50px Spectral";
+    //         ctx.textAlign = "center";
+    //         ctx.textBaseline = "middle";
+    //         ctx.fillStyle = "black";
+    //         ctx.fillText(text, center.x, center.y);
+    //     } else {
+    //         this.clearPlaySpace("white");
+    //         const ctx = this.getCTX();
+    //         const center = {
+    //             x: this.getWidth() / 2,
+    //             y: this.getHeight() / 2,
+    //         }
+    //         const radius = 200
+    //         ctx.beginPath();
+    //         ctx.arc(center.x,center.y, radius, (1.5 * Math.PI) + ((counterMod / 300) * 2 * Math.PI), 1.5 * Math.PI, false);
+    //         ctx.lineWidth = 30;
+    //         ctx.stroke();
+    //         ctx.lineWidth = 30;
+    //         ctx.stroke();
+    //         ctx.font = "50px Spectral";
+    //         ctx.textAlign = "center";
+    //         ctx.textBaseline = "middle";
+    //         ctx.fillStyle = "black";
+    //         ctx.fillText(text, center.x, center.y);
+    //     }
+    // }
     
-    gameAnimationLoop() {
-        const game = this;
+    // gameAnimationLoop() { // move to Display
+    //     const game = this;
         
-        function animationLoop() {
-            game.animateFrame();
-            if (game.getGameState() == "alive") {
-                requestAnimationFrame(animationLoop);
-            }
-        }
-        requestAnimationFrame(animationLoop);
-    }
+    //     function animationLoop() {
+    //         game.animateFrame();
+    //         if (game.getGameState() == "alive") {
+    //             requestAnimationFrame(animationLoop);
+    //         }
+    //     }
+    //     requestAnimationFrame(animationLoop);
+    // }
 
-    loadingAnimationLoop() {
-        var counter = 0;
+    // loadingAnimationLoop() { // move to Display
+    //     var counter = 0;
 
-        const game = this;
+    //     const game = this;
 
-        function animationLoop() {
-            game.loadingScreenAnimation(counter);
-            counter++;
-            if (game.getGameState() == "loading") {
-                requestAnimationFrame(animationLoop);
-            }
-        }
-        requestAnimationFrame(animationLoop);
-    }
+    //     function animationLoop() {
+    //         game.loadingScreenAnimation(counter);
+    //         counter++;
+    //         if (game.getGameState() == "loading") {
+    //             requestAnimationFrame(animationLoop);
+    //         }
+    //     }
+    //     requestAnimationFrame(animationLoop);
+    // }
 
     beginLoading() {
         this.setGameState("loading");
@@ -512,46 +513,46 @@ export default class AnimatedGame {
         })
     }
 
-    waitForObjectProperties() {
-        this.getSocket().on("sentObjectProperties", (data) => {
-            console.log("properties for " + data.id + " recieved");
-            this.getObjects().get(data.id).setProperties(data.properties);
-            if (data.properties.opacity == GameObject.PROPERTIES.OPACITY.BLOCKING) {
-                this.getBlocking().push(this.getObjects().get(data.id));
-            }
-        })
-    }
+    // waitForObjectProperties() { // move to ServerConnection
+    //     this.getSocket().on("sentObjectProperties", (data) => {
+    //         console.log("properties for " + data.id + " recieved");
+    //         this.getObjects().get(data.id).setProperties(data.properties);
+    //         if (data.properties.opacity == GameObject.PROPERTIES.OPACITY.BLOCKING) {
+    //             this.getBlocking().push(this.getObjects().get(data.id));
+    //         }
+    //     })
+    // }
 
-    waitForAgentProperties() {
-        this.getSocket().on("sentAgentProperties", (data) => {
-            console.log("properties for " + data.id + " recieved");
-            console.log(data.properties)
-            this.getAgents().get(data.id).setProperties(data.properties)
-        })
-    }
+    // waitForAgentProperties() { // move to ServerConnection
+    //     this.getSocket().on("sentAgentProperties", (data) => {
+    //         console.log("properties for " + data.id + " recieved");
+    //         console.log(data.properties)
+    //         this.getAgents().get(data.id).setProperties(data.properties)
+    //     })
+    // }
 
-    waitForServerUpdates() {
-        this.getSocket().on("sentServerData", (data) => {
-            this.updateAgents(data.agents);
-            this.updateGameObjects(data.gameObjects);
-        })
-    }
+    // waitForServerUpdates() { // move to ServerConnection
+    //     this.getSocket().on("sentServerData", (data) => {
+    //         this.updateAgents(data.agents);
+    //         this.updateGameObjects(data.gameObjects);
+    //     })
+    // }
 
-    waitForPlayerID() {
-        this.getSocket().on("sentPlayerID", (combinedID) => {
-            this.getAgents().delete(this.getPlayer().getID());
-            this.getPlayer().setID(combinedID);
-            this.getAgents().set(combinedID, this.getPlayer());
-            this.sendPlayerDataToServer();
-        });
-    }
+    // waitForPlayerID() { // move to ServerConnection
+    //     this.getSocket().on("sentPlayerID", (combinedID) => {
+    //         this.getAgents().delete(this.getPlayer().getID());
+    //         this.getPlayer().setID(combinedID);
+    //         this.getAgents().set(combinedID, this.getPlayer());
+    //         this.sendPlayerDataToServer();
+    //     });
+    // }
 
-    waitForPlayerDisconnects() {
-        this.getSocket().on("playerDisconnected", (id) => {
-            console.log("attempting to remove agent with ID: ", id)
-            this.removeAgent(id);
-        })
-    }
+    // waitForPlayerDisconnects() { // move to ServerConnection
+    //     this.getSocket().on("playerDisconnected", (id) => {
+    //         console.log("attempting to remove agent with ID: ", id)
+    //         this.removeAgent(id);
+    //     })
+    // }
 
     generateSpawnProperties() { // remove this
         return {
