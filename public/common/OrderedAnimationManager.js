@@ -1,10 +1,11 @@
 
 
-export default class AnimationManager {
+export default class OrderedAnimationManager {
     // fields
     #animations
 
     constructor() {
+        // maybe animations should be turned into a map because order doesn't matter? or does it
         this.#animations = [];
     }
 
@@ -16,6 +17,10 @@ export default class AnimationManager {
     // methods
     addAnimation(newAnimation) {
         this.#animations.push(newAnimation);
+    }
+
+    removeAnimation() {
+        // finish
     }
 
     animateFrame(ctx, scale) {
