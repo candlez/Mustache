@@ -12,7 +12,7 @@ export default class GrowingCircleAnimation extends Animation {
             this.setCurrentFrame(0);
         }
         ctx.beginPath();
-        ctx.arc(500, 500, this.getCurrentFrame() * scale, 0, Math.PI * 2);
+        ctx.arc(window.innerWidth / 2, window.innerHeight / 2, this.getCurrentFrame() * scale, 0, Math.PI * 2);
         ctx.fillStyle = "blue";
         ctx.fill();
         this.setCurrentFrame(this.getCurrentFrame() + 1);

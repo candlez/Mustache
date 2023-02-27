@@ -6,7 +6,6 @@ import GrowingCircleAnimation from '../../../common/GrowingCircleAnimation.js';
 
 // RazorRoyaleGame.playGame(2000, 2000); // needs to create a RazorRoyaleServerConnection instead
 
-
 // const socket = io.connect(window.location.hostname);
 // socket.emit("verifyServerConnection");
 // socket.once("serverConnectionVerified", (data) => {

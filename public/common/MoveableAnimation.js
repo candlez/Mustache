@@ -6,6 +6,7 @@ export default class MoveableAnimation extends Animation {
     #yCoord;
 
     constructor(xCoord, yCoord) {
+        super();
         this.#xCoord = xCoord;
         this.#yCoord = yCoord;
     }

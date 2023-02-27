@@ -5,6 +5,7 @@ export default class AttachedAnimation extends Animation {
     #object;
 
     constructor(obj) {
+        super();
         this.#object = obj;
     }
 
