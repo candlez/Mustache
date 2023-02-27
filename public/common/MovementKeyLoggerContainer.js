@@ -11,7 +11,7 @@ export default class MovementKeyLoggerContainer extends KeyLoggerContainer {
         super();
     }
 
-    // real methods
+    // methods
     /**
      * 
      */

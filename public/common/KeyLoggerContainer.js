@@ -14,20 +14,27 @@ export default class MovementKeyLogger {
         this.#keyLoggers = new Map();
     }
 
-    // getters and setters
-    getKeyLoggers() {
-        return this.#keyLoggers;
-    }
-
-    // real methods
-
+    // methods
     addKeyLogger(key) {
         this.getKeyLoggers().set(key, new KeyLogger(key));
+    }
+
+    removeKeyLogger(key) {
+        this.getKeyLoggers().delete(key);
+    }
+
+    clear() {
+        this.#keyLoggers = new Map();
     }
 
     listen() {
         this.getKeyLoggers().forEach(function(logger) {
             logger.listen();
         });
+    }
+
+    // getters and setters
+    getKeyLoggers() {
+        return this.#keyLoggers;
     }
 }
