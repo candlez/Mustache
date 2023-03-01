@@ -18,7 +18,7 @@ export default class Display {
     #assetContainer;
 
     #game;
-    #connection; // should these be initialized in the constructor or in a static method?
+    #connection; // mayhaps these go in a subclass
 
 
     constructor(width, height, xCoord, yCoord) { // to do, specify location of Display
@@ -45,55 +45,8 @@ export default class Display {
     }
 
 
-    static createFullScreen() { // this should vary based on the aspects of the window being used
+    static createFullScreen() {
         return new Display(window.innerWidth, window.innerHeight);
-    }
-
-    // getters and setters
-    setXCoord(newXCoord) {
-        this.getCanvas().style.left = newXCoord;
-    }
-    getXCoord() {
-        return this.getCanvas().style.left;
-    }
-    setYCoord(newYCoord) {
-        this.getCanvas().style.top = newYCoord;
-    }
-    getYCoord() {
-        return this.getCanvas().style.top;
-    }
-    getHeight() {
-        return this.#height;
-    }
-    getWidth() {
-        return this.#width;
-    }
-    getCanvas() {
-        return this.#canvas;
-    }
-    getCTX() {
-        return this.#ctx;
-    }
-    setScale(newScale) {
-        this.#scale = newScale;
-    }
-    getScale() {
-        return this.#scale;
-    }
-    setBackgroundColor(newBackgroundColor) {
-        this.#backgroundColor = newBackgroundColor;
-    }
-    getBackgroundColor() {
-        return this.#backgroundColor;
-    }
-    getAnimationManagers() {
-        return this.#animationManagers;
-    }
-    setIsActive(newIsActive) {
-        this.#isActive = newIsActive;
-    }
-    getIsActive() {
-        return this.#isActive;
     }
 
 
@@ -159,19 +112,6 @@ export default class Display {
     //     }
     // }
 
-    gameAnimationLoop() { // fix based on new scope
-        const game = this;
-        
-        function animationLoop() {
-            game.animateFrame();
-            if (game.getGameState() == "alive") {
-                requestAnimationFrame(animationLoop);
-            }
-        }
-        requestAnimationFrame(animationLoop);
-    }
-
-    
     // methods from UML
     addAnimationManager(newAnimationManager, index) {
         if (index == undefined) {
@@ -224,4 +164,51 @@ export default class Display {
     delete() {
         // finish this later
     }
+
+        // getters and setters
+        setXCoord(newXCoord) {
+            this.getCanvas().style.left = newXCoord;
+        }
+        getXCoord() {
+            return this.getCanvas().style.left;
+        }
+        setYCoord(newYCoord) {
+            this.getCanvas().style.top = newYCoord;
+        }
+        getYCoord() {
+            return this.getCanvas().style.top;
+        }
+        getHeight() {
+            return this.#height;
+        }
+        getWidth() {
+            return this.#width;
+        }
+        getCanvas() {
+            return this.#canvas;
+        }
+        getCTX() {
+            return this.#ctx;
+        }
+        setScale(newScale) {
+            this.#scale = newScale;
+        }
+        getScale() {
+            return this.#scale;
+        }
+        setBackgroundColor(newBackgroundColor) {
+            this.#backgroundColor = newBackgroundColor;
+        }
+        getBackgroundColor() {
+            return this.#backgroundColor;
+        }
+        getAnimationManagers() {
+            return this.#animationManagers;
+        }
+        setIsActive(newIsActive) {
+            this.#isActive = newIsActive;
+        }
+        getIsActive() {
+            return this.#isActive;
+        }
 }

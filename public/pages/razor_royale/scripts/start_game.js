@@ -3,6 +3,9 @@ import RazorRoyaleServerConnection from '../../../common/RazorRoyaleServerConnec
 import Display from '../../../common/Display.js';
 import OrderedAnimationManager from '../../../common/OrderedAnimationManager.js';
 import GrowingCircleAnimation from '../../../common/GrowingCircleAnimation.js';
+import InteractiveDisplay from '../../../common/InteractiveDisplay.js';
+import Square from './../../../common/Square.js'
+import MovementKeyInterpreter from './../../../common/MovementKeyInterpreter.js'
 
 // RazorRoyaleGame.playGame(2000, 2000); // needs to create a RazorRoyaleServerConnection instead
 
@@ -12,8 +15,16 @@ import GrowingCircleAnimation from '../../../common/GrowingCircleAnimation.js';
 //     const connection = new RazorRoyaleServerConnection(socket);
 // });
 
-const display = Display.createFullScreen();
-var manager = new OrderedAnimationManager();
-manager.addAnimation(new GrowingCircleAnimation());
-display.addAnimationManager(manager)
+const display = InteractiveDisplay.createFullScreen();
+const container = new OrderedAnimationManager();
+
+const square = new Square(0, 0, 30);
+const interpreter = new MovementKeyInterpreter(square, "w", "a", "s", "d");
+interpreter.activate();
+
+container.addAnimation(square.getAnimation());
+
+display.addAnimationManager(container);
+display.addKeyInterpreter(interpreter);
+
 display.startAnimationLoop();

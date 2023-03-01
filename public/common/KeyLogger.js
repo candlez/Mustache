@@ -14,19 +14,7 @@ export default class KeyLogger {
         this.#keyDown = false;
     }
 
-    // standard getters and setters
-    getKeyID() {
-        return this.#keyID;
-    }
-    setKeyDown(newState) {
-        this.#keyDown = newState;
-    }
-    getKeyDown() {
-        return this.#keyDown;
-    }
-
-    // real methods
-
+    // methods
     boolToString(keyDown) {
         if (keyDown) {
             return "keydown";
@@ -43,8 +31,24 @@ export default class KeyLogger {
         }
     }
 
-
     listen() {
         document.addEventListener(this.boolToString(!this.getKeyDown()), this);
+    }
+
+    stopListen() {
+        document.removeEventListener(this.boolToString(!this.getKeyDown()), this);
+        this.setKeyDown(false);
+    }
+
+    
+    // getters and setters
+    getKeyID() {
+        return this.#keyID;
+    }
+    setKeyDown(newState) {
+        this.#keyDown = newState;
+    }
+    getKeyDown() {
+        return this.#keyDown;
     }
 }

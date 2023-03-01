@@ -33,6 +33,12 @@ export default class MovementKeyLogger {
         });
     }
 
+    stopListen() {
+        this.getKeyLoggers().forEach((logger) => {
+            logger.stopListen();
+        })
+    }
+
     // getters and setters
     getKeyLoggers() {
         return this.#keyLoggers;

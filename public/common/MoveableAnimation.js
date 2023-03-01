@@ -26,4 +26,8 @@ export default class MoveableAnimation extends Animation {
     }
 
     // methods
+    move(xChange, yChange) {
+        this.#xCoord = this.#xCoord + xChange;
+        this.#yCoord = this.#yCoord + yChange;
+    }
 }
