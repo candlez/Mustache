@@ -47,27 +47,28 @@ export default class Bounds {
     }
 
 
+    equals(bounds) {
+        return this.getTop() == bounds.getTop() && this.getLeft() == bounds.getLeft() &&
+            this.getBottom() == bounds.getBottome() && this.getRight() == bounds.getRight();
+    }
+
+
     // getters
     getTop() {
         return this.#top;
     }
-
     getLeft() {
         return this.#left;
     }
-
     getBottom() {
         return this.#top + this.#height;
     }
-
     getRight() {
         return this.#left + this.#width;
     }
-
     getWidth() {
         return this.#width;
     }
-
     getHeight() {
         return this.#height;
     }

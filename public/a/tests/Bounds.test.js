@@ -1,6 +1,6 @@
-import Bounds from "../a/model/Bounds.js";
-import TopCornerBounds from "../a/model/TopCornerBounds.js";
-import MidPointBounds from "../a/model/MidPointBounds.js";
+import Bounds from "../model/Bounds.js";
+import TopCornerBounds from "../model/TopCornerBounds.js";
+import MidPointBounds from "../model/MidPointBounds.js";
 
 
 describe('unit testing for Bounds and its subclasses', () => {

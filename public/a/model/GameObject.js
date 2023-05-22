@@ -5,11 +5,14 @@ export default class GameObject {
     #xCoord;
     #yCoord;
     #animations;
+    #node;
 
     constructor(id, xCoord, yCoord) {
         this.#id = id;
         this.#xCoord = xCoord;
         this.#yCoord = yCoord;
+        this.#animations = [];
+        this.#node = null;
     }
 
     // methods
@@ -30,5 +33,11 @@ export default class GameObject {
     }
     getYCoord() {
         return this.#yCoord;
+    }
+    setNode(newNode) {
+        this.#node = newNode;
+    }
+    getNode() {
+        return this.#node;
     }
 }
