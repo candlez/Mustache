@@ -33,4 +33,13 @@ describe('unit testing for Bounds and its subclasses', () => {
         expect(topCorner.isPointWithinBounds(50, -30)).toBe(false);
         expect(midPoint.isPointWithinBounds(50, 300)).toBe(false);
     })
+
+
+    test('testing Bounds intersection', () => {
+        expect(midPoint.doesBoundsIntersectBounds(new TopCornerBounds(300, 300, 20, 30))).toBe(false);
+        expect(midPoint.doesBoundsIntersectBounds(new TopCornerBounds(-10, -10, 20, 30))).toBe(true);
+        expect(midPoint.doesBoundsIntersectBounds(new TopCornerBounds(-20, 246, 20, 30))).toBe(true);
+        expect(midPoint.doesBoundsIntersectBounds(new TopCornerBounds(200, -20, 100, 30))).toBe(true);
+        expect(midPoint.doesBoundsIntersectBounds(new TopCornerBounds(100, 100, 1000, 3000))).toBe(true);
+    })
 })

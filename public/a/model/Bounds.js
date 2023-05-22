@@ -47,6 +47,21 @@ export default class Bounds {
     }
 
 
+    /**
+     * checks to see if another Bounds intersects this Bounds
+     * 
+     * @param {Bounds} bounds 
+     * @returns whether the two Bounds intersect
+     */
+    doesBoundsIntersectBounds(bounds) {
+        return this.isPointWithinBounds(bounds.getLeft(), bounds.getTop()) ||
+            this.isPointWithinBounds(bounds.getRight(), bounds.getTop()) ||
+            this.isPointWithinBounds(bounds.getLeft(), bounds.getBottom()) ||
+            this.isPointWithinBounds(bounds.getRight(), bounds.getBottom());
+    }
+
+
+
     equals(bounds) {
         return this.getTop() == bounds.getTop() && this.getLeft() == bounds.getLeft() &&
             this.getBottom() == bounds.getBottome() && this.getRight() == bounds.getRight();
