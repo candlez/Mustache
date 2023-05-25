@@ -24,7 +24,8 @@ export default class Square extends GameObject {
 
 
     getBounds() {
-        return new TopCornerBounds(this.getXCoord(), this.getYCoord(), this.#size, this.#size);
+        return new TopCornerBounds(this.getXCoord(), this.getYCoord(), 
+            this.#size, this.#size);
     }
 
 

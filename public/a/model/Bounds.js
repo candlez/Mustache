@@ -49,6 +49,7 @@ export default class Bounds {
 
     /**
      * checks to see if another Bounds intersects this Bounds
+     * two bounds are considered intersecting if they overlap at all
      * 
      * @param {Bounds} bounds 
      * @returns whether the two Bounds intersect

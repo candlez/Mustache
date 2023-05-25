@@ -18,23 +18,66 @@ export default class QuadTree {
     }
 
 
+    
+
+
 
     queryRange(bounds) {
-        
+        var items = [];
+        var potentialItems = [];
+
+        var path = this.getPath(bounds);
+        for (var i = 0; i < path.length; i++) {
+            potentialItems = potentialItems.concat(path[i].getObjects());
+        }
+        var subTrees = this.getSubtrees(path[path.length - 1]);
+        for (var i = 0; i < subTrees.length; i++) {
+            potentialItems = potentialItems.concat(subTrees[i].getObjects());
+        }
+        console.log(potentialItems);
+        for (var i = 0; i < potentialItems.length; i++) {
+            if (bounds.doesBoundsIntersectBounds(potentialItems[i].getBounds())) {
+                items.push(potentialItems[i]);
+            }
+        }
+        return items;
     }
 
 
+    /**
+     * inserts an item into the QuadTree
+     * 
+     * @param {} item 
+     */
     insert(item) {
-        var bounds = item.getBounds();
+        this.getNode(item.getBounds()).insert(item);
+    }
+
+
+    /**
+     * finds the QTNode that the Bounds would be placed in
+     * 
+     * @param {*} bounds - the Bounds that are being placed
+     * @return the QTNode that the Bounds would go in
+     */
+    getNode(bounds) {
+        var path = this.getPath(bounds);
+        return path[path.length - 1];
+    }
+
+
+
+    getPath(bounds) {
+        var path = [];
         var curr = this.#root;
         if (curr.getBounds().isBoundsWithinBounds(bounds)) {
             var counter = 0;
             while (counter < QuadTree.MAXIMUM_DEPTH) {
+                path.push(curr);
                 var quad1 = curr.getQuadrant(bounds.getLeft(), bounds.getTop());
                 var quad2 = curr.getQuadrant(bounds.getRight(), bounds.getBottom());
                 if (quad1 != quad2 || quad1 == Quandrants.ON_AXIS) {
-                    curr.insert(item);
-                    return true;
+                    break;
                 } else {
                     if (curr.isLeaf()) {
                         curr.split();
@@ -56,20 +99,35 @@ export default class QuadTree {
                     counter++;
                 }
             }
-            curr.insert(item);            
+            return path;          
         }
-        throw new Error(item + " is out of bounds!")
-        
-        /*
-        steps:
-        1. check if this item should be in the current node
-        2. if it should, insert the item into the current node
-        3. if it shouldn't, move onto the next node
-        */
+        throw new Error(item + " is out of bounds!");
     }
 
 
 
+    getSubtrees(node) {
+        var nodes = [];
+        if (!node.isLeaf()) {
+            nodes.push(node.getNorthWest());
+            nodes = nodes.concat(this.getSubtrees(node.getNorthWest()));
+            nodes.push(node.getNorthEast());
+            nodes = nodes.concat(this.getSubtrees(node.getNorthEast()));
+            nodes.push(node.getSouthEast());
+            nodes = nodes.concat(this.getSubtrees(node.getSouthEast()));
+            nodes.push(node.getSouthWest());
+            nodes = nodes.concat(this.getSubtrees(node.getSouthWest()));
+        }
+        return nodes;
+    }
+
+
+
+    /**
+     * converts the QuadTree into a readable String format
+     * 
+     * @returns the QuadTree as a String
+     */
     toString() {
         return this.#root.toString();
     }

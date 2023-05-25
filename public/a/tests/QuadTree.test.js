@@ -1,5 +1,6 @@
 import QuadTree from "../model/QuadTree.js";
 import Square from "../model/Square.js";
+import TopCornerBounds from "../model/TopCornerBounds.js";
 
 
 describe('unit testing for QuadTree', () => {
@@ -55,5 +56,26 @@ describe('unit testing for QuadTree', () => {
     test('testing that an error is thrown when out of bounds', () => {
         expect(() => {tree.insert(new Square("1", 30, 30, 256, ""))}).toThrow();
         expect(() => {tree.insert(new Square("2", 250, 250, 6, ""))}).not.toThrow();
+    })
+
+
+    test('testing queryRange', () => {
+        tree.insert(new Square("1", 40, 100, 80, 40, ""));
+        tree.insert(new Square("2", 210, 20, 15, 10, ""));
+        tree.insert(new Square("3", 140, 120, 25, 25, ""));
+        tree.insert(new Square("4", 130, 215, 10, 10, ""));
+        tree.insert(new Square("5", 180, 160, 50, 40, ""));
+        tree.insert(new Square("6", 100, 180, 10, 10, ""));
+        tree.insert(new Square("7", 65, 190, 3, 3, ""));
+        tree.insert(new Square("8", 90, 215, 15, 15, ""));
+        tree.insert(new Square("9", 150, 20, 12, 12, ""));
+        tree.insert(new Square("10", 20, 15, 5, 5, ""));
+        tree.insert(new Square("11", 75, 25, 30, 30, ""));
+        tree.insert(new Square("12", 10, 225, 20, 10, ""));
+
+        expect(tree.queryRange(new TopCornerBounds(100, 50, 150, 170)).length)
+            .toBe(7);
+        expect(tree.queryRange(new TopCornerBounds(50, 140, 65, 95)).length)
+            .toBe(4);
     })
 })
