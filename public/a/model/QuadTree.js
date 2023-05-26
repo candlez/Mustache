@@ -1,6 +1,9 @@
 import MidPointBounds from "./MidPointBounds.js";
 
 
+/**
+ * a data structure that stores bounds in nodes according to their location
+ */
 export default class QuadTree {
     // fields
     #root;
@@ -14,12 +17,17 @@ export default class QuadTree {
     }
 
 
+    /**
+     * @returns whether the tree has reached the maximum allowable depth
+     */
     maxDepthReached() {
         return this.#height == QuadTree.MAXIMUM_DEPTH;
     }
 
 
-
+    /**
+     * @returns the number of levels in the tree
+     */
     getHeight() {
         return this.#height;
     }
@@ -33,7 +41,10 @@ export default class QuadTree {
     
 
 
-
+    /**
+     * @param {Bounds} bounds 
+     * @returns a list of every item that intersects the given Bounds
+     */
     queryRange(bounds) {
         var items = [];
         var potentialItems = [];
@@ -77,7 +88,11 @@ export default class QuadTree {
     }
 
 
-
+    /**
+     * @param {Bounds} bounds 
+     * @returns a list of every node from the root up to and including the node 
+     * that this bounds goes in
+     */
     getPath(bounds) {
         var path = [];
         var curr = this.#root;
@@ -98,7 +113,11 @@ export default class QuadTree {
     }
 
 
-
+    /** 
+     * @param {QTNode} node - the root node to all the subtrees being
+     *                        collected from
+     * @returns a list of every item lowers than this node in the tree
+     */
     getSubtrees(node) {
         var nodes = [];
         if (!node.isLeaf()) {
@@ -115,7 +134,13 @@ export default class QuadTree {
     }
 
 
-
+    /**
+     * takes a Bounds and a node and finds out where it should be sorted
+     * 
+     * @param {Bounds} bounds
+     * @param {QTNode} curr - the node the Bounds are currently at 
+     * @returns the node that the Bounds should go in
+     */
     getNextNode(bounds, curr) {
         var quad1 = curr.getQuadrant(bounds.getLeft(), bounds.getTop());
         var quad2 = curr.getQuadrant(bounds.getRight(), bounds.getBottom());
@@ -190,12 +215,19 @@ class QTNode {
     }
 
 
+    /**
+     * @returns whether the node has no items in it
+     */
     isEmpty() {
         return this.#objects.length == 0;
     }
 
 
-
+    /**
+     * removes an item from the node while keeping sorted order
+     * 
+     * @param {*} item 
+     */
     remove(item) {
         var index = -1;
         for (var i = 0; i < this.#objects.length; i++) {
@@ -249,6 +281,11 @@ class QTNode {
     }
 
 
+    /**
+     * inserts an item into the node, maintaining ascending size order
+     * 
+     * @param {*} item 
+     */
     insert(item) {
         var index = 0;
         for (index; index < this.#objects.length; index++) {
@@ -257,10 +294,13 @@ class QTNode {
             }
         }
         this.#objects.splice(index, 0, item);
-        item.setNode(this);
+        item.setNode(this); // huh??? I thought this was just in Dynamic
     }
 
 
+    /**
+     * creates 4 children for this node
+     */
     split() {
         var half = this.#bounds.getWidth() / 2;
         var quarter = half / 2;
@@ -272,6 +312,9 @@ class QTNode {
     }
 
 
+    /**
+     * @returns a string version of this node and all its children
+     */
     toString() {
         var str = "(" + this.#objects;
         if (!this.isLeaf()) {

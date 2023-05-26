@@ -65,14 +65,19 @@ export default class Bounds {
     }
 
 
-
+    /**
+     * @param {Bounds} bounds 
+     * @returns whether two Bounds are equivalent
+     */
     equals(bounds) {
         return this.getTop() == bounds.getTop() && this.getLeft() == bounds.getLeft() &&
             this.getBottom() == bounds.getBottome() && this.getRight() == bounds.getRight();
     }
 
 
-
+    /**
+     * @returns the Bounds as a String
+     */
     toString() {
         var str = "left: " + this.getLeft();
         str += ", top: " + this.getTop();

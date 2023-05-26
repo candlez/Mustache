@@ -1,12 +1,20 @@
 import QuadTree from "./QuadTree.js";
 
 
+/**
+ * a QuadTree that supports items moving around within it
+ */
 export default class DynamicQuadTree extends QuadTree {
     constructor(xCoord, yCoord, width) {
         super(xCoord, yCoord, width);
     }
 
 
+    /**
+     * inserts an item into the tree and tells the item which node it's in
+     * 
+     * @param {*} item 
+     */
     insert(item) {
         var node = this.getNode(item.getBounds());
         node.insert(item);
@@ -14,7 +22,11 @@ export default class DynamicQuadTree extends QuadTree {
     }
 
 
-
+    /**
+     * makes sure an item is in the right place after its coords have changed
+     * 
+     * @param {*} item 
+     */
     move(item) {
         var curr = item.getNode();
         curr.remove(item);
