@@ -17,7 +17,7 @@ export default class Bounds {
         this.#height = bounds.height;
     }
 
-    setUp(xCoord, yCoord, width, height) {
+    setUp(xCoord, yCoord, width, height) { // this is stupid and it's going to be fixed
         throw new Error("you must implement this method")
     }
 
@@ -51,14 +51,17 @@ export default class Bounds {
      * checks to see if another Bounds intersects this Bounds
      * two bounds are considered intersecting if they overlap at all
      * 
-     * @param {Bounds} bounds 
+     * @param {Bounds} bounds - the other Bounds
      * @returns whether the two Bounds intersect
      */
     doesBoundsIntersectBounds(bounds) {
-        return this.isPointWithinBounds(bounds.getLeft(), bounds.getTop()) ||
-            this.isPointWithinBounds(bounds.getRight(), bounds.getTop()) ||
-            this.isPointWithinBounds(bounds.getLeft(), bounds.getBottom()) ||
-            this.isPointWithinBounds(bounds.getRight(), bounds.getBottom());
+        if (this.#left > bounds.getRight() || bounds.getLeft() > this.getRight()) {
+            return false;
+        }
+        if (this.#top > bounds.getBottom() || bounds.getTop() > this.getBottom()) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -66,6 +69,16 @@ export default class Bounds {
     equals(bounds) {
         return this.getTop() == bounds.getTop() && this.getLeft() == bounds.getLeft() &&
             this.getBottom() == bounds.getBottome() && this.getRight() == bounds.getRight();
+    }
+
+
+
+    toString() {
+        var str = "left: " + this.getLeft();
+        str += ", top: " + this.getTop();
+        str += ", right: " + this.getRight();
+        str += ", bottom: " + this.getBottom();
+        return str;
     }
 
 

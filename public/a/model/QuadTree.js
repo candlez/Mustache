@@ -4,13 +4,25 @@ import MidPointBounds from "./MidPointBounds.js";
 export default class QuadTree {
     // fields
     #root;
+    #height;
 
     static MAXIMUM_DEPTH = 32;
     
     constructor(xCoord, yCoord, width) {
         this.#root = new QTNode(xCoord, yCoord, width);
+        this.#height = 1;
     }
 
+
+    maxDepthReached() {
+        return this.#height == QuadTree.MAXIMUM_DEPTH;
+    }
+
+
+
+    getHeight() {
+        return this.#height;
+    }
 
 
     remove(item) {
@@ -34,7 +46,6 @@ export default class QuadTree {
         for (var i = 0; i < subTrees.length; i++) {
             potentialItems = potentialItems.concat(subTrees[i].getObjects());
         }
-        console.log(potentialItems);
         for (var i = 0; i < potentialItems.length; i++) {
             if (bounds.doesBoundsIntersectBounds(potentialItems[i].getBounds())) {
                 items.push(potentialItems[i]);
@@ -71,32 +82,14 @@ export default class QuadTree {
         var path = [];
         var curr = this.#root;
         if (curr.getBounds().isBoundsWithinBounds(bounds)) {
-            var counter = 0;
-            while (counter < QuadTree.MAXIMUM_DEPTH) {
+            while (!this.maxDepthReached()) {
                 path.push(curr);
-                var quad1 = curr.getQuadrant(bounds.getLeft(), bounds.getTop());
-                var quad2 = curr.getQuadrant(bounds.getRight(), bounds.getBottom());
-                if (quad1 != quad2 || quad1 == Quandrants.ON_AXIS) {
+                var next = this.getNextNode(bounds, curr);
+                if (next == curr) {
                     break;
-                } else {
-                    if (curr.isLeaf()) {
-                        curr.split();
-                    }
-                    switch (quad1) {
-                        case Quandrants.NORTH_WEST:
-                            curr = curr.getNorthWest();
-                            break;
-                        case Quandrants.NORTH_EAST:
-                            curr = curr.getNorthEast();
-                            break;
-                        case Quandrants.SOUTH_EAST:
-                            curr = curr.getSouthEast();
-                            break;
-                        case Quandrants.SOUTH_WEST:
-                            curr = curr.getSouthWest();
-                            break;
-                    }
-                    counter++;
+                }
+                else {
+                    curr = next;
                 }
             }
             return path;          
@@ -119,6 +112,31 @@ export default class QuadTree {
             nodes = nodes.concat(this.getSubtrees(node.getSouthWest()));
         }
         return nodes;
+    }
+
+
+
+    getNextNode(bounds, curr) {
+        var quad1 = curr.getQuadrant(bounds.getLeft(), bounds.getTop());
+        var quad2 = curr.getQuadrant(bounds.getRight(), bounds.getBottom());
+        if (quad1 != quad2 || quad1 == Quandrants.ON_AXIS) {
+            return curr;
+        } else {
+            if (curr.isLeaf()) {
+                curr.split();
+                this.#height++;
+            }
+            switch (quad1) {
+                case Quandrants.NORTH_WEST:
+                    return curr.getNorthWest();
+                case Quandrants.NORTH_EAST:
+                   return curr.getNorthEast();
+                case Quandrants.SOUTH_EAST:
+                    return curr.getSouthEast();
+                case Quandrants.SOUTH_WEST:
+                    return curr.getSouthWest();
+            }
+        }
     }
 
 
@@ -175,6 +193,24 @@ class QTNode {
     isEmpty() {
         return this.#objects.length == 0;
     }
+
+
+
+    remove(item) {
+        var index = -1;
+        for (var i = 0; i < this.#objects.length; i++) {
+            if (this.#objects[i] == item) {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) {
+            new Error('attempted to remove: ' + item.toString() + '; item not found')
+        } else {
+            this.#objects.splice(index, 1);
+        }
+    }
+
 
 
     /**
