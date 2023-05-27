@@ -33,12 +33,15 @@ export default class QuadTree {
     }
 
 
+    /**
+     * removes an item from the tree
+     * 
+     * @param {*} item 
+     */
     remove(item) {
-
+        var node = this.getNode(item.getBounds());
+        node.remove(item);
     }
-
-
-    
 
 
     /**
