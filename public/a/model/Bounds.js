@@ -29,7 +29,7 @@ export default class Bounds {
      * @param {Number} yCoord - the y coordinate of the point being checked
      * @returns whether the point is inside this Bounds
      */
-    isPointWithinBounds(xCoord, yCoord) { // or equal to?
+    isPointWithinBounds(xCoord, yCoord) {
         return xCoord >= this.#left && xCoord <= this.getRight() && 
             yCoord >= this.#top && yCoord <= this.getBottom();
     }
