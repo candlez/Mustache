@@ -165,50 +165,50 @@ export default class Display {
         // finish this later
     }
 
-        // getters and setters
-        setXCoord(newXCoord) {
-            this.getCanvas().style.left = newXCoord;
-        }
-        getXCoord() {
-            return this.getCanvas().style.left;
-        }
-        setYCoord(newYCoord) {
-            this.getCanvas().style.top = newYCoord;
-        }
-        getYCoord() {
-            return this.getCanvas().style.top;
-        }
-        getHeight() {
-            return this.#height;
-        }
-        getWidth() {
-            return this.#width;
-        }
-        getCanvas() {
-            return this.#canvas;
-        }
-        getCTX() {
-            return this.#ctx;
-        }
-        setScale(newScale) {
-            this.#scale = newScale;
-        }
-        getScale() {
-            return this.#scale;
-        }
-        setBackgroundColor(newBackgroundColor) {
-            this.#backgroundColor = newBackgroundColor;
-        }
-        getBackgroundColor() {
-            return this.#backgroundColor;
-        }
-        getAnimationManagers() {
-            return this.#animationManagers;
-        }
-        setIsActive(newIsActive) {
-            this.#isActive = newIsActive;
-        }
-        getIsActive() {
-            return this.#isActive;
-        }
+    // getters and setters
+    setXCoord(newXCoord) {
+        this.getCanvas().style.left = newXCoord;
+    }
+    getXCoord() {
+        return this.getCanvas().style.left;
+    }
+    setYCoord(newYCoord) {
+        this.getCanvas().style.top = newYCoord;
+    }
+    getYCoord() {
+        return this.getCanvas().style.top;
+    }
+    getHeight() {
+        return this.#height;
+    }
+    getWidth() {
+        return this.#width;
+    }
+    getCanvas() {
+        return this.#canvas;
+    }
+    getCTX() {
+        return this.#ctx;
+    }
+    setScale(newScale) {
+        this.#scale = newScale;
+    }
+    getScale() {
+        return this.#scale;
+    }
+    setBackgroundColor(newBackgroundColor) {
+        this.#backgroundColor = newBackgroundColor;
+    }
+    getBackgroundColor() {
+        return this.#backgroundColor;
+    }
+    getAnimationManagers() {
+        return this.#animationManagers;
+    }
+    setIsActive(newIsActive) {
+        this.#isActive = newIsActive;
+    }
+    getIsActive() {
+        return this.#isActive;
+    }
 }

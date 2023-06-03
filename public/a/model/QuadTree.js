@@ -44,6 +44,11 @@ export default class QuadTree {
     }
 
 
+    nearestNeighbor(item) { // maybe just use queryRange for collision detection?
+
+    }
+
+
     /**
      * @param {Bounds} bounds 
      * @returns a list of every item that intersects the given Bounds
