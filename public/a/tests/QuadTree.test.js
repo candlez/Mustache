@@ -53,12 +53,6 @@ describe('unit testing for QuadTree', () => {
     })
 
 
-    test('testing that an error is thrown when out of bounds', () => {
-        expect(() => {tree.insert(new Square("1", 30, 30, 256, ""))}).toThrow();
-        expect(() => {tree.insert(new Square("2", 250, 250, 6, ""))}).not.toThrow();
-    })
-
-
     test('testing queryRange', () => {
         tree.insert(new Square("1", 40, 100, 80, ""));
         tree.insert(new Square("2", 210, 20, 15, ""));

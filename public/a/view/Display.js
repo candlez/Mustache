@@ -43,6 +43,12 @@ export default class Display {
 
 
 
+    clearAnimations() {
+        this.#animations = [];
+    }
+
+
+
     isActive() {
         return this.#active;
     }
@@ -82,6 +88,21 @@ export default class Display {
 
 
 
+    createController() {
+        new Error("this method is abstract")
+    }
+
+
+
+    getCenter() {
+        return {
+            x: this.getWidth() / 2,
+            y: this.getHeight() / 2,
+        }
+    }
+
+
+
     // getters and setters
     getWidth() {
         return this.#width;
@@ -96,10 +117,13 @@ export default class Display {
         return this.#ctx;
     }
     getScale() {
-        return this.#scale();
+        return this.#scale;
     }
     getBackgroundColor() {
         return this.#backgroundColor;
+    }
+    getAnimations() {
+        return this.#animations;
     }
 
 
@@ -116,5 +140,8 @@ export default class Display {
     }
     setBackgroundColor(newColor) {
         this.#backgroundColor = newColor;
+    }
+    setAnimations(newAnimations) {
+        this.#animations = newAnimations;
     }
 }

@@ -9,7 +9,7 @@ export default class QuadTree {
     #root;
     #height;
 
-    static MAXIMUM_DEPTH = 32;
+    static MAXIMUM_DEPTH = 10;
     
     constructor(xCoord, yCoord, width) {
         this.#root = new QTNode(xCoord, yCoord, width);
@@ -104,8 +104,9 @@ export default class QuadTree {
     getPath(bounds) {
         var path = [];
         var curr = this.#root;
+        var depth = 0;
         if (curr.getBounds().isBoundsWithinBounds(bounds)) {
-            while (!this.maxDepthReached()) {
+            while (depth != QuadTree.MAXIMUM_DEPTH) {
                 path.push(curr);
                 var next = this.getNextNode(bounds, curr);
                 if (next == curr) {
@@ -113,11 +114,12 @@ export default class QuadTree {
                 }
                 else {
                     curr = next;
+                    depth++;
                 }
             }
             return path;          
         }
-        throw new Error(item + " is out of bounds!");
+        throw new Error(bounds + " is out of bounds!");
     }
 
 

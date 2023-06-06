@@ -1,10 +1,12 @@
 import GameObject from "./GameObject.js";
 import TopCornerBounds from "./TopCornerBounds.js"
+import SquareAnimation from "../view/animations/SquareAnimation.js";
 
 
 export default class Square extends GameObject {
     // fields
     #size;
+    #color;
 
     /**
      * creates a new Square
@@ -18,6 +20,8 @@ export default class Square extends GameObject {
     constructor(id, xCoord, yCoord, size, color) {
         super(id, xCoord, yCoord);
         this.#size = size;
+        this.#color = color;
+        this.addAnimation(new SquareAnimation(this));
     }
 
 
@@ -35,10 +39,17 @@ export default class Square extends GameObject {
 
 
     // getters and setters
+    getSize() {
+        return this.#size;
+    }
+    getColor() {
+        return this.#color;
+    }
+
     setSize(newSize) {
         this.#size = newSize;
     }
-    getSize() {
-        return this.#size;
+    setColor(newColor) {
+        this.#color = newColor;
     }
 }

@@ -5,8 +5,9 @@ import DynamicQuadTree from "./DynamicQuadTree.js";
 
 export default class Game {
     // fields
-    #static
-    #dynamic
+    #static;
+    #dynamic;
+    #player;
 
     
     constructor(width) {
@@ -14,6 +15,8 @@ export default class Game {
 
         this.#static = new QuadTree(half, half, width);
         this.#dynamic = new DynamicQuadTree(half, half, width);
+        
+        this.#player = null;
     }
 
 
@@ -35,11 +38,25 @@ export default class Game {
     }
 
 
+
+    gatherAnimations(bounds) {
+        return this.#static.queryRange(bounds);
+    }
+
+
+
     // getters and setters
     getStatic() {
         return this.#static;
     }
     getDynamic() {
         return this.#dynamic;
+    }
+    getPlayer() {
+        return this.#player;
+    }
+
+    setPlayer(newPlayer) {
+        this.#player = newPlayer;
     }
 }
