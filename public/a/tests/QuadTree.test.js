@@ -71,5 +71,50 @@ describe('unit testing for QuadTree', () => {
             .toBe(7);
         expect(tree.queryRange(new TopCornerBounds(50, 140, 65, 95)).length)
             .toBe(4);
+        expect(tree.queryRange(new TopCornerBounds(128, -30, 128, 60)).length)
+            .toBe(2);
+    })
+
+
+    test('testing adjustBoundsToFit', () => {
+        var b1 = tree.adjustBoundsToFit(new TopCornerBounds(-20, -20, 50, 60));
+        expect(b1.getTop()).toBe(0);
+        expect(b1.getLeft()).toBe(0);
+        expect(b1.getRight()).toBe(30);
+        expect(b1.getBottom()).toBe(40);
+        expect(b1.getWidth()).toBe(30);
+        expect(b1.getHeight()).toBe(40);
+
+        b1 = tree.adjustBoundsToFit(new TopCornerBounds(200, 196, 100, 150));
+        expect(b1.getTop()).toBe(196);
+        expect(b1.getLeft()).toBe(200);
+        expect(b1.getRight()).toBe(256);
+        expect(b1.getBottom()).toBe(256);
+        expect(b1.getWidth()).toBe(56);
+        expect(b1.getHeight()).toBe(60);
+
+        b1 = tree.adjustBoundsToFit(new TopCornerBounds(-20, -20, 3000, 3000));
+        expect(b1.getTop()).toBe(0);
+        expect(b1.getLeft()).toBe(0);
+        expect(b1.getRight()).toBe(256);
+        expect(b1.getBottom()).toBe(256);
+        expect(b1.getWidth()).toBe(256);
+        expect(b1.getHeight()).toBe(256);
+
+        b1 = tree.adjustBoundsToFit(new TopCornerBounds(100, -20, 50, 3000));
+        expect(b1.getTop()).toBe(0);
+        expect(b1.getLeft()).toBe(100);
+        expect(b1.getRight()).toBe(150);
+        expect(b1.getBottom()).toBe(256);
+        expect(b1.getWidth()).toBe(50);
+        expect(b1.getHeight()).toBe(256);
+
+        b1 = tree.adjustBoundsToFit(new TopCornerBounds(-30, 200, 150, 100));
+        expect(b1.getTop()).toBe(200);
+        expect(b1.getLeft()).toBe(0);
+        expect(b1.getRight()).toBe(120);
+        expect(b1.getBottom()).toBe(256);
+        expect(b1.getWidth()).toBe(120);
+        expect(b1.getHeight()).toBe(56);
     })
 })

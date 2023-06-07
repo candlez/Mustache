@@ -1,4 +1,5 @@
 import MidPointBounds from "./MidPointBounds.js";
+import TopCornerBounds from "./TopCornerBounds.js";
 
 
 /**
@@ -49,11 +50,49 @@ export default class QuadTree {
     }
 
 
+
+    adjustBoundsToFit(bounds, node) {
+        var x = bounds.getLeft();
+        var y = bounds.getTop();
+        var width = bounds.getWidth();
+        var height = bounds.getHeight();
+
+        if (node === undefined) {
+            node = this.#root;
+        }
+        var limit = node.getBounds();
+
+        if (!limit.doesBoundsIntersectBounds(bounds)) {
+            new Error(bounds + ": is out of bounds!")
+        }
+
+        if (x < limit.getLeft()) {
+            var right = x + width;
+            x = limit.getLeft();
+            width = right - x;
+        }
+        if (y < limit.getTop()) {
+            var bottom = y + height;
+            y = limit.getTop();
+            height = bottom - y;
+        }
+        if (x + width > limit.getRight()) {
+            width = limit.getRight() - x;
+        }
+        if (y + height > limit.getBottom()) {
+            height = limit.getBottom() - y;
+        }
+        return new TopCornerBounds(x, y, width, height);
+    }
+
+
+
     /**
      * @param {Bounds} bounds 
      * @returns a list of every item that intersects the given Bounds
      */
     queryRange(bounds) {
+        bounds = this.adjustBoundsToFit(bounds);
         var items = [];
         var potentialItems = [];
 
@@ -61,10 +100,12 @@ export default class QuadTree {
         for (var i = 0; i < path.length; i++) {
             potentialItems = potentialItems.concat(path[i].getObjects());
         }
+
         var subTrees = this.getSubtrees(path[path.length - 1]);
         for (var i = 0; i < subTrees.length; i++) {
             potentialItems = potentialItems.concat(subTrees[i].getObjects());
         }
+
         for (var i = 0; i < potentialItems.length; i++) {
             if (bounds.doesBoundsIntersectBounds(potentialItems[i].getBounds())) {
                 items.push(potentialItems[i]);
