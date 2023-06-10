@@ -9,7 +9,7 @@ function getRandomInt(max) {
 const size = 25000;
 const game = new Game(size);
 
-for (var i = 0; i < 10000; i++) {
+for (var i = 0; i < 50000; i++) {
     const squareSize = getRandomInt(200);
     var square = new Square(i.toString(), getRandomInt(size - squareSize), getRandomInt(size - squareSize), squareSize, 
         "blue"/*rgb(getRandomInt(255), getRandomInt(255), getRandomInt(255))*/);
@@ -26,7 +26,11 @@ const display = new GameDisplay(game);
 display.startAnimationLoop();
 
 setInterval(() => {
-    player.setXCoord(getRandomInt(size - 200));
-    player.setYCoord(getRandomInt(size - 200));
+    var playerSize = 500 + getRandomInt(1500);
+    player.setXCoord(getRandomInt(size - playerSize));
+    player.setYCoord(getRandomInt(size - playerSize));
+    player.setSize(playerSize);
+
+    // console.log(player.getXCoord(), player.getYCoord(), player.getSize(), display.getDisplayBounds());
 }, 5000);
 

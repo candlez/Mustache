@@ -101,7 +101,7 @@ export default class QuadTree {
             potentialItems = potentialItems.concat(path[i].getObjects());
         }
 
-        var subTrees = this.getSubtrees(path[path.length - 1]);
+        var subTrees = this.getIntersectingSubtrees(path[path.length - 1], bounds);
         for (var i = 0; i < subTrees.length; i++) {
             potentialItems = potentialItems.concat(subTrees[i].getObjects());
         }
@@ -183,6 +183,49 @@ export default class QuadTree {
         }
         return nodes;
     }
+
+
+    getIntersectingSubtrees(node, bounds) {
+        var nodes = [];
+        if (bounds === undefined) {
+            return this.getSubtrees(node);
+        }
+        if (!node.isLeaf()) {
+            if (bounds.isBoundsWithinBounds(node.getNorthWest().getBounds())) {
+                nodes.push(node.getNorthWest());
+                nodes = nodes.concat(this.getSubtrees(node.getNorthWest()));
+            } else if (bounds.doesBoundsIntersectBounds(node.getNorthWest().getBounds())) {
+                nodes.push(node.getNorthWest());
+                nodes = nodes.concat(this.getIntersectingSubtrees(node.getNorthWest(), bounds));
+            }
+
+            if (bounds.isBoundsWithinBounds(node.getNorthEast().getBounds())) {
+                nodes.push(node.getNorthEast());
+                nodes = nodes.concat(this.getSubtrees(node.getNorthEast()));
+            } else if (bounds.doesBoundsIntersectBounds(node.getNorthEast().getBounds())) {
+                nodes.push(node.getNorthEast());
+                nodes = nodes.concat(this.getIntersectingSubtrees(node.getNorthEast(), bounds));
+            }
+
+            if (bounds.isBoundsWithinBounds(node.getSouthEast().getBounds())) {
+                nodes.push(node.getSouthEast());
+                nodes = nodes.concat(this.getSubtrees(node.getSouthEast()));
+            } else if (bounds.doesBoundsIntersectBounds(node.getSouthEast().getBounds())) {
+                nodes.push(node.getSouthEast());
+                nodes = nodes.concat(this.getIntersectingSubtrees(node.getSouthEast(), bounds));
+            }
+
+            if (bounds.isBoundsWithinBounds(node.getSouthWest().getBounds())) {
+                nodes.push(node.getSouthWest());
+                nodes = nodes.concat(this.getSubtrees(node.getSouthWest()));
+            } else if (bounds.doesBoundsIntersectBounds(node.getSouthWest().getBounds())) {
+                nodes.push(node.getSouthWest());
+                nodes = nodes.concat(this.getIntersectingSubtrees(node.getSouthWest(), bounds));
+            }
+        }
+        return nodes;
+    }
+
 
 
     /**

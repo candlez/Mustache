@@ -106,4 +106,10 @@ export default class Bounds {
     getHeight() {
         return this.#height;
     }
+    getCenterX() {
+        return this.#left + (this.#width * .5);
+    }
+    getCenterY() {
+        return this.#top + (this.#height * .5);
+    }
 }

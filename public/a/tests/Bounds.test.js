@@ -44,4 +44,12 @@ describe('unit testing for Bounds and its subclasses', () => {
         expect(midPoint.doesBoundsIntersectBounds(new TopCornerBounds(20, 230, 100, 100))).toBe(true);
         expect(midPoint.doesBoundsIntersectBounds(new TopCornerBounds(-30, -30, 300, 300))).toBe(true);
     })
+
+
+    test('testing getCenter methods', () => {
+        expect(midPoint.getCenterX()).toBe(128);
+        expect(midPoint.getCenterY()).toBe(128);
+        expect(topCorner.getCenterX()).toBe(128);
+        expect(topCorner.getCenterY()).toBe(128);
+    })
 })

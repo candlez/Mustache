@@ -34,8 +34,12 @@ export default class GameDisplay extends Display {
         var player = this.#game.getPlayer();
         var bounds = player.getBounds();
 
-        return new MidPointBounds(player.getXCoord() + (bounds.getWidth() / 2), player.getYCoord() + (bounds.getHeight() / 2),
-            this.getWidth() / this.getScale(), this.getHeight() / this.getScale());
+        return new MidPointBounds(
+            Math.ceil(bounds.getCenterX()), 
+            Math.ceil(bounds.getCenterY()),
+            Math.ceil(this.getWidth() / this.getScale()), 
+            Math.ceil(this.getHeight() / this.getScale())
+        );
     }
 
 
@@ -50,10 +54,28 @@ export default class GameDisplay extends Display {
     drawFrame() {
         this.clear();
         this.adjustScale();
-        this.gatherAnimations(this.getDisplayBounds());
+        var bounds = this.getDisplayBounds(); // remove later
+        this.gatherAnimations(bounds);
         var player = this.#game.getPlayer();
+
+        var rect = {
+            x: (this.getWidth() * .5) + ((bounds.getLeft() - player.getBounds().getCenterX()) * this.getScale()),
+            y: (this.getHeight() * .5) + ((bounds.getTop() - player.getBounds().getCenterY()) * this.getScale()),
+            width: bounds.getWidth() * this.getScale(),
+            height: bounds.getHeight() * this.getScale()
+        }
+        var ctx = this.getCTX();
+        ctx.beginPath();
+        ctx.rect(
+            rect.x, 
+            rect.y, 
+            rect.width, 
+            rect.height
+        );
+        ctx.fillStyle = "black";
+        ctx.fill();
+
         var animations = this.getAnimations();
-        console.log(animations.length)
         for (var i = 0; i < animations.length; i++) {
             animations[i].drawFrame(this.getCTX(), this.getScale(), player, this);
         }
