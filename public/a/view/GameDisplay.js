@@ -3,12 +3,14 @@ import MidPointBounds from "./../model/MidPointBounds.js";
 
 export default class GameDisplay extends Display {
     // fields
-    #game
+    #game;
+    #controller;
 
 
     constructor(game) {
         super("playspace", window.innerWidth, window.innerHeight);
         this.#game = game;
+        this.#controller = null;
     }
 
 
@@ -53,6 +55,9 @@ export default class GameDisplay extends Display {
 
     drawFrame() {
         this.clear();
+        if (this.#controller != null) {
+            this.#controller.interpretKeys();
+        }
         this.adjustScale();
         var bounds = this.getDisplayBounds(); // remove later
         this.gatherAnimations(bounds);
@@ -79,5 +84,13 @@ export default class GameDisplay extends Display {
         for (var i = 0; i < animations.length; i++) {
             animations[i].drawFrame(this.getCTX(), this.getScale(), player, this);
         }
+    }
+
+
+    // getters and setters
+    
+
+    setController(newController) {
+        this.#controller = newController;
     }
 }

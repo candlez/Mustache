@@ -77,7 +77,8 @@ export default class Display {
     startAnimationLoop() {
         this.#active = true;
         const display = this;
-        function animationLoop() {
+        function animationLoop(time) {
+            console.log(time);
             display.drawFrame();
             if (display.isActive()) {
                 requestAnimationFrame(animationLoop);
