@@ -6,7 +6,9 @@ import DynamicQuadTree from "./DynamicQuadTree.js";
 export default class Game {
     // fields
     #static;
+    #staticMap;
     #dynamic;
+    #dynamicMap;
     #player;
 
     
@@ -14,7 +16,9 @@ export default class Game {
         var half = width / 2;
 
         this.#static = new QuadTree(half, half, width);
+        this.#staticMap = new Map();
         this.#dynamic = new DynamicQuadTree(half, half, width);
+        this.#dynamicMap = new Map();
         
         this.#player = null;
     }
@@ -26,6 +30,16 @@ export default class Game {
      */
     insertStatic(object) {
         this.#static.insert(object);
+        this.#staticMap.set(object.getID(), object);
+    }
+
+
+    removeStatic(id) {
+        const obj = this.#staticMap.get(id);
+        if (obj !== undefined) {
+            this.#static.remove(obj);
+            this.#staticMap.delete(id);
+        }
     }
 
 
@@ -35,12 +49,31 @@ export default class Game {
      */
     insertDynamic(object) {
         this.#dynamic.insert(object);
+        this.#dynamicMap.set(object.getID(), object);
+    }
+
+
+
+    moveDynamic(id, newX, newY) {
+        const obj = this.#dynamicMap.get(id);
+        if (obj !== undefined) {
+            obj.setXCoord(newX);
+            obj.setYCoord(newY);
+            this.#dynamic.move(obj);
+        }
     }
 
 
 
     gatherAnimations(bounds) {
-        return this.#static.queryRange(bounds).concat([this.#player]);
+        return this.#static.queryRange(bounds).concat(this.#dynamic.queryRange(bounds)).concat([this.#player]);
+    }
+
+
+
+    getPlayerCollisions() {
+        const bounds = this.#player.getBounds();
+        return this.#static.queryRange(bounds).concat(this.#dynamic.queryRange(bounds));
     }
 
 
@@ -49,8 +82,14 @@ export default class Game {
     getStatic() {
         return this.#static;
     }
+    getStaticMap() {
+        return this.#staticMap;
+    }
     getDynamic() {
         return this.#dynamic;
+    }
+    getDynamicMap() {
+        return this.#dynamicMap;
     }
     getPlayer() {
         return this.#player;

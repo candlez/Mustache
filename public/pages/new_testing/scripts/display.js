@@ -12,18 +12,21 @@ const colors = ["blue", "crimson", "slateblue", "seagreen", "skyblue", "orchid",
 const size = 25000;
 const game = new Game(size);
 
-for (var i = 0; i < 40000; i++) {
-    const squareSize = getRandomInt(250);
-    var square = new Square(i.toString(), getRandomInt(size - squareSize), getRandomInt(size - squareSize), squareSize, 
-        colors[getRandomInt(colors.length)]);
-    game.insertStatic(square);
+// for (var i = 0; i < 4000; i++) {
+//     const squareSize = getRandomInt(250);
+//     var square = new Square(i.toString(), getRandomInt(size - squareSize), getRandomInt(size - squareSize), squareSize, 
+//         colors[getRandomInt(colors.length)]);
+//     game.insertStatic(square);
+// }
+
+for (var i = 0; i < 250; i++) {
+    game.insertDynamic(new Square(i.toString(), 12000, 100 * i, 100, colors[getRandomInt(colors.length)]));
 }
 
 const player = new Square("player", 12500, 12500, 200, "white")
 game.setPlayer(player);
 
 console.log("done")
-// console.log(game)
 
 const display = new GameDisplay(game);
 display.startAnimationLoop();
@@ -37,3 +40,11 @@ controller.activateKeyLogger("right");
 controller.activateKeyLogger("sizeUp");
 controller.activateKeyLogger("sizeDown");
 display.setController(controller);
+
+
+setInterval(() => {
+    for (var i = 0; i < 250; i++) {
+        const obj = game.getDynamicMap().get(i.toString());
+        game.moveDynamic(obj.getID(), obj.getXCoord() + 1, obj.getYCoord());
+    }
+}, 13.3)

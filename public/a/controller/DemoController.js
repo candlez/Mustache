@@ -48,6 +48,11 @@ export default class DemoController extends Controller {
         if (loggers.get("sizeDown").getKeyDown()) {
             player.grow(-2);
         }
+        // collision
+        var collisions = this.getGame().getPlayerCollisions();
+        for (var i = 0; i < collisions.length; i++) {
+            this.getGame().removeStatic(collisions[i].getID())
+        }
     }
 
 
