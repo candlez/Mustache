@@ -14,6 +14,8 @@ export default class Display {
 
     #animations;
 
+    #refreshRate;
+
     constructor(id, width, height) {
         this.#width = width;
         this.#height = height;
@@ -74,11 +76,52 @@ export default class Display {
 
 
 
+    isCalibrated() {
+        return this.getRefreshRate() !== undefined;
+    }
+
+
+
     startAnimationLoop() {
         this.#active = true;
         const display = this;
+
+        var frames = 0;
+        var initTime;
+        var count = 0;
+        var lastRate;
+        function calibrate(time) {
+            var fTime = Math.floor(time);
+            frames++;
+            // calculate refresh rate for a second
+            if (initTime === undefined) {
+                initTime = fTime;
+            }
+            if (fTime - 1000 >= initTime) {
+                // one second passed
+                console.log("second passed")
+                if (display.getRefreshRate() === undefined) {
+                    display.setRefreshRate(frames);
+                } else {
+                    if (lastRate === undefined || lastRate != frames) {
+                        lastRate = frames;
+                    } else {
+                        count++;
+                    }
+                    if (count >= 3) {
+                        display.setRefreshRate(frames);
+                        count = 0;
+                    }
+                }
+                initTime = fTime;
+                frames = 0;
+            }
+        }
+
         function animationLoop(time) {
-            console.log(time);
+            // console.log(time);
+            console.log(display.getRefreshRate());
+            calibrate(time);
             display.drawFrame();
             if (display.isActive()) {
                 requestAnimationFrame(animationLoop);
@@ -90,7 +133,7 @@ export default class Display {
 
 
     createController() {
-        new Error("this method is abstract")
+        new Error("this method is abstract");
     }
 
 
@@ -126,6 +169,9 @@ export default class Display {
     getAnimations() {
         return this.#animations;
     }
+    getRefreshRate() {
+        return this.#refreshRate;
+    }
 
 
     setWidth(newWidth) {
@@ -144,5 +190,8 @@ export default class Display {
     }
     setAnimations(newAnimations) {
         this.#animations = newAnimations;
+    }
+    setRefreshRate(newRefreshRate) {
+        this.#refreshRate = newRefreshRate;
     }
 }

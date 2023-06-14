@@ -5,6 +5,7 @@ export default class GameObject {
     #xCoord;
     #yCoord;
     #animations;
+    #speed;
     #node;
 
     constructor(id, xCoord, yCoord) {
@@ -48,5 +49,11 @@ export default class GameObject {
     }
     getNode() {
         return this.#node;
+    }
+    setSpeed(newSpeed) {
+        this.#speed = newSpeed;
+    }
+    getSpeed() {
+        return this.#speed;
     }
 }

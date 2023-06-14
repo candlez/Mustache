@@ -13,7 +13,7 @@ const game = new Game(size);
 for (var i = 0; i < 2000; i++) {
     const squareSize = getRandomInt(500);
     var square = new Square(i.toString(), getRandomInt(size - squareSize), getRandomInt(size - squareSize), squareSize, 
-        "blue"/*rgb(getRandomInt(255), getRandomInt(255), getRandomInt(255))*/);
+        "blue");
     game.insertStatic(square);
 }
 
@@ -26,14 +26,6 @@ console.log("done")
 const display = new GameDisplay(game);
 display.startAnimationLoop();
 
-// setInterval(() => {
-//     var playerSize = 500 + getRandomInt(1500);
-//     player.setXCoord(getRandomInt(size - playerSize));
-//     player.setYCoord(getRandomInt(size - playerSize));
-//     player.setSize(playerSize);
-
-//     // console.log(player.getXCoord(), player.getYCoord(), player.getSize(), display.getDisplayBounds());
-// }, 5000);
 
 const controller = new DemoController(game, display);
 controller.activateKeyLogger("up");
