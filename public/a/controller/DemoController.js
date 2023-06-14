@@ -43,10 +43,10 @@ export default class DemoController extends Controller {
         }
         // size
         if (loggers.get("sizeUp").getKeyDown()) {
-            player.setSize(player.getSize() + 2);
+            player.grow(2);
         }
         if (loggers.get("sizeDown").getKeyDown()) {
-            player.setSize(player.getSize() - 2);
+            player.grow(-2);
         }
     }
 

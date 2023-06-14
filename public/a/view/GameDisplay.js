@@ -17,7 +17,7 @@ export default class GameDisplay extends Display {
 
 
 
-    adjustScale() { // see if there are any innefficiencies in this
+    adjustScale() {
         const rate = .05;
         const originalSize = 200;
         const currentSize = this.#game.getPlayer().getSize();

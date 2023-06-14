@@ -27,6 +27,13 @@ export default class Square extends GameObject {
 
 
 
+    grow(amount) {
+        var half = amount / 2;
+        this.setXCoord(this.getXCoord() - half);
+        this.setYCoord(this.getYCoord() - half);
+        this.setSize(this.getSize() + amount);
+    }
+
 
     getBounds() {
         return new TopCornerBounds(this.getXCoord(), this.getYCoord(), 

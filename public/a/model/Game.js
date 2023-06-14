@@ -40,7 +40,7 @@ export default class Game {
 
 
     gatherAnimations(bounds) {
-        return this.#static.queryRange(bounds);
+        return this.#static.queryRange(bounds).concat([this.#player]);
     }
 
 

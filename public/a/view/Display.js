@@ -99,7 +99,6 @@ export default class Display {
             }
             if (fTime - 1000 >= initTime) {
                 // one second passed
-                console.log("second passed")
                 if (display.getRefreshRate() === undefined) {
                     display.setRefreshRate(frames);
                 } else {
@@ -120,7 +119,6 @@ export default class Display {
 
         function animationLoop(time) {
             // console.log(time);
-            console.log(display.getRefreshRate());
             calibrate(time);
             display.drawFrame();
             if (display.isActive()) {
