@@ -1,10 +1,13 @@
 import QuadTree from "./QuadTree.js";
 import DynamicQuadTree from "./DynamicQuadTree.js";
+import TopCornerBounds from "./TopCornerBounds.js";
 
 
 
 export default class Game {
     // fields
+    #width;
+
     #static;
     #staticMap;
     #dynamic;
@@ -14,6 +17,8 @@ export default class Game {
 
     
     constructor(width) {
+        this.#width = width;
+
         var half = width / 2;
 
         this.#static = new QuadTree(half, half, width);
@@ -111,6 +116,12 @@ export default class Game {
     }
     getBackGroundAnimations() {
         return this.#backgroundAnimations;
+    }
+    getWidth() {
+        return this.#width;
+    }
+    getBounds() {
+        return new TopCornerBounds(0, 0, this.#width, this.#width);
     }
 
     setPlayer(newPlayer) {

@@ -32,8 +32,6 @@ export default class GridAnimation extends GameObjectAnimation {
     drawFrame(ctx, scale, player, display) {
         const grid = this.getObject();
         const canvasCoords = this.calculateCanvasCoords(grid, display, player, scale);
-        ctx.beginPath();
-        ctx.rect(canvasCoords.x, canvasCoords.y, grid.getWidth() * scale, grid.getHeight() * scale);
 
         // split x and y
         const bounds = player.getBounds();
