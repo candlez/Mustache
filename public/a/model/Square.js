@@ -1,6 +1,6 @@
 import GameObject from "./GameObject.js";
 import TopCornerBounds from "./TopCornerBounds.js"
-import SquareAnimation from "../view/animations/SquareAnimation.js";
+import SquareAnimation from "../view/animations/game_objects/SquareAnimation.js";
 
 
 export default class Square extends GameObject {

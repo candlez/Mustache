@@ -15,14 +15,7 @@ export default class SquareAnimation extends GameObjectAnimation {
 
     drawFrame(ctx, scale, player, display) {
         const square = this.getObject();
-
-        // calculate canvas coords
-        const center = display.getCenter();
-        const canvasCoords = {
-            x: center.x + (scale * (square.getXCoord() - player.getXCoord() - (.5 * player.getSize()))),
-            y: center.y + (scale * (square.getYCoord() - player.getYCoord()  - (.5 * player.getSize())))
-        }
-
+        const canvasCoords = this.calculateCanvasCoords(square, display, player, scale);
         ctx.beginPath();
         ctx.rect(
             canvasCoords.x,

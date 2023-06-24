@@ -2,6 +2,7 @@ import GameDisplay from "../../../a/view/GameDisplay.js";
 import Game from "./../../../a/model/Game.js"
 import Square from "../../../a/model/Square.js";
 import DemoController from "../../../a/controller/DemoController.js";
+import GridAnimation from "../../../a/view/animations/game_objects/GridAnimation.js";
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -26,6 +27,9 @@ for (var i = 0; i < 250; i++) {
 const player = new Square("player", 12500, 12500, 200, "white")
 game.setPlayer(player);
 
+const grid = new GridAnimation(25000, 25000, 100, "silver");
+game.addBackgroundAnimation(grid);
+
 console.log("done")
 
 const display = new GameDisplay(game);
@@ -48,3 +52,5 @@ setInterval(() => {
         game.moveDynamic(obj.getID(), obj.getXCoord() + 1, obj.getYCoord());
     }
 }, 13.3)
+
+

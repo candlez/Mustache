@@ -10,6 +10,7 @@ export default class Game {
     #dynamic;
     #dynamicMap;
     #player;
+    #backgroundAnimations;
 
     
     constructor(width) {
@@ -21,6 +22,7 @@ export default class Game {
         this.#dynamicMap = new Map();
         
         this.#player = null;
+        this.#backgroundAnimations = [];
     }
 
 
@@ -66,7 +68,8 @@ export default class Game {
 
 
     gatherAnimations(bounds) {
-        return this.#static.queryRange(bounds).concat(this.#dynamic.queryRange(bounds)).concat([this.#player]);
+        return this.#backgroundAnimations.concat(this.#static.queryRange(bounds))
+            .concat(this.#dynamic.queryRange(bounds)).concat([this.#player]);
     }
 
 
@@ -74,6 +77,18 @@ export default class Game {
     getPlayerCollisions() {
         const bounds = this.#player.getBounds();
         return this.#static.queryRange(bounds).concat(this.#dynamic.queryRange(bounds));
+    }
+
+
+
+    addBackgroundAnimation(animation) {
+        this.#backgroundAnimations.push(animation);
+    }
+
+
+
+    clearBackgroundAnimations() {
+        this.#backgroundAnimations = [];
     }
 
 
@@ -93,6 +108,9 @@ export default class Game {
     }
     getPlayer() {
         return this.#player;
+    }
+    getBackGroundAnimations() {
+        return this.#backgroundAnimations;
     }
 
     setPlayer(newPlayer) {
