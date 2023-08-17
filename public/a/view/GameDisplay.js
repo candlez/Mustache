@@ -5,12 +5,14 @@ export default class GameDisplay extends Display {
     // fields
     #game;
     #controller;
+    #connection;
 
 
-    constructor(game) {
+    constructor(game, connection) {
         super("playspace", window.innerWidth, window.innerHeight);
         this.#game = game;
         this.#controller = null;
+        this.#connection = connection;
 
         this.setBackgroundColor("black");
     }
@@ -60,6 +62,9 @@ export default class GameDisplay extends Display {
         if (this.#controller != null && this.isCalibrated()) {
             this.#controller.interpretKeys();
         }
+        if (this.#connection != null) {
+            this.#connection.requestChanges();
+        }
         this.adjustScale();
         this.gatherAnimations(this.getDisplayBounds());
         var animations = this.getAnimations();
@@ -70,8 +75,11 @@ export default class GameDisplay extends Display {
 
 
     // getters and setters
-    
 
+
+    setGame(newGame) {
+        this.#game = newGame;
+    }
     setController(newController) {
         this.#controller = newController;
     }

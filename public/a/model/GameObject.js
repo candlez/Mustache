@@ -32,28 +32,32 @@ export default class GameObject {
     getID() {
         return this.#id;
     }
-    setXCoord(newX) {
-        this.#xCoord = newX;
-    }
     getXCoord() {
         return this.#xCoord;
-    }
-    setYCoord(newY) {
-        this.#yCoord = newY;
     }
     getYCoord() {
         return this.#yCoord;
     }
-    setNode(newNode) {
-        this.#node = newNode;
-    }
     getNode() {
         return this.#node;
     }
-    setSpeed(newSpeed) {
-        this.#speed = newSpeed;
-    }
     getSpeed() {
         return this.#speed;
+    }
+
+    setID(newID) {
+        this.#id = newID;
+    }
+    setXCoord(newX) {
+        this.#xCoord = newX;
+    }
+    setYCoord(newY) {
+        this.#yCoord = newY;
+    }
+    setNode(newNode) {
+        this.#node = newNode;
+    }
+    setSpeed(newSpeed) {
+        this.#speed = newSpeed;
     }
 }

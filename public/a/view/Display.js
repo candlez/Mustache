@@ -117,8 +117,7 @@ export default class Display {
             }
         }
 
-        function animationLoop(time) {
-            // console.log(time);
+        function animationLoop(time) { 
             calibrate(time);
             display.drawFrame();
             if (display.isActive()) {
@@ -130,7 +129,7 @@ export default class Display {
 
 
 
-    createController() {
+    createController() { // huh?
         new Error("this method is abstract");
     }
 

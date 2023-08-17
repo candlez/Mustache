@@ -6,8 +6,8 @@ export default class DemoController extends Controller {
     // fields
 
 
-    constructor(game, display) {
-        super(game, display);
+    constructor(game, display, connection) {
+        super(game, display, connection);
 
         this.addKeyLogger("up", new KeyLogger("w"));
         this.addKeyLogger("left", new KeyLogger("a"));
@@ -20,7 +20,7 @@ export default class DemoController extends Controller {
 
 
 
-    interpretKeys() {
+    interpretKeys() { // these ought to be broken up into different methods
         const refreshRate = this.getDisplay().getRefreshRate();
         const loggers = this.getKeyLoggers();
         const player = this.getGame().getPlayer();
@@ -41,13 +41,16 @@ export default class DemoController extends Controller {
                 player.setXCoord(player.getXCoord() + (7 * speed * unitVectors.horizontal));
                 player.setYCoord(player.getYCoord() + (7 * speed * unitVectors.vertical));
             }
+            this.getConnection().emitMoved();
         }
         // size
         if (loggers.get("sizeUp").getKeyDown()) {
             player.grow(2);
+            this.getConnection().emitSizeChanged();
         }
         if (loggers.get("sizeDown").getKeyDown()) {
             player.grow(-2);
+            this.getConnection().emitSizeChanged();
         }
         // collision
         if (player.getXCoord() < 0) {
@@ -64,9 +67,9 @@ export default class DemoController extends Controller {
         }
 
         var collisions = this.getGame().getPlayerCollisions();
-        for (var i = 0; i < collisions.length; i++) {
-            this.getGame().removeStatic(collisions[i].getID())
-        }
+        // for (var i = 0; i < collisions.length; i++) {
+        //     this.getGame().removeStatic(collisions[i].getID())
+        // }
     }
 
 

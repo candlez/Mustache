@@ -6,11 +6,14 @@ export default class Controller {
     #game;
     #display;
 
+    #connection;
+
     #keyLoggers;
 
-    constructor(game, display) {
+    constructor(game, display, connection) {
         this.#game = game;
         this.#display = display;
+        this.#connection = connection;
 
         this.#keyLoggers = new Map();
     }
@@ -55,6 +58,9 @@ export default class Controller {
     }
     getDisplay() {
         return this.#display;
+    }
+    getConnection() {
+        return this.#connection;
     }
     getKeyLoggers() {
         return this.#keyLoggers;
