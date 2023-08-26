@@ -16,7 +16,7 @@ var color = "crimson";
 // 2. create the connection with the correct domain
 const connection = new ServerConnection(window.location.hostname);
 
-// 3. create the game (ask what width)
+// 3. create the game with the right info
 connection.initializeGame() // add a grid to the game
 // 4. make initial request for data and add it to the game
 .then(() => {
@@ -32,7 +32,7 @@ connection.initializeGame() // add a grid to the game
 // 7. create a game display
 }).then(() => {
     connection.setDisplay(new GameDisplay(connection.getGame(), connection));
-// 8. create a controller(s) and add them
+// 8. create the controller(s) and add them
 }).then(() => {
     const controller = new DemoController(connection.getGame(), 
         connection.getDisplay(), connection);

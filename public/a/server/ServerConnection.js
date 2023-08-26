@@ -17,12 +17,11 @@ export default class ServerConnection {
         // this.#game = game;
         // this.#display = display;
         // this.#controller = controller;
-
-        this.#sending = true;
+        this.#sending = true; // temporary
     }
 
 
-    addObjectBasedOnData(data) { // this is RazorRoyaleSpecific
+    addObjectBasedOnData(data) { // this is RazorRoyale specific
         var obj;
         if (data.type == "square") {
             obj = new Square(data.id, data.x, data.y, data.args.size, data.args.color);
@@ -33,7 +32,7 @@ export default class ServerConnection {
 
         if (obj !== undefined) {
             if (data.dynamic) {
-                console.log(data.x, data.y)
+                console.log(data.x, data.y);
                 this.#game.insertDynamic(obj);
             } else {
                 this.#game.insertStatic(obj);
@@ -42,14 +41,13 @@ export default class ServerConnection {
     }
 
 
-    initializeGame() { // this name sucks
+    initializeGame() {
         return new Promise((resolve, reject) => {
-            const socket = this; // why isn't this being used?
-            this.#socket.once("gameConstructorValuesSent", (data) => {
-                this.#game = new Game(data);
+            this.#socket.once("gameInfoSent", (data) => {
+                this.#game = new Game(data.width);
                 resolve();
             });
-    
+
             this.#socket.emit("initializingGame");
         });
     }
@@ -112,7 +110,7 @@ export default class ServerConnection {
     }
 
 
-    emitMoved() { // could change these to accept a GameObject as an argument
+    emitMoved() { // could change this to accept a GameObject as an argument
         const player = this.#game.getPlayer();
         this.#socket.emit("playerMoved", {
             id: player.getID(),

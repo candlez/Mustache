@@ -100,9 +100,9 @@ export default class Game {
             return Math.floor(Math.random() * max);
         }
         
+ 
         this.#player = new Square(name, getRandomInt(this.#width - startingSize),
             getRandomInt(this.#width - startingSize), startingSize, color);
-        console.log(this.#player);
         return this.#player;
     }
 

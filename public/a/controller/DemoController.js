@@ -76,7 +76,7 @@ export default class DemoController extends Controller {
         //     this.getGame().removeStatic(collisions[i].getID())
         // }
 
-        if (loggers.get("stopSending").getKeyDown()) {
+        if (loggers.get("stopSending").getKeyDown()) { // temporary
             console.log(8)
             this.getConnection().setSending(false);
             // loggers.delete("stopSending");
