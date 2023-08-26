@@ -9,6 +9,8 @@ export default class ServerConnection {
     #display;
     #controller;
 
+    #sending;
+
 
     constructor(domain /*, game, display, controller*/) {
         this.#socket = io.connect(domain);
@@ -16,14 +18,14 @@ export default class ServerConnection {
         // this.#display = display;
         // this.#controller = controller;
 
-
+        this.#sending = true;
     }
 
 
     addObjectBasedOnData(data) { // this is RazorRoyaleSpecific
         var obj;
         if (data.type == "square") {
-            obj = new Square(data.id, data.x, data.y, data.size, data.color);
+            obj = new Square(data.id, data.x, data.y, data.args.size, data.args.color);
 
         } else {
             console.log("not a square!")
@@ -98,8 +100,10 @@ export default class ServerConnection {
                     dynamic: true,
                     x: player.getXCoord(),
                     y: player.getYCoord(),
-                    size: player.getSize(),
-                    color: player.getColor()
+                    args: {
+                        size: player.getSize(),
+                        color: player.getColor()
+                    }
                 });
                 resolve();
             });
@@ -167,5 +171,12 @@ export default class ServerConnection {
     // setters
     setDisplay(newDisplay) {
         this.#display = newDisplay;
+    }
+
+    isSending() {
+        return this.#sending;
+    }
+    setSending(newSending) {
+        this.#sending = newSending;
     }
 }

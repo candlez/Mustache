@@ -39,6 +39,7 @@ const server = app.listen(80, () => {
 // -----------------------------------------------------------------------------------
 // socket stuff ----------------------------------------------------------------------
 const io = socket(server);
+const GameObject = require('./app_scripts/GameObject.cjs');
 
 const players = new Map();
 const gameObjects = new Map();
@@ -51,15 +52,11 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 for (var i = 0; i < 1000; i++) {
-    gameObjects.set(i.toString(), {
-        id: i.toString(),
-        type: "square",
-        dynamic: false,
-        x: getRandomInt(24000),
-        y: getRandomInt(24000),
-        size: getRandomInt(800),
-        color: "blue"
-    });
+    gameObjects.set(i.toString(), 
+        new GameObject(i.toString(), "square", false, 
+            getRandomInt(24000), getRandomInt(24000), {size: getRandomInt(1000), color: "blue"}
+        )
+    );
 }
 
 
@@ -92,9 +89,9 @@ io.sockets.on('connection', (socket) => {
 
     socket.on("requestingDataById", (id) => {
         if (players.has(id)) {
-            io.to(socket.id).emit(id + "DataSent", players.get(id));
+            io.to(socket.id).emit(id + "DataSent", players.get(id).getArguments());
         } else if (gameObjects.has(id)) {
-            io.to(socket.id).emit(id + "DataSent", gameObjects.get(id));
+            io.to(socket.id).emit(id + "DataSent", gameObjects.get(id).getArguments());
         } else {
             // wah wah wah
         }
@@ -108,8 +105,8 @@ io.sockets.on('connection', (socket) => {
 
 
     socket.on("playerSpawned", (data) => {
-        players.set(data.id, data);
-        playerTimers.set(data.id, {timers: [], changed: false, codes: []});
+        players.set(data.id, new GameObject(data.id, data.type, data.dynamic, data.x, data.y, data.args));
+        playerTimers.set(data.id, {timers: [], changed: false, codes: []}); // ewww
         timers.changedTimeOut(playerTimers, data.id, "spawned");
         socketToID.set(socket.id, data.id);
     });
@@ -128,10 +125,12 @@ io.sockets.on('connection', (socket) => {
     });
 
 
-    socket.on("requestingChanges", (data) => { // this needs to support more than one code
+    socket.on("requestingChanges", () => { // this needs to support more than one code
+        // console.log("Marco")
         for (const entry of playerTimers.entries()) {
             var data = players.get(entry[0])
             if (entry[1].changed && entry[0] != socketToID.get(socket.id)) {
+                // console.log(entry[1].codes);
                 if (entry[1].codes.includes("spawned")) {
                     io.to(socket.id).emit("spawned", data);
                 }
@@ -148,7 +147,7 @@ io.sockets.on('connection', (socket) => {
 
     // review
     socket.on("disconnect", (reason) => {
-        console.log(socket.id + " has disconnected, this is why: " + reason);
+        console.log(socket.id + " has disconnected,reason: " + reason);
         // socket.broadcast.emit("playerDisconnected", socketToID.get(socket.id));
         socketToID.delete(socket.id);
     });

@@ -16,6 +16,8 @@ export default class DemoController extends Controller {
 
         this.addKeyLogger("sizeUp", new KeyLogger("9"));
         this.addKeyLogger("sizeDown", new KeyLogger("0"));
+
+        this.addKeyLogger("stopSending", new KeyLogger("8"));
     }
 
 
@@ -41,6 +43,21 @@ export default class DemoController extends Controller {
                 player.setXCoord(player.getXCoord() + (7 * speed * unitVectors.horizontal));
                 player.setYCoord(player.getYCoord() + (7 * speed * unitVectors.vertical));
             }
+
+            // boundary collision
+            if (player.getXCoord() < 0) {
+                player.setXCoord(0);
+            }
+            if (player.getXCoord() + player.getSize() > this.getGame().getWidth()) {
+                player.setXCoord(this.getGame().getWidth() - player.getSize());
+            }
+            if (player.getYCoord() < 0) {
+                player.setYCoord(0);
+            }
+            if (player.getYCoord() + player.getSize() > this.getGame().getWidth()) {
+                player.setYCoord(this.getGame().getWidth() - player.getSize());
+            }
+
             this.getConnection().emitMoved();
         }
         // size
@@ -52,24 +69,18 @@ export default class DemoController extends Controller {
             player.grow(-2);
             this.getConnection().emitSizeChanged();
         }
-        // collision
-        if (player.getXCoord() < 0) {
-            player.setXCoord(0);
-        }
-        if (player.getXCoord() + player.getSize() > this.getGame().getWidth()) {
-            player.setXCoord(this.getGame().getWidth() - player.getSize());
-        }
-        if (player.getYCoord() < 0) {
-            player.setYCoord(0);
-        }
-        if (player.getYCoord() + player.getSize() > this.getGame().getWidth()) {
-            player.setYCoord(this.getGame().getWidth() - player.getSize());
-        }
+
 
         var collisions = this.getGame().getPlayerCollisions();
         // for (var i = 0; i < collisions.length; i++) {
         //     this.getGame().removeStatic(collisions[i].getID())
         // }
+
+        if (loggers.get("stopSending").getKeyDown()) {
+            console.log(8)
+            this.getConnection().setSending(false);
+            // loggers.delete("stopSending");
+        }
     }
 
 

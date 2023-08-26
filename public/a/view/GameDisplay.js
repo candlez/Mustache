@@ -62,7 +62,7 @@ export default class GameDisplay extends Display {
         if (this.#controller != null && this.isCalibrated()) {
             this.#controller.interpretKeys();
         }
-        if (this.#connection != null) {
+        if (this.#connection != null && this.#connection.isSending()) {
             this.#connection.requestChanges();
         }
         this.adjustScale();

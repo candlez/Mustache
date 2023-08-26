@@ -42,6 +42,7 @@ connection.initializeGame() // add a grid to the game
     controller.activateKeyLogger("right");
     controller.activateKeyLogger("sizeUp");
     controller.activateKeyLogger("sizeDown");
+    controller.activateKeyLogger("stopSending");
     controller.getDisplay().setController(controller);
 // 9. start animation loop
 }).then(() => {
