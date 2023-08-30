@@ -55,11 +55,10 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 for (var i = 0; i < 1000; i++) {
-    gameObjects.set(i.toString(), 
-        new GameObject(i.toString(), "square", false, 
-            getRandomInt(24000), getRandomInt(24000), {size: getRandomInt(1000), color: "blue"}
-        )
+    game.addGameObject(new GameObject(i.toString(), "square", false, 
+        getRandomInt(24000), getRandomInt(24000), {size: getRandomInt(1000), color: "blue"})
     );
+        
 }
 
 

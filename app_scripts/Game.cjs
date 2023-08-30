@@ -22,6 +22,11 @@ class Game {
     }
 
 
+    addGameObject(gameObject) {
+        this.#gameObjects.set(gameObject.id, gameObject);
+    }
+
+
     addUser(socket) {
         socket.once("initializingGame", () => {
             this.#io.to(socket.id).emit("gameInfoSent", this.#gameInfo);
@@ -39,10 +44,10 @@ class Game {
         });
     
     
-        socket.on("requestingDataById", (id) => {
+        socket.on("requestingDataById", (id) => { // is it a problem that this means no name overlap?
             if (this.#players.has(id)) {
                 this.#io.to(socket.id).emit(id + "DataSent", this.#players.get(id).getArguments());
-            } else if (gameObjects.has(id)) {
+            } else if (this.#gameObjects.has(id)) {
                 this.#io.to(socket.id).emit(id + "DataSent", this.#gameObjects.get(id).getArguments());
             } else {
                 // wah wah wah
@@ -104,11 +109,6 @@ class Game {
         //     // socket.broadcast.emit("playerDisconnected", socketToID.get(socket.id));
         //     socketToID.delete(socket.id);
         // });
-    }
-
-
-    removeUser(socket) {
-
     }
 }
 
