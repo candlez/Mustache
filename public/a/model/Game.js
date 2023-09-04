@@ -96,6 +96,8 @@ export default class Game {
          * an argument to the constructor, and recieved from the server in the
          * initialization phase
          */
+
+        
         function getRandomInt(max) {
             return Math.floor(Math.random() * max);
         }
