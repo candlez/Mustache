@@ -54,11 +54,13 @@ const socketToID = new Map();
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
+
+const colors = ["cyan", "lime", "violet"]
+
 for (var i = 0; i < 1000; i++) {
     game.addGameObject(new GameObject(i.toString(), "square", false, 
-        getRandomInt(24000), getRandomInt(24000), {size: getRandomInt(1000), color: "blue"})
+        getRandomInt(24000), getRandomInt(24000), {size: getRandomInt(1000), color: colors[getRandomInt(3)]})
     );
-        
 }
 
 

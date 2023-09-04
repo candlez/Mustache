@@ -1,4 +1,4 @@
-
+const Changed = require('./Changed.cjs');
 
 class GameObject {
     // private fields
@@ -11,6 +11,8 @@ class GameObject {
         this.x = x;
         this.y = y;
         this.args = args;
+
+        this.changed = new Changed();
     }
 
 
@@ -20,7 +22,9 @@ class GameObject {
             id: this.id,
             x: this.x,
             y: this.y,
-            args: this.args
+            args: this.args,
+
+            dynamic: this.dynamic
         }
     }
 }

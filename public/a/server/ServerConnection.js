@@ -91,6 +91,7 @@ export default class ServerConnection {
         return new Promise((resolve, reject) => {
             this.#socket.once("sentPlayerID", (data) => {
                 const player = this.#game.spawnPlayer(data, color);
+                console.log(player);
 
                 this.#socket.emit("playerSpawned", {
                     id: player.getID(),
@@ -144,7 +145,7 @@ export default class ServerConnection {
             this.#game.moveDynamic(data.id, data.x, data.y);
         });
         this.#socket.on("sizeChanged", (data) => {
-            console.log("hello")
+            console.log("size change recieved")
             this.#game.changeObjectSize(data.id, data.size);
             // if (data.dynamic) {
             //     this.#game.changeObjectSize(data.id, data.size);
