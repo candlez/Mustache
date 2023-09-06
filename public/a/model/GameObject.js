@@ -49,10 +49,10 @@ export default class GameObject {
         this.#id = newID;
     }
     setXCoord(newX) {
-        this.#xCoord = Math.round(newX);
+        this.#xCoord = Math.round(newX * 10) / 10;
     }
     setYCoord(newY) {
-        this.#yCoord = Math.round(newY);
+        this.#yCoord = Math.round(newY * 10) / 10;
     }
     setNode(newNode) {
         this.#node = newNode;

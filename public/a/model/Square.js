@@ -21,7 +21,7 @@ export default class Square extends GameObject {
         super(id, xCoord, yCoord);
         this.#size = size;
         this.#color = color;
-        this.setSpeed(60);
+        this.setSpeed(30); // hard coded?
         this.addAnimation(new SquareAnimation(this));
     }
 

@@ -33,9 +33,7 @@ class Changed {
 
     addChange(code) {
         if (this.codes[code]) {
-            if (!this.queue[code]) {
-                this.queue[code] = true;
-            }
+            this.queue[code] = true;
         } else {
             this.codes[code] = true;
             this.tracker++;

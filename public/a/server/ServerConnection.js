@@ -1,5 +1,6 @@
 import Game from './../model/Game.js'
 import Square from '../model/Square.js';
+import GridAnimation from '../view/animations/game_objects/GridAnimation.js';
 
 export default class ServerConnection {
     // fields
@@ -45,6 +46,7 @@ export default class ServerConnection {
         return new Promise((resolve, reject) => {
             this.#socket.once("gameInfoSent", (data) => {
                 this.#game = new Game(data.width);
+                this.#game.addBackgroundAnimation(new GridAnimation(data.width, data.width, 100, "gray"));
                 resolve();
             });
 
@@ -131,7 +133,12 @@ export default class ServerConnection {
 
 
     requestChanges() {
-        this.#socket.emit("requestingChanges");
+        return new Promise((resolve, reject) => {
+            this.#socket.on("changesSent", () => {
+                resolve();
+            });
+            this.#socket.emit("requestingChanges");
+        });
     }
 
 

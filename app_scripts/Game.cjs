@@ -26,8 +26,12 @@ class Game {
     }
 
 
-    sendBack(socketId, message, data) { // to-do: implement this
-        this.#io.to(socketId).emit(message, data);
+    sendBack(socketID, message, data) {
+        if (data === undefined) {
+            this.#io.to(socketID).emit(message);
+        } else {
+            this.#io.to(socketID).emit(message, data);
+        }
     }
 
 
@@ -76,10 +80,6 @@ class Game {
             player.changed.addChange(Changed.CODES.SPAWNED);
             this.#players.set(data.id, player);
             this.#changed.add(data.id);
-            
-            
-
-            console.log(this.#players); // temp
         });
     
     
@@ -103,24 +103,24 @@ class Game {
 
             for (const id of this.#changed.values()) {
                 // console.log(player)
-                if (id == this.#socketToID.get(socket.id)) {
-                    continue;
-                }
-                const player = this.#players.get(id);
-                if (player.changed.getChanged()) {
-                    if (player.changed.getSpawned()) {
-                        this.sendBack(socket.id, "spawned", player.getArguments());
+                if (id != this.#socketToID.get(socket.id)) {
+                    const player = this.#players.get(id);
+                    if (player.changed.getChanged()) {
+                        if (player.changed.getSpawned()) {
+                            this.sendBack(socket.id, "spawned", player.getArguments());
+                        }
+                        if (player.changed.getMoved()) {
+                            this.sendBack(socket.id, "moved", {id: player.id, x: player.x, y: player.y});
+                        }
+                        if (player.changed.getSizeChanged()) {
+                            this.sendBack(socket.id, "sizeChanged", {id: player.id, size: player.size});
+                        }
+                    } else {
+                        this.#changed.delete(id);
                     }
-                    if (player.changed.getMoved()) {
-                        this.sendBack(socket.id, "moved", {id: player.id, x: player.x, y: player.y});
-                    }
-                    if (player.changed.getSizeChanged()) {
-                        this.sendBack(socket.id, "sizeChanged", {id: player.id, size: player.size});
-                    }
-                } else {
-                    this.#changed.delete(id);
                 }
             }
+            this.sendBack(socket.id, "changesSent")
         });
     
     
