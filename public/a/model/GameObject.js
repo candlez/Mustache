@@ -4,6 +4,7 @@ export default class GameObject {
     #id;
     #xCoord;
     #yCoord;
+    #vectors;
     #animations;
     #speed;
     #node;
@@ -12,6 +13,7 @@ export default class GameObject {
         this.#id = id;
         this.#xCoord = xCoord;
         this.#yCoord = yCoord;
+        this.#vectors = [0, 0];
         this.#animations = [];
         this.#node = null;
     }
@@ -44,6 +46,9 @@ export default class GameObject {
     getSpeed() {
         return this.#speed;
     }
+    getVectors() {
+        return this.#vectors;
+    }
 
     setID(newID) {
         this.#id = newID;
@@ -59,5 +64,8 @@ export default class GameObject {
     }
     setSpeed(newSpeed) {
         this.#speed = newSpeed;
+    }
+    setVectors(newVectors) {
+        this.#vectors = newVectors;
     }
 }

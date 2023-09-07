@@ -65,6 +65,7 @@ export default class GameDisplay extends Display {
             this.#connection.requestChanges().then(() => {
                 this.clear();
                 this.adjustScale();
+                this.#game.runSimulation();
                 this.gatherAnimations(this.getDisplayBounds());
                 var animations = this.getAnimations();
                 for (var i = 0; i < animations.length; i++) {
@@ -74,6 +75,7 @@ export default class GameDisplay extends Display {
         } else { // this is for when there is no connection, is it necessary?
             this.clear();
             this.adjustScale();
+            this.#game.runSimulation();
             this.gatherAnimations(this.getDisplayBounds());
             var animations = this.getAnimations();
             for (var i = 0; i < animations.length; i++) {

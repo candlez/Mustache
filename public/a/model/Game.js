@@ -69,8 +69,35 @@ export default class Game {
             obj.setYCoord(newY);
             this.#dynamic.move(obj);
         } else {
-            console.log(id + " was not found in the tree")
+            new Error(id + " was not found in the tree")
         }
+    }
+
+
+
+    evaluateVectors(obj) {
+        const vectors = obj.getVectors();
+        if (vectors[0] != 0 || vectors[1] != 0) {
+            if (obj == this.#player) {
+                obj.setXCoord(obj.getXCoord() + vectors[0]);
+                obj.setYCoord(obj.getYCoord() + vectors[1]);
+            } else {
+                this.moveDynamic(
+                    obj.getID(),
+                    obj.getXCoord() + vectors[0],
+                    obj.getYCoord() + vectors[1]
+                );    
+            }
+        }
+    }
+
+
+
+    runSimulation() {
+        for (const obj of this.#dynamicMap.values()) {
+            this.evaluateVectors(obj)
+        }
+        this.evaluateVectors(this.#player);
     }
 
 
@@ -105,6 +132,7 @@ export default class Game {
  
         this.#player = new Square(name, getRandomInt(this.#width - startingSize),
             getRandomInt(this.#width - startingSize), startingSize, color);
+        this.#player.setVectors([1, 0]);
         return this.#player;
     }
 
@@ -118,10 +146,10 @@ export default class Game {
 
 
 
+    // background animations
     addBackgroundAnimation(animation) {
         this.#backgroundAnimations.push(animation);
     }
-
 
 
     clearBackgroundAnimations() {
