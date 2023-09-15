@@ -11,29 +11,37 @@ var name = "Thomas";
 var color = "crimson";
 
 // 1. create a loading screen
+console.log(1);
 // later
 
 // 2. create the connection with the correct domain
+console.log(2);
 const connection = new ServerConnection(window.location.hostname);
 
 // 3. create the game with the right info
+console.log(3);
 connection.initializeGame() // add a grid to the game
 // 4. make initial request for data and add it to the game
 .then(() => {
+    console.log(4);
     return connection.addInitialDataToGame();
 // 5. set up listeners to wait for changes coming from the server
 }).then(() => {
+    console.log(5);
     // wait for, wait for, wait for, wait for
     connection.setUpListeners();
 // 6. decide where the player is going, create the object, put them there
 //    and tell the server that you have done so
 }).then(() => {
+    console.log(6);
     return connection.spawnPlayer(name, color);
 // 7. create a game display
 }).then(() => {
+    console.log(7);
     connection.setDisplay(new GameDisplay(connection.getGame(), connection));
 // 8. create the controller(s) and add them
 }).then(() => {
+    console.log(8);
     const controller = new DemoController(connection.getGame(), 
         connection.getDisplay(), connection);
     controller.activateKeyLogger("up");
@@ -47,7 +55,11 @@ connection.initializeGame() // add a grid to the game
 // 9. start animation loop
 }).then(() => {
     connection.getDisplay().startAnimationLoop();
-})
+    console.log("finished");
+});
+
+
+
 
 
 

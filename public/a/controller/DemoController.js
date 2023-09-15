@@ -42,10 +42,17 @@ export default class DemoController extends Controller {
             unitVectors[0] *= speed * 10;
             unitVectors[1] *= speed * 10;
         }
+        const old = player.getVectors();
         player.setVectors(unitVectors);
+        if (unitVectors[0] != old[0] || unitVectors[1] != old[1]) {
+            console.log("emit vectors changed");
+            this.getConnection().emitVectorsChanged();
+        }
+        
 
         // boundary collision
-        // this needs to be moved into 
+        // this needs to be moved into Game
+        // because currently, boundary detection happens before movement is processed
         if (player.getXCoord() < 0) {
             player.setXCoord(0);
         }

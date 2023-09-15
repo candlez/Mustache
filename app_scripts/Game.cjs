@@ -1,4 +1,5 @@
 const GameObject = require('./GameObject.cjs');
+const DynamicGameObject = require('./DynamicGameObject.cjs');
 const Changed = require('./Changed.cjs');
 
 class Game {
@@ -56,14 +57,18 @@ class Game {
             this.sendBack(socket.id, "idsSent", ids);
         });
     
-    
-        socket.on("requestingDataById", (id) => { // is it a problem that this means no name overlap?
+
+         // is it a problem that this means no name overlap?
+         // answer: no because there would never be any overlap
+         //         all player IDs have socket IDs appended to them
+         //         while GameObject IDs would not
+        socket.on("requestingDataById", (id) => {
             if (this.#players.has(id)) {
                 this.sendBack(socket.id, id + "DataSent", this.#players.get(id).getArguments())
             } else if (this.#gameObjects.has(id)) {
                 this.sendBack(socket.id, id + "DataSent", this.#gameObjects.get(id).getArguments())
             } else {
-                // wah wah wah
+                console.log(id + " not found")
             }
         });
     
@@ -76,7 +81,9 @@ class Game {
         socket.on("playerSpawned", (data) => {
             this.#socketToID.set(socket.id, data.id);
 
-            var player = new GameObject(data.id, data.type, data.dynamic, data.x, data.y, data.args);
+            const player = new DynamicGameObject(data.id, data.type, data.dynamic, 
+                data.x, data.y, data.vectors, data.args);
+            
             player.changed.addChange(Changed.CODES.SPAWNED);
             this.#players.set(data.id, player);
             this.#changed.add(data.id);
@@ -84,16 +91,26 @@ class Game {
     
     
         socket.on("playerMoved", (data) => {
-            this.#players.get(data.id).x = data.x;
-            this.#players.get(data.id).y = data.y;
-            this.#players.get(data.id).changed.addChange(Changed.CODES.MOVED);
+            const player = this.#players.get(data.id);
+            player.x = data.x;
+            player.y = data.y;
+            player.changed.addChange(Changed.CODES.MOVED);
             this.#changed.add(data.id);
         });
     
     
         socket.on("playerSizeChanged", (data) => {
-            this.#players.get(data.id).size = data.size;
-            this.#players.get(data.id).changed.addChange(Changed.CODES.SIZE_CHANGED);
+            const player = this.#players.get(data.id);
+            player.size = data.size;
+            player.changed.addChange(Changed.CODES.SIZE_CHANGED);
+            this.#changed.add(data.id);
+        });
+
+
+        socket.on("playerVectorsChanged", (data) => {
+            const player = this.#players.get(data.id);
+            player.vectors = data.vectors;
+            player.changed.addChange(Changed.CODES.VECTORS_CHANGED);
             this.#changed.add(data.id);
         });
     
@@ -108,12 +125,16 @@ class Game {
                     if (player.changed.getChanged()) {
                         if (player.changed.getSpawned()) {
                             this.sendBack(socket.id, "spawned", player.getArguments());
-                        }
-                        if (player.changed.getMoved()) {
-                            this.sendBack(socket.id, "moved", {id: player.id, x: player.x, y: player.y});
-                        }
-                        if (player.changed.getSizeChanged()) {
-                            this.sendBack(socket.id, "sizeChanged", {id: player.id, size: player.size});
+                        } else {
+                            if (player.changed.getMoved()) {
+                                this.sendBack(socket.id, "moved", {id: player.id, x: player.x, y: player.y});
+                            }
+                            if (player.changed.getSizeChanged()) {
+                                this.sendBack(socket.id, "sizeChanged", {id: player.id, size: player.size});
+                            }
+                            if (player.changed.getVectorsChanged()) {
+                                this.sendBack(socket.id, "vectorsChanged", {id: player.id, vectors: player.vectors});
+                            }
                         }
                     } else {
                         this.#changed.delete(id);

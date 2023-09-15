@@ -3,13 +3,15 @@
  * code key:
  * 0 -> spawned
  * 1 -> moved
- * 2 -> changed size
+ * 2 -> size changed
+ * 3 -> vectors changed
  */
 class Changed {
     static CODES = {
         SPAWNED: 0,
         MOVED: 1,
-        SIZE_CHANGED: 2
+        SIZE_CHANGED: 2,
+        VECTORS_CHANGED: 3
     }
 
     constructor(code) {
@@ -17,9 +19,11 @@ class Changed {
         this.codes = [
             false,
             false,
+            false,
             false
         ];
         this.queue = [
+            false,
             false,
             false,
             false
@@ -69,6 +73,10 @@ class Changed {
 
     getSizeChanged() {
         return this.codes[Changed.CODES.SIZE_CHANGED];
+    }
+
+    getVectorsChanged() {
+        return this.codes[Changed.CODES.VECTORS_CHANGED];
     }
 }
 

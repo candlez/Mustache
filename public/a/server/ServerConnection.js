@@ -22,11 +22,24 @@ export default class ServerConnection {
     }
 
 
+    initializeGame() {
+        return new Promise((resolve, reject) => {
+            this.#socket.once("gameInfoSent", (data) => {
+                this.#game = new Game(data.width);
+                this.#game.addBackgroundAnimation(new GridAnimation(data.width, data.width, 100, "gray"));
+                resolve();
+            });
+
+            this.#socket.emit("initializingGame");
+        });
+    }
+
+
     addObjectBasedOnData(data) { // this is RazorRoyale specific
         var obj;
         if (data.type == "square") {
             obj = new Square(data.id, data.x, data.y, data.args.size, data.args.color);
-
+            obj.setVectors(data.vectors);
         } else {
             console.log("not a square!")
         }
@@ -39,19 +52,6 @@ export default class ServerConnection {
                 this.#game.insertStatic(obj);
             }
         }
-    }
-
-
-    initializeGame() {
-        return new Promise((resolve, reject) => {
-            this.#socket.once("gameInfoSent", (data) => {
-                this.#game = new Game(data.width);
-                this.#game.addBackgroundAnimation(new GridAnimation(data.width, data.width, 100, "gray"));
-                resolve();
-            });
-
-            this.#socket.emit("initializingGame");
-        });
     }
 
 
@@ -69,13 +69,13 @@ export default class ServerConnection {
                 });
 
                 Promise.all(promises).then((data) => {
+                    console.log(4.4);
                     for (var i = 0; i < data.length; i++) {
                         this.addObjectBasedOnData(data[i]);
                     }
                     resolve();
                 });
             });
-
 
             this.#socket.emit("requestingIds")
         });
@@ -101,6 +101,7 @@ export default class ServerConnection {
                     dynamic: true,
                     x: player.getXCoord(),
                     y: player.getYCoord(),
+                    vectors: player.getVectors(),
                     args: {
                         size: player.getSize(),
                         color: player.getColor()
@@ -132,6 +133,15 @@ export default class ServerConnection {
     }
 
 
+    emitVectorsChanged() {
+        const player = this.#game.getPlayer();
+        this.#socket.emit("playerVectorsChanged", {
+            id: player.getID(),
+            vectors: player.getVectors()
+        });
+    }
+
+
     requestChanges() {
         return new Promise((resolve, reject) => {
             this.#socket.on("changesSent", () => {
@@ -145,21 +155,27 @@ export default class ServerConnection {
     waitForChanges() {
         this.#socket.on("spawned", (data) => {
             console.log(data.x, data.y);
-            this.addObjectBasedOnData(data);
+            if (!this.#game.getDynamicMap().has(data.id)) {
+                this.addObjectBasedOnData(data);
+            }
         });
         this.#socket.on("moved", (data) => {
             console.log(data.x, data.y);
             this.#game.moveDynamic(data.id, data.x, data.y);
         });
         this.#socket.on("sizeChanged", (data) => {
-            console.log("size change recieved")
+            console.log("size change recieved"); // temp?
             this.#game.changeObjectSize(data.id, data.size);
             // if (data.dynamic) {
             //     this.#game.changeObjectSize(data.id, data.size);
             // } else {
             //     new Error("size of static objects cannot be changed")
             // }
-        })
+        });
+        this.#socket.on("vectorsChanged", (data) => {
+            console.log("vectorsChanged");
+            this.#game.getDynamicMap().get(data.id).setVectors(data.vectors);
+        });
     }
 
 
@@ -179,6 +195,8 @@ export default class ServerConnection {
         this.#display = newDisplay;
     }
 
+
+    // temp
     isSending() {
         return this.#sending;
     }

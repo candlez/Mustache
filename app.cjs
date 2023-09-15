@@ -42,7 +42,7 @@ const io = socket(server);
 const GameObject = require('./app_scripts/GameObject.cjs');
 const Game = require('./app_scripts/Game.cjs');
 
-const game = new Game(io, {width: 25000});
+const game = new Game(io, {width: 2000} /*{width: 25000}*/);
 
 const players = new Map();
 const gameObjects = new Map();
@@ -57,11 +57,11 @@ function getRandomInt(max) {
 
 const colors = ["cyan", "lime", "violet"]
 
-for (var i = 0; i < 1000; i++) {
-    game.addGameObject(new GameObject(i.toString(), "square", false, 
-        getRandomInt(24000), getRandomInt(24000), {size: getRandomInt(1000), color: colors[getRandomInt(3)]})
-    );
-}
+// for (var i = 0; i < 1000; i++) {
+//     game.addGameObject(new GameObject(i.toString(), "square", false, 
+//         getRandomInt(24000), getRandomInt(24000), {size: getRandomInt(1000), color: colors[getRandomInt(3)]})
+//     );
+// }
 
 
 

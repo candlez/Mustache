@@ -132,7 +132,7 @@ export default class Game {
  
         this.#player = new Square(name, getRandomInt(this.#width - startingSize),
             getRandomInt(this.#width - startingSize), startingSize, color);
-        this.#player.setVectors([1, 0]);
+        
         return this.#player;
     }
 
