@@ -137,7 +137,9 @@ export default class ServerConnection {
         const player = this.#game.getPlayer();
         this.#socket.emit("playerVectorsChanged", {
             id: player.getID(),
-            vectors: player.getVectors()
+            vectors: player.getVectors(),
+            x: player.getXCoord(),
+            y: player.getYCoord()
         });
     }
 

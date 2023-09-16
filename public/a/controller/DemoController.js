@@ -53,18 +53,7 @@ export default class DemoController extends Controller {
         // boundary collision
         // this needs to be moved into Game
         // because currently, boundary detection happens before movement is processed
-        if (player.getXCoord() < 0) {
-            player.setXCoord(0);
-        }
-        if (player.getXCoord() + player.getSize() > this.getGame().getWidth()) {
-            player.setXCoord(this.getGame().getWidth() - player.getSize());
-        }
-        if (player.getYCoord() < 0) {
-            player.setYCoord(0);
-        }
-        if (player.getYCoord() + player.getSize() > this.getGame().getWidth()) {
-            player.setYCoord(this.getGame().getWidth() - player.getSize());
-        }
+
 
         // this.getConnection().emitMoved();
 

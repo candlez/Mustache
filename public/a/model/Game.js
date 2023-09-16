@@ -69,7 +69,7 @@ export default class Game {
             obj.setYCoord(newY);
             this.#dynamic.move(obj);
         } else {
-            new Error(id + " was not found in the tree")
+            new Error(id + " was not found in the map")
         }
     }
 
@@ -78,14 +78,26 @@ export default class Game {
     evaluateVectors(obj) {
         const vectors = obj.getVectors();
         if (vectors[0] != 0 || vectors[1] != 0) {
+            var newX = obj.getXCoord() + vectors[0];
+            var newY = obj.getYCoord() + vectors[1];
+            if (newX < 0) {
+                newX = 0;
+            } else if (newX + obj.getSize() > this.#width) {
+                newX = this.#width - obj.getSize();
+            }
+            if (newY < 0) {
+                newY = 0;
+            } else if (newY + obj.getSize() > this.#width) {
+                newY = this.#width - obj.getSize();
+            }
             if (obj == this.#player) {
-                obj.setXCoord(obj.getXCoord() + vectors[0]);
-                obj.setYCoord(obj.getYCoord() + vectors[1]);
+                obj.setXCoord(newX);
+                obj.setYCoord(newY);
             } else {
                 this.moveDynamic(
                     obj.getID(),
-                    obj.getXCoord() + vectors[0],
-                    obj.getYCoord() + vectors[1]
+                    newX,
+                    newY
                 );    
             }
         }

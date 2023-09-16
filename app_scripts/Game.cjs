@@ -110,6 +110,8 @@ class Game {
         socket.on("playerVectorsChanged", (data) => {
             const player = this.#players.get(data.id);
             player.vectors = data.vectors;
+            player.x = data.x;
+            player.y = data.y;
             player.changed.addChange(Changed.CODES.VECTORS_CHANGED);
             this.#changed.add(data.id);
         });
@@ -126,14 +128,19 @@ class Game {
                         if (player.changed.getSpawned()) {
                             this.sendBack(socket.id, "spawned", player.getArguments());
                         } else {
-                            if (player.changed.getMoved()) {
-                                this.sendBack(socket.id, "moved", {id: player.id, x: player.x, y: player.y});
-                            }
                             if (player.changed.getSizeChanged()) {
                                 this.sendBack(socket.id, "sizeChanged", {id: player.id, size: player.size});
                             }
                             if (player.changed.getVectorsChanged()) {
-                                this.sendBack(socket.id, "vectorsChanged", {id: player.id, vectors: player.vectors});
+                                this.sendBack(socket.id, "vectorsChanged", {
+                                    id: player.id, 
+                                    vectors: player.vectors,
+                                    x: player.x,
+                                    y: player.y
+                                });
+                            }
+                            if (player.changed.getMoved()) { // deprecated
+                                this.sendBack(socket.id, "moved", {id: player.id, x: player.x, y: player.y});
                             }
                         }
                     } else {
