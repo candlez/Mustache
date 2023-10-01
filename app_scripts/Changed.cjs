@@ -54,7 +54,7 @@ class Changed {
                 this.codes[code] = false;
                 this.tracker--;
             }
-        }, 100);
+        }, 10000); // this value needs to be fine-tuned
     }
 
     getChanged() {

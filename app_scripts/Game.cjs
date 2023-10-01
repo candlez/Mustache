@@ -117,11 +117,8 @@ class Game {
         });
     
         
-        socket.on("requestingChanges", () => {
-            // console.log("Marco")
-
+        socket.on("requestingChanges", () => {            
             for (const id of this.#changed.values()) {
-                // console.log(player)
                 if (id != this.#socketToID.get(socket.id)) {
                     const player = this.#players.get(id);
                     if (player.changed.getChanged()) {

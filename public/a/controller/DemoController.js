@@ -48,15 +48,8 @@ export default class DemoController extends Controller {
             console.log("emit vectors changed");
             this.getConnection().emitVectorsChanged();
         }
+
         
-
-        // boundary collision
-        // this needs to be moved into Game
-        // because currently, boundary detection happens before movement is processed
-
-
-        // this.getConnection().emitMoved();
-
         // size
         if (loggers.get("sizeUp").getKeyDown()) {
             player.grow(2);
