@@ -4,7 +4,6 @@ import TopCornerBounds from "./TopCornerBounds.js";
 import Square from "./Square.js";
 
 
-
 export default class Game {
     // fields
     #width;
@@ -16,8 +15,11 @@ export default class Game {
     #player;
     #backgroundAnimations;
 
+    #zero;
+
     
-    constructor(width) {
+    constructor(zero, width) {
+        this.#zero = zero;
         this.#width = width;
 
         var half = width / 2;
@@ -73,43 +75,71 @@ export default class Game {
         }
     }
 
+    validateXCoord(obj, x) {
+        if (x < 0) {
+            return 0;
+        }
+        if (x + obj.getSize() > this.#width) {
+            return this.#width - obj.getSize();
+        }
+        return x;
+    }
+    validateYCoord(obj, y) {
+        if (y < 0) {
+            return 0;
+        }
+        if (y + obj.getSize() > this.#width) {
+            return this.#width - obj.getSize();
+        }
+        return y;
+    }
 
 
-    evaluateVectors(obj) {
+    evaluateVectors(obj, refreshRate) {
         const vectors = obj.getVectors();
+        if (!vectors) {
+            console.log(obj)
+        }
         if (vectors[0] != 0 || vectors[1] != 0) {
-            var newX = obj.getXCoord() + vectors[0];
-            var newY = obj.getYCoord() + vectors[1];
-            if (newX < 0) {
-                newX = 0;
-            } else if (newX + obj.getSize() > this.#width) {
-                newX = this.#width - obj.getSize();
-            }
-            if (newY < 0) {
-                newY = 0;
-            } else if (newY + obj.getSize() > this.#width) {
-                newY = this.#width - obj.getSize();
-            }
+            // this could be changed to be more efficient
+            // for instance, if an object was running up against a wall, it's vectors
+            // could be changed to zero (in that direction)
+            // of course, we would need to tell the server about this (or not actually because every client would do that)
+            var newX = this.validateXCoord(obj, obj.getXCoord() + (vectors[0] / refreshRate));
+            var newY = this.validateYCoord(obj, obj.getYCoord() + (vectors[1] / refreshRate));
+
+            // finalizing changes
             if (obj == this.#player) {
                 obj.setXCoord(newX);
                 obj.setYCoord(newY);
             } else {
-                this.moveDynamic(
-                    obj.getID(),
-                    newX,
-                    newY
-                );    
+                try {
+                    this.moveDynamic(
+                        obj.getID(),
+                        newX,
+                        newY
+                    );  
+                } catch (error) {
+                    console.log(obj);
+                }
+  
             }
         }
     }
 
 
 
-    runSimulation() {
+    runSimulation(refreshRate) {
         for (const obj of this.#dynamicMap.values()) {
-            this.evaluateVectors(obj)
+            this.evaluateVectors(obj, refreshRate);
         }
-        this.evaluateVectors(this.#player);
+        this.evaluateVectors(this.#player, refreshRate);
+    }
+
+
+    
+    getGameTime() {
+        return Date.now() - this.#zero;
     }
 
 
@@ -150,6 +180,34 @@ export default class Game {
 
 
 
+    addObjectBasedOnData(data) { // this is RazorRoyale specific
+        var obj;
+        if (data.args.type == "square") {
+            obj = new Square(data.args.id, data.args.x, data.args.y, data.args.args.size, data.args.args.color);
+        } else {
+            console.log("not a square!")
+        }
+
+        if (obj !== undefined) {
+            if (data.args.dynamic) {
+                if (data.args.vectors[0] != 0 || data.args.vectors[1] != 0) {
+                    obj.setVectors(data.args.vectors);
+                    var diff = data.timeStamp - data.args.lastVectorChange;
+                    diff = diff / 1000;
+                    var newX = this.validateXCoord(obj, data.args.x + (diff * data.args.vectors[0]));
+                    var newY = this.validateYCoord(obj, data.args.y + (diff * data.args.vectors[1]));
+                    obj.setXCoord(newX);
+                    obj.setYCoord(newY);
+                }
+                this.insertDynamic(obj);
+            } else {
+                this.insertStatic(obj);
+            }
+        }
+    }
+
+
+
     changeObjectSize(id, newSize) {
         const obj = this.#dynamicMap.get(id);
         obj.grow(newSize - obj.getSize());
@@ -162,8 +220,6 @@ export default class Game {
     addBackgroundAnimation(animation) {
         this.#backgroundAnimations.push(animation);
     }
-
-
     clearBackgroundAnimations() {
         this.#backgroundAnimations = [];
     }

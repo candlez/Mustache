@@ -11,8 +11,6 @@ class GameObject {
         this.x = x;
         this.y = y;
         this.args = args;
-
-        this.changed = new Changed();
     }
 
 

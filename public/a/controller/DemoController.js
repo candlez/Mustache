@@ -28,8 +28,8 @@ export default class DemoController extends Controller {
         const player = this.getGame().getPlayer();
 
         // movement
-        const gameBounds = this.getGame().getBounds();
-        const speed = player.getSpeed() / refreshRate;
+        const gameBounds = this.getGame().getBounds(); // ????
+        const speed = player.getSpeed();
         const unitVectors = [
             loggers.get("right").getKeyDown() + (-1 * loggers.get("left").getKeyDown()),
             loggers.get("down").getKeyDown() + (-1 * loggers.get("up").getKeyDown())
@@ -42,22 +42,27 @@ export default class DemoController extends Controller {
             unitVectors[0] *= speed * 10;
             unitVectors[1] *= speed * 10;
         }
+        // console.log(unitVectors);
         const old = player.getVectors();
         player.setVectors(unitVectors);
         if (unitVectors[0] != old[0] || unitVectors[1] != old[1]) {
             console.log("emit vectors changed");
-            this.getConnection().emitVectorsChanged();
+            this.getConnection().emitVectorsChanged([
+                unitVectors[0] - old[0],
+                unitVectors[1] - old[1]
+            ]);
         }
 
         
         // size
         if (loggers.get("sizeUp").getKeyDown()) {
+            // note that this is hard-coded
             player.grow(2);
-            this.getConnection().emitSizeChanged();
+            this.getConnection().emitSizeChanged(2);
         }
         if (loggers.get("sizeDown").getKeyDown()) {
             player.grow(-2);
-            this.getConnection().emitSizeChanged();
+            this.getConnection().emitSizeChanged(-2);
         }
 
 

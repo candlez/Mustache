@@ -58,29 +58,20 @@ export default class GameDisplay extends Display {
 
 
     drawFrame() {
+        // bringing data up to date
         if (this.#controller != null && this.isCalibrated()) {
             this.#controller.interpretKeys();
         }
-        if (this.#connection != null && this.#connection.isSending()) { // isSending is temporary
-            this.#connection.requestChanges().then(() => {
-                this.clear();
-                this.adjustScale();
-                this.#game.runSimulation();
-                this.gatherAnimations(this.getDisplayBounds());
-                var animations = this.getAnimations();
-                for (var i = 0; i < animations.length; i++) {
-                    animations[i].drawFrame(this.getCTX(), this.getScale(), this.#game.getPlayer(), this);
-                }
-            });
-        } else { // this is for when there is no connection, is it necessary?
-            this.clear();
-            this.adjustScale();
-            this.#game.runSimulation();
-            this.gatherAnimations(this.getDisplayBounds());
-            var animations = this.getAnimations();
-            for (var i = 0; i < animations.length; i++) {
-                animations[i].drawFrame(this.getCTX(), this.getScale(), this.#game.getPlayer(), this);
-            }
+        this.#connection.updateGame();
+        this.#game.runSimulation(this.getRefreshRate());
+
+        // drawing frame
+        this.clear();
+        this.adjustScale();
+        this.gatherAnimations(this.getDisplayBounds());
+        var animations = this.getAnimations();
+        for (var i = 0; i < animations.length; i++) {
+            animations[i].drawFrame(this.getCTX(), this.getScale(), this.#game.getPlayer(), this);
         }
     }
 

@@ -44,18 +44,11 @@ const Game = require('./app_scripts/Game.cjs');
 
 const game = new Game(io, {width: 2000} /*{width: 25000}*/);
 
-const players = new Map();
-const gameObjects = new Map();
-
-const playerTimers = new Map();
-
-const socketToID = new Map();
-
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-const colors = ["cyan", "lime", "violet"]
+const colors = ["cyan", "lime", "violet"];
 
 // for (var i = 0; i < 1000; i++) {
 //     game.addGameObject(new GameObject(i.toString(), "square", false, 
@@ -66,7 +59,7 @@ const colors = ["cyan", "lime", "violet"]
 
 
 // mapLoadingFunctions.loadMap(gameObjects, "razor_royale_maps")
-
+game.start();
 io.sockets.on('connection', (socket) => {
     console.log(socket.id);
     game.addUser(socket);

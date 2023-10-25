@@ -1,11 +1,5 @@
 
-/**
- * code key:
- * 0 -> spawned
- * 1 -> moved
- * 2 -> size changed
- * 3 -> vectors changed
- */
+// deprecated
 class Changed {
     static CODES = {
         SPAWNED: 0,

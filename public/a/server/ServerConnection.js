@@ -1,6 +1,7 @@
 import Game from './../model/Game.js'
 import Square from '../model/Square.js';
 import GridAnimation from '../view/animations/game_objects/GridAnimation.js';
+import Interpolator from "./../model/Interpolator.js";
 
 export default class ServerConnection {
     // fields
@@ -10,23 +11,30 @@ export default class ServerConnection {
     #display;
     #controller;
 
+    #latency;
+    #interpolator;
+
     #sending;
 
 
-    constructor(domain /*, game, display, controller*/) {
+    constructor(domain) {
         this.#socket = io.connect(domain);
-        // this.#game = game;
-        // this.#display = display;
-        // this.#controller = controller;
         this.#sending = true; // temporary
+
+        this.#socket.on("test", (data) => { // temp
+            console.log(data);
+        });
     }
 
 
     initializeGame() {
         return new Promise((resolve, reject) => {
             this.#socket.once("gameInfoSent", (data) => {
-                this.#game = new Game(data.width);
-                this.#game.addBackgroundAnimation(new GridAnimation(data.width, data.width, 100, "gray"));
+                this.#game = new Game(Date.now() - data.timeStamp, data.info.width);
+                // hard-coded values, which can be recieved from the server in the future
+                this.#game.addBackgroundAnimation(new GridAnimation(data.info.width, data.info.width, 100, "gray"));
+                this.#interpolator = new Interpolator(this.#game);
+                this.#latency = 100;
                 resolve();
             });
 
@@ -35,49 +43,18 @@ export default class ServerConnection {
     }
 
 
-    addObjectBasedOnData(data) { // this is RazorRoyale specific
-        var obj;
-        if (data.type == "square") {
-            obj = new Square(data.id, data.x, data.y, data.args.size, data.args.color);
-            obj.setVectors(data.vectors);
-        } else {
-            console.log("not a square!")
-        }
-
-        if (obj !== undefined) {
-            if (data.dynamic) {
-                console.log(data.x, data.y);
-                this.#game.insertDynamic(obj);
-            } else {
-                this.#game.insertStatic(obj);
-            }
-        }
-    }
-
-
     addInitialDataToGame() {
         return new Promise((resolve, reject) => {
-            this.#socket.once("idsSent", (data) => {
-                var promises = data.map((id) => {
-                    return new Promise((resolve, reject) => {
-                        this.#socket.once(id + "DataSent", (data) => {
-                            resolve(data);
-                        })
-
-                        this.#socket.emit("requestingDataById", id);
-                    });
-                });
-
-                Promise.all(promises).then((data) => {
-                    console.log(4.4);
-                    for (var i = 0; i < data.length; i++) {
-                        this.addObjectBasedOnData(data[i]);
-                    }
-                    resolve();
-                });
+            this.#socket.on("initialDataSent", (data) => {
+                this.#game.addObjectBasedOnData(data);
             });
 
-            this.#socket.emit("requestingIds")
+            this.#socket.once("finishedSendingData", () => {
+                this.#socket.off("initialDataSent");
+                resolve();
+            });
+
+            this.#socket.emit("requestingInitialData")
         });
     }
 
@@ -93,19 +70,22 @@ export default class ServerConnection {
         return new Promise((resolve, reject) => {
             this.#socket.once("sentPlayerID", (data) => {
                 const player = this.#game.spawnPlayer(data, color);
-                console.log(player);
+                console.log(player); // temp
 
                 this.#socket.emit("playerSpawned", {
-                    id: player.getID(),
-                    type: "square",
-                    dynamic: true,
-                    x: player.getXCoord(),
-                    y: player.getYCoord(),
-                    vectors: player.getVectors(),
-                    args: {
-                        size: player.getSize(),
-                        color: player.getColor()
-                    }
+                    data: {
+                        id: player.getID(),
+                        type: "square",
+                        dynamic: true,
+                        x: player.getXCoord(),
+                        y: player.getYCoord(),
+                        vectors: player.getVectors(),
+                        args: {
+                            size: player.getSize(),
+                            color: player.getColor()
+                        }
+                    },
+                    timeStamp: this.#game.getGameTime()
                 });
                 resolve();
             });
@@ -114,7 +94,8 @@ export default class ServerConnection {
     }
 
 
-    emitMoved() { // could change this to accept a GameObject as an argument
+    // deprecated
+    emitMoved() {
         const player = this.#game.getPlayer();
         this.#socket.emit("playerMoved", {
             id: player.getID(),
@@ -124,57 +105,42 @@ export default class ServerConnection {
     }
 
 
-    emitSizeChanged() {
+    emitSizeChanged(deltaSize) {
         const player = this.#game.getPlayer();
         this.#socket.emit("playerSizeChanged", {
             id: player.getID(),
-            size: player.getSize()
+            data: {
+                deltaSize: deltaSize
+            },
+            timeStamp: this.#game.getGameTime()
         });
     }
 
 
-    emitVectorsChanged() {
+    emitVectorsChanged(deltaVectors) {
         const player = this.#game.getPlayer();
         this.#socket.emit("playerVectorsChanged", {
             id: player.getID(),
-            vectors: player.getVectors(),
-            x: player.getXCoord(),
-            y: player.getYCoord()
+            data: {
+                deltaVectors: deltaVectors,
+                x: player.getXCoord(),
+                y: player.getYCoord()
+            },
+            timeStamp: this.#game.getGameTime()
         });
     }
 
 
-    requestChanges() {
-        return new Promise((resolve, reject) => {
-            this.#socket.once("changesSent", () => {
-                resolve();
-            });
-            this.#socket.emit("requestingChanges");
-        });
-    }
-
-
+    // deprecated
     waitForChanges() {
-        this.#socket.on("spawned", (data) => {
-            console.log(data.x, data.y);
-            if (!this.#game.getDynamicMap().has(data.id)) {
-                this.addObjectBasedOnData(data);
-            }
+        this.#socket.on("batchSent", (batch) => {
+            this.#interpolator.loadBatch(batch);
         });
-        this.#socket.on("moved", (data) => {
-            console.log(data.x, data.y);
-            this.#game.moveDynamic(data.id, data.x, data.y);
-        });
-        this.#socket.on("sizeChanged", (data) => {
-            this.#game.changeObjectSize(data.id, data.size);
-        });
-        this.#socket.on("vectorsChanged", (data) => {
-            const obj = this.#game.getDynamicMap().get(data.id);
-            obj.setVectors(data.vectors);
-            if (obj.getXCoord() != data.x || obj.getYCoord() != data.y) {
-                this.#game.moveDynamic(data.id, data.x, data.y)
-            }
-        });
+    }
+
+
+    updateGame() {
+        this.#interpolator.unloadChanges(this.#game.getGameTime() - this.#latency);
     }
 
 
@@ -187,6 +153,9 @@ export default class ServerConnection {
     }
     getDisplay() {
         return this.#display;
+    }
+    getInterpolator() {
+        return this.#interpolator;
     }
 
     // setters

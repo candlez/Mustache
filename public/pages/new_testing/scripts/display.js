@@ -6,7 +6,8 @@ import GridAnimation from "../../../a/view/animations/game_objects/GridAnimation
 import ServerConnection from "../../../a/server/ServerConnection.js";
 
 
-console.log("starting")
+console.log("starting");
+// hard-coded
 var name = "Thomas";
 var color = "crimson";
 
