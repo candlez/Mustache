@@ -23,7 +23,7 @@ export default class Interpolator {
         // what is the use of .start?
         for (var i = 0; i < batch.array.length; i++) {
             var obj = batch.array[i];
-            this.#queue.enqueue(new Change(obj.id, obj.code, obj.data, obj.timeStamp));
+            this.#queue.enqueue(new Change(obj.id, obj.code, obj.data, obj.timeStamp, obj.sender));
         }
 
         if (this.#queue.size() > 0) {
@@ -51,22 +51,18 @@ export default class Interpolator {
 
 
     enactChange(change) {
-        console.log("Bazinga"); // temp
-        // this is a stop gap measure
-        // in the future, the player may be impacted by others, and this
-        // system needs a way to differentiate between changes that the client
-        // made to themselves and changes that others are making to the client
-        if (change.getID() == this.#game.getPlayer().getID()) {
+        if (change.getSender() == this.#game.getPlayer().getID()) {
             return;
         }
 
+        const data = change.getData();
         switch (change.getCode()) {
             case Change.CODES.SPAWNED:
                 console.log("Player Spawn Enacted: ", change); // temp
                 if (!this.#game.getDynamicMap().has(change.getID())) {
                     this.#game.addObjectBasedOnData({
-                        args: change.getData(),
-                        timeStamp: change.getTimeStamp
+                        args: data,
+                        timeStamp: change.getTimeStamp()
                     });
                 }
                 console.log(this.#game.getDynamicMap()) // temp
@@ -76,25 +72,46 @@ export default class Interpolator {
                 var obj = this.#game.getDynamicMap().get(change.getID());
                 const old = obj.getVectors();
                 obj.setVectors([
-                    old[0] + change.getData().deltaVectors[0],
-                    old[1] + change.getData().deltaVectors[1]
+                    old[0] + data.deltaVectors[0],
+                    old[1] + data.deltaVectors[1]
                 ]);
-                if (obj.getXCoord() != change.getData().x || obj.getYCoord() != change.getData().y) {
+                if (obj.getXCoord() != data.x || obj.getYCoord() != data.y) {
                     console.log("Position Changed With Vectors")
-                    this.#game.moveDynamic(change.getID(), change.getData().x, change.getData().y);
+                    this.#game.moveDynamic(change.getID(), data.x, data.y);
                 }
                 console.log(obj.getVectors());
                 break;
             case Change.CODES.SIZE_CHANGED:
                 console.log("Size Change Enacted"); // temp
                 var obj = this.#game.getDynamicMap().get(change.getID());
-                this.#game.changeObjectSize(change.getID(), obj.getSize() + change.getData().deltaSize);
+                this.#game.changeObjectSize(change.getID(), obj.getSize() + data.deltaSize);
                 break;
             default:
                 // something went wrong
                 console.log("Change Code Not Recognized: ", change.getCode());
         }
     }
+
+
+    // enactPlayerChange(change) {
+    //     const data = change.getData();
+    //     switch (change.getCode()) {
+    //         case Change.CODES.SPAWNED:
+    //             console.log("Someone Else Told the Player to Spawn?");
+    //             console.log(change);
+    //             break;
+    //         case Change.CODES.VECTORS_CHANGED:
+
+    //             // code
+    //             break;
+    //         case Change.CODES.SIZE_CHANGED:
+    //             // code
+    //             break;
+    //         default:
+    //             // something went wrong
+    //             console.log("Change Code Not Recognized: ", change.getCode());
+    //     }
+    // }
 
     // getters
     size() {

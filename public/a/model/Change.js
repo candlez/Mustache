@@ -6,6 +6,7 @@ export default class Change {
     #code;
     #data;
     #timeStamp;
+    #sender;
 
     static CODES = {
         SPAWNED: 0,
@@ -14,11 +15,12 @@ export default class Change {
         VECTORS_CHANGED: 3
     }
 
-    constructor(id, code, data, timeStamp) {
+    constructor(id, code, data, timeStamp, sender) {
         this.#id = id;
         this.#code = code;
         this.#data = data;
         this.#timeStamp = timeStamp;
+        this.#sender = sender;
     }
 
 
@@ -34,5 +36,8 @@ export default class Change {
     }
     getTimeStamp() {
         return this.#timeStamp;
+    }
+    getSender() {
+        return this.#sender;
     }
 }

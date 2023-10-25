@@ -84,7 +84,7 @@ class Game {
     
     
         socket.on("playerSpawned", (data) => {
-            this.receiveChange(new Change(data.data.id, Change.CODES.SPAWNED, data.data, data.timeStamp), socket.id);
+            this.receiveChange(new Change(data.data.id, Change.CODES.SPAWNED, data.data, data.timeStamp, data.data.id), socket.id);
         });
     
         // double deprecated
@@ -94,12 +94,12 @@ class Game {
     
     
         socket.on("playerSizeChanged", (data) => {
-            this.receiveChange(new Change(data.id, Change.CODES.SIZE_CHANGED, data.data, data.timeStamp));
+            this.receiveChange(new Change(data.id, Change.CODES.SIZE_CHANGED, data.data, data.timeStamp, data.id));
         });
 
 
         socket.on("playerVectorsChanged", (data) => {
-            this.receiveChange(new Change(data.id, Change.CODES.VECTORS_CHANGED, data.data, data.timeStamp));
+            this.receiveChange(new Change(data.id, Change.CODES.VECTORS_CHANGED, data.data, data.timeStamp, data.id));
         });
     
         // leaving is going to be a type of change in the new system
@@ -188,6 +188,44 @@ class Game {
             // enter into reconcilation logic
             console.log("TimeStamp Received Past Deadline: ", change.timeStamp, this.getGameTime(), this.#deadline);
             console.log(change);
+            this.reconcileChange(change);
+        }
+    }
+
+
+    reconcileChange(change) {
+        var batch;
+        if (this.#deadline == this.#currentBatch.getStart()) {
+            batch = this.#currentBatch;
+        } else {
+            batch = this.#previousBatch;
+        }
+        switch (change.code) {
+            case Change.CODES.SPAWNED:
+                // we'll deal with this one later!
+                break;
+            case Change.CODES.VECTORS_CHANGED:
+                change.timeStamp = this.#deadline;
+                batch.insertChange(change);
+                batch.insertChange(new Change(
+                    change.id,
+                    Change.CODES.VECTORS_CHANGED,
+                    {
+                        deltaVectors: [0, 0],
+                        x: change.data.x,
+                        y: change.data.y,
+                    },
+                    this.#deadline,
+                    "server"
+                ));
+                break;
+            case Change.CODES.SIZE_CHANGED:
+                change.timeStamp = this.#deadline;
+                batch.insertChange(change);
+                break;
+            default:
+                // oopsies!
+
         }
     }
 

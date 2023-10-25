@@ -10,10 +10,11 @@ module.exports = class Change {
 
     // does the id need to be stored separate from the data?
     // most of the time (probably all of the time, the id will be sent in the data)
-    constructor(id, code, data, timeStamp) {
+    constructor(id, code, data, timeStamp, sender) {
         this.id = id;
         this.code = code;
         this.data = data;
         this.timeStamp = timeStamp;
+        this.sender = sender;
     }
 }
