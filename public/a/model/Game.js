@@ -207,11 +207,16 @@ export default class Game {
     }
 
 
-
-    changeObjectSize(id, newSize) {
-        const obj = this.#dynamicMap.get(id);
-        obj.grow(newSize - obj.getSize());
-        this.#dynamic.move(obj);
+    // should this be done in delta or literal amount?
+    // lets do deltas because that works bettwe with our program
+    changeObjectSize(obj, deltaSize) {
+        const half = deltaSize / 2;
+        obj.setSize(obj.getSize() + deltaSize);
+        obj.setXCoord(this.validateXCoord(obj, obj.getXCoord() - half));
+        obj.setYCoord(this.validateYCoord(obj, obj.getYCoord() - half));
+        if (obj.getID() != this.#player.getID()) {
+            this.#dynamic.move(obj);
+        }   
     }
 
 

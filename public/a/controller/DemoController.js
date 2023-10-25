@@ -57,11 +57,11 @@ export default class DemoController extends Controller {
         // size
         if (loggers.get("sizeUp").getKeyDown()) {
             // note that this is hard-coded
-            player.grow(2);
+            this.getGame().changeObjectSize(player, 2);
             this.getConnection().emitSizeChanged(2);
         }
         if (loggers.get("sizeDown").getKeyDown()) {
-            player.grow(-2);
+            this.getGame().changeObjectSize(player, -2);
             this.getConnection().emitSizeChanged(-2);
         }
 

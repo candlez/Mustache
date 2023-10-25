@@ -25,10 +25,6 @@ export default class Interpolator {
             var obj = batch.array[i];
             this.#queue.enqueue(new Change(obj.id, obj.code, obj.data, obj.timeStamp, obj.sender));
         }
-
-        if (this.#queue.size() > 0) {
-            console.log(this.#queue);
-        }
     }
 
 
@@ -83,8 +79,7 @@ export default class Interpolator {
                 break;
             case Change.CODES.SIZE_CHANGED:
                 console.log("Size Change Enacted"); // temp
-                var obj = this.#game.getDynamicMap().get(change.getID());
-                this.#game.changeObjectSize(change.getID(), obj.getSize() + data.deltaSize);
+                this.#game.changeObjectSize(this.#game.getDynamicMap().get(change.getID()), data.deltaSize);
                 break;
             default:
                 // something went wrong

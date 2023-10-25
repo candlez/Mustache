@@ -248,7 +248,6 @@ class Game {
                 // I think if we add a sort of buffer then this will be an acceptable trade-off
                 player.vectors[0] += change.data.deltaVectors[0];
                 player.vectors[1] += change.data.deltaVectors[1];
-                // how do we do positional updates! will clients have to store old values?
                 player.x = change.data.x;
                 player.y = change.data.y;
                 player.lastVectorChange = change.timeStamp;
