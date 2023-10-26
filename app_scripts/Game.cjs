@@ -84,7 +84,10 @@ class Game {
     
     
         socket.on("playerSpawned", (data) => {
-            this.receiveChange(new Change(data.data.id, Change.CODES.SPAWNED, data.data, data.timeStamp, data.data.id), socket.id);
+            this.receiveChange(
+                new Change(data.data.id, Change.CODES.SPAWNED, data.data, data.timeStamp, data.data.id)
+            );
+            this.#socketToID.set(socket.id, data.data.id);
         });
     
         // double deprecated
@@ -106,11 +109,17 @@ class Game {
         // of course this is going to stay, it's just going to be merged
         // into the change system
 
-        // socket.on("disconnect", (reason) => {
-        //     console.log(socket.id + " has disconnected,reason: " + reason);
-        //     // socket.broadcast.emit("playerDisconnected", socketToID.get(socket.id));
-        //     socketToID.delete(socket.id);
-        // });
+        socket.on("disconnect", (reason) => {
+            console.log(socket.id + " has disconnected,reason: " + reason);
+            this.#currentBatch.insertChange(new Change(
+                this.#socketToID.get(socket.id), 
+                Change.CODES.DISCONNECTED, 
+                {}, 
+                this.getGameTime(),
+                this.#socketToID.get(socket.id)
+            ));
+            this.#socketToID.delete(socket.id);
+        });
     }
 
 
@@ -230,7 +239,7 @@ class Game {
     }
 
 
-    enactChange(change, socketID) {
+    enactChange(change) {
         const player = this.#players.get(change.id);
         switch(change.code) {
             case Change.CODES.SPAWNED:
@@ -239,7 +248,6 @@ class Game {
                     change.data.x, change.data.y, change.data.vectors, change.data.args
                 );
                 this.#players.set(change.id, newPlayer);
-                this.#socketToID.set(socketID, change.id); 
                 break;
             case Change.CODES.VECTORS_CHANGED:
                 // vectors now represent per second speed
@@ -254,6 +262,9 @@ class Game {
                 break;
             case Change.CODES.SIZE_CHANGED:
                 player.size += change.data.deltaSize;
+                break;
+            case Change.CODES.DISCONNECTED:
+                this.#players.delete(change.id);
                 break;
             default:
                 // invalid code

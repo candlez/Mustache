@@ -116,5 +116,13 @@ describe('unit testing for QuadTree', () => {
         expect(b1.getBottom()).toBe(256);
         expect(b1.getWidth()).toBe(120);
         expect(b1.getHeight()).toBe(56);
-    })
+    });
+
+
+    test('testing remove', () => {
+        tree.insert(new Square("1", 50, 50, 30, ""));
+        expect(tree.toString()).toBe("({(1)()()()})")
+
+        
+    });
 })

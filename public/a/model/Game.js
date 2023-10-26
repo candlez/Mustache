@@ -63,6 +63,15 @@ export default class Game {
     }
 
 
+    removeDynamic(id) {
+        const obj = this.#dynamicMap.get(id);
+        if (obj !== undefined) {
+            this.#dynamic.remove(obj);
+            this.#dynamicMap.remove(id);
+        }
+    }
+
+
 
     moveDynamic(id, newX, newY) {
         const obj = this.#dynamicMap.get(id);

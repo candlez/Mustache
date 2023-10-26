@@ -81,6 +81,11 @@ export default class Interpolator {
                 console.log("Size Change Enacted"); // temp
                 this.#game.changeObjectSize(this.#game.getDynamicMap().get(change.getID()), data.deltaSize);
                 break;
+            case Change.CODES.DISCONNECTED:
+                console.log("Player Disconnected"); // temp
+                this.#game.removeDynamic(change.getID());
+                console.log(this.#game.getDynamicMap());
+                break;
             default:
                 // something went wrong
                 console.log("Change Code Not Recognized: ", change.getCode());

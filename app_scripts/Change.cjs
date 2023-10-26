@@ -5,7 +5,8 @@ module.exports = class Change {
         SPAWNED: 0,
         MOVED: 1,
         SIZE_CHANGED: 2,
-        VECTORS_CHANGED: 3
+        VECTORS_CHANGED: 3,
+        DISCONNECTED: 4,
     }
 
     // does the id need to be stored separate from the data?
