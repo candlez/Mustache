@@ -22,11 +22,8 @@ class Game {
     #timeStamp;
     #zero;
 
-    // what is the point of the batch log if changes cannot be worked backwards
-    // changes must store old values (or be stored as deltas)
-    // deltas is the answer to this question
-    // use deltas because they can go backwards or forwards
     #batchLog;
+    #tardy;
 
     #socketToID;
 
@@ -39,6 +36,7 @@ class Game {
         this.#gameObjects = new Map();
 
         this.#batchLog = new BatchLog(Game.LOG_LENGTH);
+        this.#tardy = new Map();
 
         this.#socketToID = new Map();
 
@@ -85,7 +83,8 @@ class Game {
     
         socket.on("playerSpawned", (data) => {
             this.receiveChange(
-                new Change(data.data.id, Change.CODES.SPAWNED, data.data, data.timeStamp, data.data.id)
+                new Change(data.data.id, Change.CODES.SPAWNED, data.data, data.timeStamp, data.data.id),
+                socket.id
             );
             this.#socketToID.set(socket.id, data.data.id);
         });
@@ -97,12 +96,25 @@ class Game {
     
     
         socket.on("playerSizeChanged", (data) => {
-            this.receiveChange(new Change(data.id, Change.CODES.SIZE_CHANGED, data.data, data.timeStamp, data.id));
+            this.receiveChange(new Change(data.id, Change.CODES.SIZE_CHANGED, data.data, data.timeStamp, data.id), socket.id);
         });
 
 
         socket.on("playerVectorsChanged", (data) => {
-            this.receiveChange(new Change(data.id, Change.CODES.VECTORS_CHANGED, data.data, data.timeStamp, data.id));
+            this.receiveChange(new Change(data.id, Change.CODES.VECTORS_CHANGED, data.data, data.timeStamp, data.id), socket.id);
+        });
+
+
+        socket.on("reconciled", (id) => {
+            if (this.#tardy.has(id)) {
+                if (this.#tardy.get(id) == 1) {
+                    this.#tardy.delete(id);
+                } else {
+                    this.#tardy.set(id, this.#tardy.get(id) - 1);
+                }
+            } else {
+                console.log("Trying to Reconcile Non-Tardy Object: ", id);
+            }
         });
     
         // leaving is going to be a type of change in the new system
@@ -110,7 +122,7 @@ class Game {
         // into the change system
 
         socket.on("disconnect", (reason) => {
-            console.log(socket.id + " has disconnected,reason: " + reason);
+            console.log(socket.id + " has disconnected, reason: " + reason);
             this.#currentBatch.insertChange(new Change(
                 this.#socketToID.get(socket.id), 
                 Change.CODES.DISCONNECTED, 
@@ -183,7 +195,11 @@ class Game {
     }
 
 
-    receiveChange(change) {
+    receiveChange(change, socketID) {
+        if (this.#tardy.has(change.id)) {
+            change = this.adjustChange(change);
+        }
+
         if (change.timeStamp > this.#currentBatch.getEnd()) {
             // invalid timestamp (in the future)
             console.log("TimeStamp Recieved From the Future: ", 
@@ -197,36 +213,42 @@ class Game {
             // enter into reconcilation logic
             console.log("TimeStamp Received Past Deadline: ", change.timeStamp, this.getGameTime(), this.#deadline);
             console.log(change);
-            this.reconcileChange(change);
+            this.reconcileChange(change, socketID);
         }
     }
 
 
-    reconcileChange(change) {
+    reconcileChange(change, socketID) {
         var batch;
         if (this.#deadline == this.#currentBatch.getStart()) {
             batch = this.#currentBatch;
         } else {
             batch = this.#previousBatch;
         }
+        if (this.#tardy.has(change.id)) {
+            this.#tardy.set(change.id, this.#tardy.get(change.id) + 1);
+        } else {
+            this.#tardy.set(change.id, 1);
+        }
+
         switch (change.code) {
             case Change.CODES.SPAWNED:
                 // we'll deal with this one later!
                 break;
             case Change.CODES.VECTORS_CHANGED:
+                var diff = this.#deadline - change.timeStamp;
+
                 change.timeStamp = this.#deadline;
                 batch.insertChange(change);
-                batch.insertChange(new Change(
-                    change.id,
-                    Change.CODES.VECTORS_CHANGED,
-                    {
-                        deltaVectors: [0, 0],
-                        x: change.data.x,
-                        y: change.data.y,
+
+                this.sendBack(socketID, "reconciliation", {
+                    code: change.code,
+                    data: {
+                        deltaX: -.001 * diff * change.data.deltaVectors[0],
+                        deltaY: -.001 * diff * change.data.deltaVectors[1]
                     },
-                    this.#deadline,
-                    "server"
-                ));
+                    timeStamp: this.#deadline
+                });
                 break;
             case Change.CODES.SIZE_CHANGED:
                 change.timeStamp = this.#deadline;
@@ -256,9 +278,10 @@ class Game {
                 // I think if we add a sort of buffer then this will be an acceptable trade-off
                 player.vectors[0] += change.data.deltaVectors[0];
                 player.vectors[1] += change.data.deltaVectors[1];
+                player.lastVectorChange = change.timeStamp;
+                if (change.data.x == "ignore") break;
                 player.x = change.data.x;
                 player.y = change.data.y;
-                player.lastVectorChange = change.timeStamp;
                 break;
             case Change.CODES.SIZE_CHANGED:
                 player.size += change.data.deltaSize;
@@ -272,6 +295,18 @@ class Game {
         }
     }
 
+
+    adjustChange(change) {
+        switch(change.code) {
+            case Change.CODES.VECTORS_CHANGED:
+                change.data.x = "ignore";
+                break;
+            default:
+                console.log("Adjusting Change With Bad Code: ", change);
+        }
+        return change;
+    }
+ 
 
     test(id) { // temporary?
         // var batch = new Batch(0, 1000);

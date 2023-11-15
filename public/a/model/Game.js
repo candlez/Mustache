@@ -217,7 +217,7 @@ export default class Game {
 
 
     // should this be done in delta or literal amount?
-    // lets do deltas because that works bettwe with our program
+    // lets do deltas because that works better with our program
     changeObjectSize(obj, deltaSize) {
         const half = deltaSize / 2;
         obj.setSize(obj.getSize() + deltaSize);
@@ -236,6 +236,21 @@ export default class Game {
     }
     clearBackgroundAnimations() {
         this.#backgroundAnimations = [];
+    }
+
+
+    getObjectByID(id) {
+        if (id == this.#player.getID()) {
+            return this.#player;
+        } else if (this.#dynamicMap.has(id)) {
+            return this.#dynamicMap.get(id);
+        } else if (this.#staticMap.has(id)) {
+            return this.#staticMap.get(id);
+        } else {
+            // considering that we have code that purposefully passes bad IDs in
+            // is this really necessary?
+            console.log("ID Not Found: " + id);
+        }
     }
 
 

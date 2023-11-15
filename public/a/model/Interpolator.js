@@ -15,9 +15,9 @@ export default class Interpolator {
 
     loadBatch(batch) {
         // batch is an object with .array and .start
-        if (batch.array.length != 0) {
-            console.log(batch);
-        }
+        // if (batch.array.length != 0) {
+        //     console.log(batch);
+        // }
         
 
         // what is the use of .start?
@@ -47,15 +47,20 @@ export default class Interpolator {
 
 
     enactChange(change) {
-        if (change.getSender() == this.#game.getPlayer().getID()) {
+        const player = this.#game.getPlayer()
+        if (change.getSender() == player.getID()) {
             return;
         }
+        var obj = this.#game.getObjectByID(change.getID());
+
+        // temp
+        // console.log(this.#game.getGameTime() - change.getTimeStamp(), this.#game.getGameTime(), change.getTimeStamp());
 
         const data = change.getData();
         switch (change.getCode()) {
             case Change.CODES.SPAWNED:
                 console.log("Player Spawn Enacted: ", change); // temp
-                if (!this.#game.getDynamicMap().has(change.getID())) {
+                if (!obj) {
                     this.#game.addObjectBasedOnData({
                         args: data,
                         timeStamp: change.getTimeStamp()
@@ -63,55 +68,48 @@ export default class Interpolator {
                 }
                 console.log(this.#game.getDynamicMap()) // temp
                 break;
+            case Change.CODES.MOVED:
+                if (!obj) return;
+                console.log("Move Enacted: ", change); // temp
+                obj.setXCoord(obj.getXCoord() + data.deltaX);
+                obj.setYCoord(obj.getYCoord() + data.deltaY);
+                break;
             case Change.CODES.VECTORS_CHANGED:
-                console.log("Vector Change Enacted: ", change); // temp
-                var obj = this.#game.getDynamicMap().get(change.getID());
+                if (!obj) return;
+                // console.log("Vector Change Enacted: ", change); // temp
                 const old = obj.getVectors();
                 obj.setVectors([
                     old[0] + data.deltaVectors[0],
                     old[1] + data.deltaVectors[1]
                 ]);
+                if (data.x == "ignore") break;
                 if (obj.getXCoord() != data.x || obj.getYCoord() != data.y) {
-                    console.log("Position Changed With Vectors")
+                    console.log("Position Changed With Vectors"); // temp
+
+                    const colors = ["blue", "green", "yellow", "crimson", "pink", "purple"];
+                    function getRandomInt(max) {
+                        return Math.floor(Math.random() * max);
+                    }
+                    player.setColor(colors[getRandomInt(colors.length)]);
+
                     this.#game.moveDynamic(change.getID(), data.x, data.y);
                 }
-                console.log(obj.getVectors());
                 break;
             case Change.CODES.SIZE_CHANGED:
+                if (!obj) return;
                 console.log("Size Change Enacted"); // temp
                 this.#game.changeObjectSize(this.#game.getDynamicMap().get(change.getID()), data.deltaSize);
                 break;
             case Change.CODES.DISCONNECTED:
                 console.log("Player Disconnected"); // temp
                 this.#game.removeDynamic(change.getID());
-                console.log(this.#game.getDynamicMap());
+                console.log(this.#game.getDynamicMap()); // temp
                 break;
             default:
                 // something went wrong
                 console.log("Change Code Not Recognized: ", change.getCode());
         }
     }
-
-
-    // enactPlayerChange(change) {
-    //     const data = change.getData();
-    //     switch (change.getCode()) {
-    //         case Change.CODES.SPAWNED:
-    //             console.log("Someone Else Told the Player to Spawn?");
-    //             console.log(change);
-    //             break;
-    //         case Change.CODES.VECTORS_CHANGED:
-
-    //             // code
-    //             break;
-    //         case Change.CODES.SIZE_CHANGED:
-    //             // code
-    //             break;
-    //         default:
-    //             // something went wrong
-    //             console.log("Change Code Not Recognized: ", change.getCode());
-    //     }
-    // }
 
     // getters
     size() {

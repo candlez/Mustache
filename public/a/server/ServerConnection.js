@@ -2,6 +2,7 @@ import Game from './../model/Game.js'
 import Square from '../model/Square.js';
 import GridAnimation from '../view/animations/game_objects/GridAnimation.js';
 import Interpolator from "./../model/Interpolator.js";
+import Change from '../model/Change.js';
 
 export default class ServerConnection {
     // fields
@@ -34,7 +35,7 @@ export default class ServerConnection {
                 // hard-coded values, which can be recieved from the server in the future
                 this.#game.addBackgroundAnimation(new GridAnimation(data.info.width, data.info.width, 100, "gray"));
                 this.#interpolator = new Interpolator(this.#game);
-                this.#latency = 100;
+                this.#latency = 200;
                 resolve();
             });
 
@@ -62,6 +63,7 @@ export default class ServerConnection {
 
     setUpListeners() {
         this.waitForChanges();
+        this.waitForReconciliation();
     }
 
 
@@ -131,10 +133,31 @@ export default class ServerConnection {
     }
 
 
-    // deprecated
     waitForChanges() {
         this.#socket.on("batchSent", (batch) => {
             this.#interpolator.loadBatch(batch);
+        });
+    }
+
+
+    waitForReconciliation() {
+        this.#socket.on("reconciliation", (data) => {
+            const player = this.#game.getPlayer();
+            switch (data.code) {
+                case Change.CODES.VECTORS_CHANGED:
+                    this.#interpolator.enactChange(new Change(
+                        player.getID(),
+                        Change.CODES.MOVED,
+                        data.data,
+                        data.timeStamp,
+                        "server"
+                    ));
+                    break;
+                default:
+                    console.log("Unrecognized Reconciliation Code: " + data.code);
+            }
+            
+            this.#socket.emit("reconciled", player.getID());
         });
     }
 
