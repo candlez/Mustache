@@ -19,9 +19,9 @@ export default class GameObject {
     }
 
     // methods
-    drawFrame(ctx, scale, player, display) {
+    drawFrame(ctx, scale, display) {
         for (var i = 0; i < this.#animations.length; i++) {
-            this.#animations[i].drawFrame(ctx, scale, player, display);
+            this.#animations[i].drawFrame(ctx, scale, display);
         }
     }
 

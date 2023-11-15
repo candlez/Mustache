@@ -13,9 +13,9 @@ export default class SquareAnimation extends GameObjectAnimation {
 
 
 
-    drawFrame(ctx, scale, player, display) {
+    drawFrame(ctx, scale, display) {
         const square = this.getObject();
-        const canvasCoords = this.calculateCanvasCoords(square, display, player, scale);
+        const canvasCoords = display.getCanvasCoords(square);
         ctx.beginPath();
         ctx.rect(
             canvasCoords.x,

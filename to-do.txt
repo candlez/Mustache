@@ -1,8 +1,15 @@
 Objectives:
-Complete Reconciliation
 Implement Player Interaction
+Create An Attached Animation
+Address Canvas Coord Duplicate Calculations
 Finish Animation Sorting
 
 
 
 Tickets:
+
+
+
+Complete:
+Grid Animation Broken
+Complete Reconciliation

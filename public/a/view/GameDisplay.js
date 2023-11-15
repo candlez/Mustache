@@ -7,6 +7,8 @@ export default class GameDisplay extends Display {
     #controller;
     #connection;
 
+    #canvasCoords
+
 
     constructor(game, connection) {
         super("playspace", window.innerWidth, window.innerHeight);
@@ -14,7 +16,7 @@ export default class GameDisplay extends Display {
         this.#controller = null;
         this.#connection = connection;
 
-        this.setBackgroundColor("black");
+        this.setBackgroundColor("black"); // hard coded
     }
 
 
@@ -64,6 +66,7 @@ export default class GameDisplay extends Display {
         }
         this.#connection.updateGame();
         this.#game.runSimulation(this.getRefreshRate());
+        this.#canvasCoords = new Map();
 
         // drawing frame
         this.clear();
@@ -71,13 +74,35 @@ export default class GameDisplay extends Display {
         this.gatherAnimations(this.getDisplayBounds());
         var animations = this.getAnimations();
         for (var i = 0; i < animations.length; i++) {
-            animations[i].drawFrame(this.getCTX(), this.getScale(), this.#game.getPlayer(), this);
+            animations[i].drawFrame(this.getCTX(), this.getScale(), this);
         }
     }
 
 
-    // getters and setters
+    getCanvasCoords(object) {
+        if (this.#canvasCoords.has(object.getID())) return this.#canvasCoords.get(object.getID());
 
+        const player = this.#game.getPlayer();
+        const center = this.getCenter();
+        const coords = {
+            x: center.x + (this.getScale() * (object.getXCoord() - player.getXCoord() - (.5 * player.getSize()))),
+            y: center.y + (this.getScale() * (object.getYCoord() - player.getYCoord()  - (.5 * player.getSize())))
+        }
+        this.#canvasCoords.set(coords);
+        return coords;
+    }
+
+
+    // getters and setters
+    getBounds() {
+        const bounds = this.#game.getPlayer().getBounds();
+        return new MidPointBounds(
+            bounds.getCenterX(),
+            bounds.getCenterY(),
+            this.getWidth(),
+            this.getHeight()
+        )
+    }
 
     setGame(newGame) {
         this.#game = newGame;
