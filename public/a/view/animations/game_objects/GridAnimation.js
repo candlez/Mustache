@@ -74,6 +74,7 @@ export default class GridAnimation extends GameObjectAnimation {
             ctx.moveTo(Math.max(0, canvasCoords.x), y);
             ctx.lineTo(Math.min(display.getWidth(), canvasCoords.x + (grid.getWidth() * scale)), y);
         }
+        ctx.lineWidth = 1;
         ctx.stroke();
         // split x and y
         // const bounds = player.getBounds();

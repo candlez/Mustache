@@ -1,6 +1,7 @@
 import GameObject from "./GameObject.js";
 import TopCornerBounds from "./TopCornerBounds.js"
 import SquareAnimation from "../view/animations/game_objects/SquareAnimation.js";
+import ExpandingHaloAnimation from "../view/animations/game_objects/ExpandingHaloAnimation.js";
 
 
 export default class Square extends GameObject {
@@ -23,6 +24,7 @@ export default class Square extends GameObject {
         this.#color = color;
         this.setSpeed(30); // hard coded?
         this.addAnimation(new SquareAnimation(this));
+        this.addAnimation(new ExpandingHaloAnimation(this)); // temp?
     }
 
 

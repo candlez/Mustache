@@ -11,6 +11,10 @@ export default class Animation {
         this.#currentFrame = 0;
     }
 
+    incrementFrame() {
+        this.#currentFrame++;
+    }
+
     // getters and setters
     setCurrentFrame(newCurrentFrame) {
         this.#currentFrame = newCurrentFrame;

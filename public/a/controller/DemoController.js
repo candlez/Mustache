@@ -18,6 +18,9 @@ export default class DemoController extends Controller {
         this.addKeyLogger("sizeDown", new KeyLogger("0"));
 
         this.addKeyLogger("stopSending", new KeyLogger("8"));
+
+        this.addKeyLogger("shoot", new KeyLogger(" "));
+        this.addKeyLogger("testQuadTree", new KeyLogger("q"));
     }
 
 
@@ -71,11 +74,7 @@ export default class DemoController extends Controller {
         //     this.getGame().removeStatic(collisions[i].getID())
         // }
 
-        if (loggers.get("stopSending").getKeyDown()) { // temporary
-            console.log(8)
-            this.getConnection().setSending(false);
-            // loggers.delete("stopSending");
-        }
+
     }
 
 
