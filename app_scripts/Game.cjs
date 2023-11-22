@@ -67,6 +67,7 @@ class Game {
                     timeStamp: this.#timeStamp
                 });
             }
+            // this treats gameobjects like they are incapable of being dynamic
             for (const obj of this.#gameObjects.values()) {
                 this.sendBack(socket.id, "initialDataSent", {
                     args: obj.getArguments()

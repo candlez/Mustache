@@ -114,8 +114,8 @@ export default class Game {
             // for instance, if an object was running up against a wall, it's vectors
             // could be changed to zero (in that direction)
             // of course, we would need to tell the server about this (or not actually because every client would do that)
-            var newX = this.validateXCoord(obj, obj.getXCoord() + (vectors[0] / refreshRate));
-            var newY = this.validateYCoord(obj, obj.getYCoord() + (vectors[1] / refreshRate));
+            const newX = this.validateXCoord(obj, obj.getXCoord() + (vectors[0] / refreshRate));
+            const newY = this.validateYCoord(obj, obj.getYCoord() + (vectors[1] / refreshRate));
 
             // finalizing changes
             if (obj == this.#player) {
@@ -129,9 +129,8 @@ export default class Game {
                         newY
                     );  
                 } catch (error) {
-                    console.log(obj);
+                    console.log(obj, error);
                 }
-  
             }
         }
     }
@@ -180,7 +179,6 @@ export default class Game {
             return Math.floor(Math.random() * max);
         }
         
- 
         this.#player = new Square(name, getRandomInt(this.#width - startingSize),
             getRandomInt(this.#width - startingSize), startingSize, color);
         
@@ -188,8 +186,9 @@ export default class Game {
     }
 
 
-
-    addObjectBasedOnData(data) { // this is RazorRoyale specific
+     // this is RazorRoyale specific
+     // this is also very specific to adding an object from server data
+    addObjectBasedOnData(data) {
         var obj;
         if (data.args.type == "square") {
             obj = new Square(data.args.id, data.args.x, data.args.y, data.args.args.size, data.args.args.color);

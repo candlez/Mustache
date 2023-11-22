@@ -30,7 +30,7 @@ export default class Square extends GameObject {
 
     // this is deprecated because an object is not in charge of where it is
     grow(amount) {
-        new Error("GROW IS DEPRECATED");
+        throw new Error("GROW IS DEPRECATED");
         var half = amount / 2;
         this.setXCoord(this.getXCoord() - half);
         this.setYCoord(this.getYCoord() - half);

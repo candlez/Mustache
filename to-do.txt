@@ -1,8 +1,13 @@
 Objectives:
-Implement Player Interaction
-Create An Attached Animation
-Address Canvas Coord Duplicate Calculations
+Have Client Write CSV Files
+Store CSV Files in Database
+Access CSV Database from DevTool Client
+Implement Client Performance Data Collection
+Create DevTool Performance Data Interpreter
+Add Cooldown to KeyLoggers
+Check/Fix Quad Tree Purging
 Finish Animation Sorting
+Implement Player Interaction
 
 
 
@@ -11,5 +16,8 @@ Tickets:
 
 
 Complete:
+Add Laser Object and Firing
+Create An Attached Animation
+Address Canvas Coord Duplicate Calculations
 Grid Animation Broken
 Complete Reconciliation

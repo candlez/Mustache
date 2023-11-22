@@ -26,7 +26,7 @@ export default class DemoController extends Controller {
 
 
     interpretKeys() { // these ought to be broken up into different methods
-        const refreshRate = this.getDisplay().getRefreshRate();
+        const refreshRate = this.getDisplay().getRefreshRate(); // what is this for?
         const loggers = this.getKeyLoggers();
         const player = this.getGame().getPlayer();
 
@@ -74,7 +74,27 @@ export default class DemoController extends Controller {
         //     this.getGame().removeStatic(collisions[i].getID())
         // }
 
-
+        // this is very makeshift
+        // it will be refined in future
+        if (loggers.get("shoot").getKeyDown()) {
+            this.getGame().addObjectBasedOnData({
+                args: {
+                    type: "square",
+                    id: player.getID() + ".l." + this.getGame().getGameTime(),
+                    x: player.getXCoord(),
+                    y: player.getYCoord(),
+                    lastVectorChange: 0,
+                    vectors: player.getVectors(),
+                    args: {
+                        size: 50,
+                        color: "lime"
+                    },
+                    dynamic: true
+                },
+                timeStamp: 0
+            })
+            console.log("shot!");
+        }
     }
 
 
