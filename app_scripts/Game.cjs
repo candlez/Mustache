@@ -3,6 +3,8 @@ const DynamicGameObject = require('./DynamicGameObject.cjs');
 const Batch = require("./Batch.cjs");
 const Change = require("./Change.cjs");
 const BatchLog = require("./BatchLog.cjs");
+const file = require("fs/promises");
+const mysql = require("mysql2");
 
 class Game {
     // private fields
@@ -12,6 +14,7 @@ class Game {
 
     #players;
     #gameObjects;
+    #logFileNames;
 
     // how long should changes be stored for?
     static LOG_LENGTH = 100;
@@ -27,6 +30,8 @@ class Game {
 
     #socketToID;
 
+    #database;
+
     constructor(io, gameInfo) {
         this.#io = io;
         this.#gameInfo = gameInfo;
@@ -34,6 +39,7 @@ class Game {
 
         this.#players = new Map();
         this.#gameObjects = new Map();
+        this.#logFileNames = new Map();
 
         this.#batchLog = new BatchLog(Game.LOG_LENGTH);
         this.#tardy = new Map();
@@ -41,6 +47,19 @@ class Game {
         this.#socketToID = new Map();
 
         this.#zero = Date.now();
+
+        this.#database = mysql.createConnection({
+            host: "localhost",
+            port: 3306,
+            user: "root",
+            password: "Candleeater03",
+            database: "perflogs"
+        });
+        
+        this.#database.connect((err) => {
+            if (err) throw err;
+            console.log("connected to database");
+        });
     }
 
 
@@ -132,6 +151,25 @@ class Game {
                 this.#socketToID.get(socket.id)
             ));
             this.#socketToID.delete(socket.id);
+        });
+
+
+        socket.on("performanceLog", (data) => {
+            var fileName = this.#logFileNames.get(socket.id);
+            if (!fileName) {
+                const d = new Date();
+                fileName = "" + (d.getMonth() + 1) + "-" + d.getDate() + "-" + d.getFullYear() + "--";
+                fileName += d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
+                this.#logFileNames.set(socket.id, fileName);
+            }
+            this.#database.query(
+                "INSERT INTO logs(timestamp, file) VALUES('" + fileName + "', ?);",
+                data,
+                (err) => {
+                    if (err) throw err;
+                    console.log("successful query");
+                }
+            );
         });
     }
 

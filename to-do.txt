@@ -1,21 +1,24 @@
 Objectives:
-Have Client Write CSV Files
 Store CSV Files in Database
 Access CSV Database from DevTool Client
 Implement Client Performance Data Collection
 Create DevTool Performance Data Interpreter
-Add Cooldown to KeyLoggers
-Check/Fix Quad Tree Purging
+Add Cooldown Option to KeyLoggers
+Check/Fix QuadTree Purging
 Finish Animation Sorting
 Implement Player Interaction
+Allow Window to be Resized
 
 
 
 Tickets:
-
+Grid Animation Breaks at Small Sizes
+Grid Animation Choppy Animation (unable to replicate)
 
 
 Complete:
+Add Performance Log Send Cycle
+Have Client Write CSV Files
 Add Laser Object and Firing
 Create An Attached Animation
 Address Canvas Coord Duplicate Calculations

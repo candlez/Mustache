@@ -3,6 +3,7 @@ import Square from '../model/Square.js';
 import GridAnimation from '../view/animations/game_objects/GridAnimation.js';
 import Interpolator from "./../model/Interpolator.js";
 import Change from '../model/Change.js';
+import DataCollector from './DataCollector.js';
 
 export default class ServerConnection {
     // fields
@@ -24,6 +25,10 @@ export default class ServerConnection {
 
         this.#socket.on("test", (data) => { // temp
             console.log(data);
+        });
+
+        this.#socket.on("disconnect", (reason) => { // temp
+            console.log("Disconnected: " + reason);
         });
     }
 
@@ -164,6 +169,21 @@ export default class ServerConnection {
 
     updateGame() {
         this.#interpolator.unloadChanges(this.#game.getGameTime() - this.#latency);
+    }
+
+
+    collectData() {
+        const collector = new DataCollector();
+        collector.peg(this.#display, "drawFrame");
+        collector.watch(this, "updateGame");
+        collector.watch(this.#display, "gatherAnimations");
+
+        const connection = this;
+        const cycle = function() {
+            connection.getSocket().emit("performanceLog", collector.createBlob());
+            setTimeout(cycle, 5000);
+        }
+        setTimeout(cycle, 5000);
     }
 
 

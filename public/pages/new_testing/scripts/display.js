@@ -41,7 +41,7 @@ connection.initializeGame() // add a grid to the game
     console.log(7);
     connection.setDisplay(new GameDisplay(connection.getGame(), connection));
 // 8. create the controller(s) and add them
-}).then(() => {
+}).then(() => { // isn't this a little excessive?
     console.log(8);
     const controller = new DemoController(connection.getGame(), 
         connection.getDisplay(), connection);
@@ -57,6 +57,12 @@ connection.initializeGame() // add a grid to the game
 // 9. start animation loop
 }).then(() => {
     connection.getDisplay().startAnimationLoop();
+    connection.collectData();
+    // window.onbeforeunload = (event) => {
+    //     // console.log("OnBeforeUnload Triggered");
+    //     connection.sendPerformance();
+    //     return "HEY! Are You Sure You Want To Leave?";
+    // };
     console.log("finished");
 });
 
